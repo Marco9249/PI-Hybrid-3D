@@ -5,3 +5,5 @@ dist/
 .env
 .vscode/
 *.log
+*.bat 
+🟢_START_HERE.html 
