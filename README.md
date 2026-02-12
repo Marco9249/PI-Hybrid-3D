@@ -12,7 +12,15 @@
   <img src="https://img.shields.io/badge/LAUNCH_SYSTEM-LOGIN_NOW-00f2ff?style=for-the-badge&logo=google-chrome&logoColor=black&labelColor=101010" height="60">
 </a>
 
-All systems operational. Click above to enter the 3D visualization.
+<br>
+
+<a href="https://www.techrxiv.org//1376729">
+  <img src="https://img.shields.io/badge/SCIENTIFIC_PAPER-READ_ON_TECHRXIV-0056D2?style=for-the-badge&logo=googlescholar&logoColor=white" height="40">
+</a>
+&nbsp; &nbsp;
+<a href="https://www.linkedin.com/in/mohammed924">
+  <img src="https://img.shields.io/badge/LINKEDIN-CONNECT_WITH_ME-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" height="40">
+</a>
 
 ---
 
