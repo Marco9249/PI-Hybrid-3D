@@ -1,9 +1,32 @@
 # 🌌 PI-Hybrid 3D Viz: Solar Forecasting Intelligence
 
-![Project Banner](https://img.shields.io/badge/Status-Active-success?style=for-the-badge&logo=github) ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-2.0-orange?style=for-the-badge)
+[![Live Demo](https://img.shields.io/badge/🚀_LAUNCH-LIVE_DEMO-00f2ff?style=for-the-badge&logo=google-chrome&logoColor=white)](https://YOUR-USERNAME.github.io/PI-Hybrid-3D-Viz/)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge&logo=github) ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-> **"Where Physics Meets Deep Learning."**  
-> An interactive, cinematic 3D visualization of a Physics-Informed Hybrid CNN-BiLSTM model for solar irradiance forecasting.
+> **⚠️ هام جداً: لتشغيل المشروع، يجب تفعيل GitHub Pages!**
+>
+> 1. اذهب إلى **Settings** (في أعلى صفحة المستودع).
+> 2. اختر **Pages** من القائمة الجانبية.
+> 3. تحت **Branch**، اختر `main` واضغط **Save**.
+> 4. انتظر دقيقة، وسيظهر لك رابط (مثلاً: `https://username.github.io/PI-Hybrid-3D-Viz/`). اضغط عليه لتشغيل المشروع!
+
+---
+
+## ⚡ Quick Access (Navigation)
+
+| Layer | Component | Description |
+| :---: | :--- | :--- |
+| **0** | [Input Layer](./layers/layer0-input.html) | Visualizing the 15 input features |
+| **1** | [Conv1D](./layers/layer1-conv1d.html) | Temporal Feature Extraction |
+| **2** | [Batch Norm](./layers/layer2-batchnorm.html) | Stabilizing distributions |
+| **3** | [ReLU](./layers/layer3-relu.html) | Activation & Non-linearity |
+| **4** | [Dropout I](./layers/layer4-dropout1.html) | Preventing overfitting |
+| **5** | [Bi-LSTM](./layers/layer5-bilstm.html) | **The Core Engine** (Spatio-Temporal) |
+| **6** | [Dropout II](./layers/layer6-dropout2.html) | Secondary Regularization |
+| **7** | [Dense](./layers/layer7-dense.html) | High-level synthesis |
+| **8** | [ReLU II](./layers/layer8-relu2.html) | Final Activation |
+| **9** | [Output](./layers/layer9-output.html) | **Solar Forecasting** (Final Interface) |
+| **10** | [Regression](./layers/layer10-regression.html) | Live Training Visualizer |
 
 ---
 
