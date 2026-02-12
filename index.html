@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- GSAP & Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@200;300;400;600;800&family=Outfit:wght@200;400;600;900&display=swap');
+
+        :root {
+            --cyan: #06B6D4;
+            --purple: #8B5CF6;
+            --gold: #F59E0B;
+            --green: #10B981;
+            --blue: #3B82F6;
+            --red: #EF4444;
+            --bg: #030308;
+            --card-bg: rgba(10, 10, 25, 0.4);
+            --border: rgba(139, 92, 246, 0.2);
+            --glow: rgba(139, 92, 246, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Firefox */
+        html {
+            scrollbar-width: none;
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s;
+            mix-blend-mode: difference;
+        }
+
+        #cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--purple);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* Preloader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .loader-ring {
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(139, 92, 246, 0.1);
+            border-top: 2px solid var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            margin-top: 30px;
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 5px;
+            font-weight: 200;
+            color: var(--purple);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0a0a1a 0%, #030308 100%);
+        }
+
+        /* Crystal Clarity UI */
+        .glass-card {
+            background: rgba(10, 10, 25, 0.6);
+            backdrop-filter: blur(30px) saturate(150%);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            border-radius: 40px;
+            padding: 60px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 242, 255, 0.4);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 60px 120px rgba(0, 242, 255, 0.1);
+        }
+
+        /* Nav */
+        nav {
+            padding: 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.5s;
+        }
+
+        nav.scrolled {
+            background: rgba(3, 3, 8, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 20px 60px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 220px 60px 100px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            line-height: 0.85;
+            margin-bottom: 30px;
+            background: linear-gradient(180deg, #ffffff 0%, #a5f3fc 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.6));
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1::after {
+            content: 'Peak Solar Intelligence';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            background-size: 50% 100%;
+            background-repeat: no-repeat;
+            background-position: -100% 0;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s infinite;
+            z-index: 2;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            20% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 850px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .btn {
+            padding: 20px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 2px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            color: #fff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Architecture Section */
+        .map-section {
+            padding: 100px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+        }
+
+        /* Enhanced Card */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 50px 40px;
+            text-decoration: none;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(25px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.1) 40%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: scale(1.03) translateY(-10px);
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .card-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 80px;
+            font-weight: 900;
+            color: var(--purple);
+            opacity: 0.05;
+            position: absolute;
+            top: 20px;
+            right: 40px;
+        }
+
+        .card-icon {
+            font-size: 45px;
+            margin-bottom: 35px;
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 2;
+        }
+
+        .card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            flex-grow: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 8px 18px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 120px 0;
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            border-top: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.03) 0%, transparent 100%);
+            flex-wrap: wrap;
+        }
+
+        .stat h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 5rem;
+            background: linear-gradient(180deg, #fff, var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        .stat p {
+            color: var(--purple);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 100px 60px;
+            text-align: center;
+            background: #020205;
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        /* Tablet/Mobile */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 4rem;
+            }
+
+            .stats {
+                gap: 40px;
+                padding: 60px 20px;
+            }
+
+            .stat h2 {
+                font-size: 3rem;
+            }
+        }
+
+        /* Luxury OIU Button */
+        .btn-luxury {
+            background: rgba(5, 5, 10, 0.9) !important;
+            border: 1px solid rgba(245, 158, 11, 0.3) !important;
+            padding: 12px 45px !important;
+            font-family: 'Cinzel', serif !important;
+            font-weight: 900;
+            font-size: 16px !important;
+            letter-spacing: 6px;
+            color: transparent !important;
+            background-clip: text !important;
+            -webkit-background-clip: text !important;
+            background-image: linear-gradient(135deg, #F59E0B, #FFF, #06B6D4) !important;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(245, 158, 11, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Border Glow Container */
+        .btn-luxury::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 50px;
+            transition: all 0.5s;
+        }
+
+        .btn-luxury:hover {
+            transform: scale(1.05);
+            letter-spacing: 8px;
+            background-image: linear-gradient(135deg, #FFF, #F59E0B, #FFF) !important;
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-luxury:hover::after {
+            border-color: #F59E0B;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Narrative Sections (Story Mode) */
+        .story-section {
+            padding: 150px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .story-content h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #fff, var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .story-content h3 {
+            color: var(--gold);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .story-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .highlight-card {
+            background: rgba(10, 10, 25, 0.6);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: transform 0.5s;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--cyan);
+        }
+
+        .comparison-bar {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            z-index: 0;
+            width: 0%;
+            /* Animate this */
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .bar-label {
+            position: relative;
+            z-index: 2;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: var(--cyan);
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cursor"></div>
+    <div id="cursor-dot"></div>
+
+    <div id="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">QUANTUM CORE INITIALIZING</div>
+    </div>
+
+
+    <canvas id="bg-canvas"></canvas>
+
+    <nav id="nav">
+        <div class="logo">PI-HYBRID</div>
+        <div class="cta-group">
+            <a href="data_odyssey.html" class="btn btn-primary" style="font-size:12px; padding:10px 20px;">DATA
+                ODYSSEY</a>
+            <a href="PI-Hybrid-Complete.html" class="btn btn-luxury">OIU</a>
+        </div>
+    </nav>
+
+    <!-- Navigation Sidebar -->
+    <div id="chapter-nav"
+        style="position:fixed; right:30px; top:50%; transform:translateY(-50%); z-index:100; display:flex; flex-direction:column; gap:15px; opacity:1; transition:opacity 1s;">
+        <div class="nav-dot active" data-target="#hero"></div>
+        <div class="nav-dot" data-target="#chapter1"></div>
+        <div class="nav-dot" data-target="#chapter2"></div>
+        <div class="nav-dot" data-target="#chapter3"></div>
+        <div class="nav-dot" data-target="#chapter4"></div>
+        <div class="nav-dot" data-target="#chapter5"></div>
+        <div class="nav-dot" data-target="#chapter6"></div>
+        <div class="nav-dot" data-target="#chapter7"></div>
+    </div>
+    <style>
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-dot.active {
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            transform: scale(1.5);
+        }
+    </style>
+
+    <!-- Hero Section (Prologue) -->
+    <section id="hero" class="hero"
+        style="height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="reveal active">
+            <h1>Peak Solar Intelligence</h1>
+            <h2
+                style="font-family: 'Inter'; font-weight: 300; font-size: 1.5rem; color: var(--cyan); margin-bottom: 20px; letter-spacing: 2px;">
+                PHYSICS IS ALL YOU NEED
+            </h2>
+            <p>Outperforming Self-Attention Mechanisms in Arid Climates.<br>
+                A logic-driven approach achieving <strong>99.7% Accuracy</strong> in high-volatility regions.</p>
+            <div class="cta-group">
+                <a href="#chapter1" class="btn btn-primary">BEGIN THE JOURNEY</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 1: The Context -->
+    <section id="chapter1" class="story-section">
+        <div class="story-grid">
+            <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    01</div>
+                <h3>The Context</h3>
+                <h2>The Stochastic Challenge</h2>
+                <p><strong>Location:</strong> Omdurman, Sudan (14.7°N, 33.2°E)</p>
+                <p>In arid regions, grid stability is constantly threatened by "Aerosol Optical Depth" (Dust Storms) and
+                    rapid Cloud Transients. These make solar generation wildly unpredictable.</p>
+                <p>Standard AI treats this as random noise. We treat it as <strong>Physics</strong>.</p>
+            </div>
+
+            <div class="highlight-card reveal" style="text-align:center; padding:0; overflow:hidden;">
+                <!-- Simulated Map Visual -->
+                <div
+                    style="height:250px; background: radial-gradient(circle at center, #1e293b, #000); display:flex; align-items:center; justify-content:center; position:relative;">
+                    <!-- Grid Lines -->
+                    <div style="position:absolute; width:100%; height:100%; background:
+                        linear-gradient(rgba(6,182,212,0.1) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(6,182,212,0.1) 1px, transparent 1px);
+                        background-size: 20px 20px; opacity:0.3;">
+                    </div>
+
+                    <!-- Radar Ping -->
+                    <div
+                        style="width:20px; height:20px; background:var(--red); border-radius:50%; box-shadow: 0 0 20px var(--red); position:relative; z-index:2;">
+                    </div>
+                    <div
+                        style="position:absolute; width:100px; height:100px; border:1px solid var(--red); border-radius:50%; animation: ping 2s infinite;">
+                    </div>
+
+                    <div
+                        style="position:absolute; top:20px; left:20px; text-align:left; font-family:'Courier New'; font-size:10px; color:var(--cyan);">
+                        COORDS: 14.7°N, 33.2°E<br>
+                        GHI: 6.2 kWh/m²/day<br>
+                        STATUS: HIGH VOLATILITY
+                    </div>
+                </div>
+                <div style="padding:20px;">
+                    <h4 style="color:var(--white);">Omdurman, Sudan</h4>
+                    <p style="font-size:0.9rem; margin-top:5px; color:rgba(255,255,255,0.5);">High Aerosol Load & Cloud
+                        Transients</p>
+                </div>
+                <style>
+                    @keyframes ping {
+                        0% {
+                            transform: scale(0.5);
+                            opacity: 1;
+                        }
+
+                        100% {
+                            transform: scale(2);
+                            opacity: 0;
+                        }
+                    }
+                </style>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 2: The Physics Vector -->
+    <section id="chapter2" class="story-section">
+        <div class="story-grid">
+            <div class="highlight-card reveal" style="border-color:var(--cyan);">
+                <div style="font-family:'Courier New'; color:var(--cyan); font-size:12px; margin-bottom:10px;">INPUT
+                    TENSOR [15, 24]</div>
+                <!-- Scrolling Data Stream -->
+                <div
+                    style="height:150px; overflow:hidden; position:relative; mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);">
+                    <div
+                        style="animation: scrollUp 10s linear infinite; font-family:'Courier New'; font-size:14px; color:rgba(255,255,255,0.7); line-height:1.8;">
+                        01. Global Horizontal Irradiance (<i>GHI</i>)<br>
+                        02. Clear-Sky GHI (<i>GHI<sub>cs</sub></i>)<br>
+                        03. Calc. Clearness Index (<i>KT<sub>calc</sub></i>)<br>
+                        04. Sat. Clearness Index (<i>KT<sub>sat</sub></i>)<br>
+                        05. Volatility Index (<i>Vol</i>)<br>
+                        06. Direct Normal Irradiance (<i>DNI</i>)<br>
+                        07. Diffuse Irradiance (<i>DHI</i>)<br>
+                        08. Relative Humidity (<i>RH</i>)<br>
+                        09. Dew Point Temp (<i>T<sub>dew</sub></i>)<br>
+                        10. Ambient Temp (<i>T<sub>amb</sub></i>)<br>
+                        11. Wet Bulb Temp (<i>T<sub>wet</sub></i>)<br>
+                        12. Hour of Day (<i>sin</i>)<br>
+                        13. Hour of Day (<i>cos</i>)<br>
+                        14. Day of Year (<i>sin</i>)<br>
+                        15. Day of Year (<i>cos</i>)<br>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes scrollUp {
+                        from {
+                            transform: translateY(0);
+                        }
+
+                        to {
+                            transform: translateY(-50%);
+                        }
+                    }
+                </style>
+
+                <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+                    <div style="font-size:10px; color:var(--purple); margin-bottom:10px;">PHYSICS CONSTRAINT FORMULA
+                    </div>
+                    <!-- CSS LaTeX-style Fraction -->
+                    <div
+                        style="font-family:'Times New Roman', serif; font-style:italic; font-size:1.5rem; display:flex; align-items:center; justify-content:center; gap:10px;">
+                        <span>KT<sub>calc</sub></span>
+                        <span>=</span>
+                        <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+                            <span
+                                style="border-bottom:1px solid rgba(255,255,255,0.8); padding-bottom:2px; display:block; width:100%;">GHI</span>
+                            <span style="padding-top:2px; display:block;">GHI<sub>cs</sub></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    02</div>
+                <h3>The Methodology</h3>
+                <h2>The Physics Vector</h2>
+                <p>"Garbage In, Garbage Out." Traditional models blindly consume data.</p>
+                <p>We anchor our AI with <strong>15 Engineered Features</strong>. By explicitly calculating the
+                    <em>Clear Sky Baseline</em>, the model only needs to learn the "Stochastic Deviation" (Cloud Cover),
+                    radically simplifying the learning task.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. The Solution -->
+    <section class="story-section">
+        <div class="story-grid">
+            <div class="highlight-card reveal">
+                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
+                    <span class="feature-tag">Local CNN Features</span>
+                    <span class="feature-tag">Bi-Directional LSTM</span>
+                    <span class="feature-tag">Bayesian Optimization</span>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 10px;">15-Vector Physics Engine</h3>
+                <ul style="list-style: none; color: rgba(255,255,255,0.7); line-height: 2;">
+                    <li>✓ Calculated Clear-Sky GHI</li>
+                    <li>✓ Solar Zenith Angle</li>
+                    <li>✓ Atmospheric Volatility Index</li>
+                    <li>✓ Satellite Clearness Index</li>
+                </ul>
+            </div>
+            <div class="story-content reveal">
+                <h3>The Innovation</h3>
+                <h2>Physics-Informed Hybrid Core</h2>
+                <p>We challenged the "Complexity-First" paradigm. Instead of massive Transformers, we engineered a
+                    lightweight <strong>CNN-BiLSTM</strong> framework that is explicitly guided by 15 physical features.
+                </p>
+                <p>By determining the <em>Clear-Sky Baseline</em> mathematically, the AI only needs to predict the
+                    stochastic deviation (Clouds), solving the Phase Lag problem entirely.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. The Paradox (Results) -->
+    <section class="story-section">
+        <div class="story-grid">
+            <div class="story-content reveal">
+                <h3>The Results</h3>
+                <h2>The Complexity Paradox</h2>
+                <p>Our research proved that in high-noise meteorological tasks, <strong>Explicit Physical
+                        Constraints</strong> outperform Self-Attention mechanisms.</p>
+                <p>The "Simpler" Physics-Hybrid model achieved a <strong>36% Error Reduction</strong> compared to heavy
+                    Transformer-based baselines.</p>
+            </div>
+            <div class="highlight-card reveal" style="border-color: var(--green);">
+                <h4 style="margin-bottom: 20px;">RMSE Performance (Lower is Better)</h4>
+
+                <!-- Bar 1 (Ours) -->
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                        <span>PI-Hybrid (Ours)</span>
+                        <span style="color:var(--green)">19.53 W/m²</span>
+                    </div>
+                    <div class="comparison-bar" style="height: 15px; margin-bottom: 25px;">
+                        <div class="bar-fill" data-width="35%" style="width: 0%; background: var(--green);"></div>
+                    </div>
+                </div>
+
+                <!-- Bar 2 (No Physics) -->
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                        <span>Standard Hybrid (No Physics)</span>
+                        <span style="color:var(--gold)">55.32 W/m²</span>
+                    </div>
+                    <div class="comparison-bar" style="height: 15px; margin-bottom: 25px;">
+                        <div class="bar-fill" data-width="90%" style="width: 0%; background: var(--gold);"></div>
+                    </div>
+                </div>
+
+                <!-- Bar 3 (Transformer) -->
+                <div>
+                    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                        <span>PI-Hybrid + Self-Attention (Over-Complex)</span>
+                        <span style="color:var(--red)">30.64 W/m²</span>
+                    </div>
+                    <div class="comparison-bar" style="height: 15px;">
+                        <div class="bar-fill" data-width="65%" style="width: 0%; background: var(--red);"></div>
+                    </div>
+                </div>
+
+                <p style="margin-top:20px; font-size:12px; color:rgba(255,255,255,0.5);">*Tested on NASA POWER Data,
+                    Omdurman 2023</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 4. Interactive Simulation -->
+    <section class="story-section">
+        <div class="story-grid">
+            <div class="story-content reveal">
+                <h3>Live Demonstration</h3>
+                <h2>Interactive Phase Lag Simulator</h2>
+                <p>See the difference for yourself. Drag the <strong>Cloud Intensity</strong> slider to simulate a
+                    sudden dust storm or cloud event.</p>
+
+                <div style="margin: 30px 0; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px;">
+                    <label style="display:block; margin-bottom:10px; font-weight:bold; color:var(--cyan);">CLOUD EVENT
+                        INTENSITY</label>
+                    <input type="range" id="cloudSlider" min="0" max="100" value="0"
+                        style="width:100%; cursor:pointer;">
+                    <div
+                        style="display:flex; justify-content:space-between; font-size:10px; opacity:0.6; margin-top:5px;">
+                        <span>CLEAR SKY</span>
+                        <span>HEAVY STORM</span>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:20px; font-size:12px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span
+                            style="width:10px; height:10px; background:var(--green); display:inline-block; border-radius:50%"></span>
+                        <span>PI-Hybrid (Ours): <strong>Instant</strong></span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span
+                            style="width:10px; height:10px; background:var(--red); display:inline-block; border-radius:50%"></span>
+                        <span>Standard AI: <strong>Lagged</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-card reveal">
+                <canvas id="simCanvas" width="500" height="300"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Phase Lag Simulation Logic
+        const simCanvas = document.getElementById('simCanvas');
+        if (simCanvas) {
+            const ctx = simCanvas.getContext('2d');
+            const slider = document.getElementById('cloudSlider');
+
+            let time = 0;
+            // Target value (The actual GHI based on slider)
+            let targetGHI = 100; // Starts at 100% (Clear)
+
+            // Model States
+            let standardVal = 100;
+            let hybridVal = 100;
+
+            // History for drawing
+            const historySize = 200;
+            const historyTarget = new Array(historySize).fill(100);
+            const historyStandard = new Array(historySize).fill(100);
+            const historyHybrid = new Array(historySize).fill(100);
+
+            function updateSim() {
+                // Update Target based on slider (Inverted: High slider = Low GHI)
+                const intensity = parseInt(slider.value);
+                // Add some noise
+                const noise = (Math.random() - 0.5) * 5;
+                const newTarget = 100 - intensity + noise;
+
+                // 1. Standard Model Logic (Heavy Lag / Inertia)
+                // Simulating a simple autoregressive lag
+                const lagFactor = 0.05; // Very slow reaction
+                standardVal += (newTarget - standardVal) * lagFactor;
+
+                // 2. Hybrid Model Logic (Physics Aware)
+                // Reacts instantly because "Cloudiness" is an input feature
+                const physicsFactor = 0.8; // Fast reaction
+                hybridVal += (newTarget - hybridVal) * physicsFactor;
+
+                // Shift arrays
+                historyTarget.shift(); historyTarget.push(newTarget);
+                historyStandard.shift(); historyStandard.push(standardVal);
+                historyHybrid.shift(); historyHybrid.push(hybridVal);
+
+                drawSim();
+                requestAnimationFrame(updateSim);
+            }
+
+            function drawSim() {
+                ctx.clearRect(0, 0, simCanvas.width, simCanvas.height);
+
+                // Draw Grid
+                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                for (let i = 0; i < simCanvas.width; i += 50) { ctx.moveTo(i, 0); ctx.lineTo(i, simCanvas.height); }
+                for (let i = 0; i < simCanvas.height; i += 50) { ctx.moveTo(0, i); ctx.lineTo(simCanvas.width, i); }
+                ctx.stroke();
+
+                // Helper to map 0-100 to canvas Y (100 is TOP, 0 is BOTTOM)
+                // We map 0-120 range to fit noise
+                const mapY = (val) => simCanvas.height - (val * simCanvas.height / 120) - 20;
+
+                // Draw Target (White Dashed)
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.setLineDash([5, 5]);
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let i = 0; i < historySize; i++) {
+                    const x = (i / historySize) * simCanvas.width;
+                    const y = mapY(historyTarget[i]);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw Standard (Red)
+                ctx.strokeStyle = '#EF4444';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                for (let i = 0; i < historySize; i++) {
+                    const x = (i / historySize) * simCanvas.width;
+                    const y = mapY(historyStandard[i]);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Draw Hybrid (Green)
+                ctx.strokeStyle = '#10B981';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                for (let i = 0; i < historySize; i++) {
+                    const x = (i / historySize) * simCanvas.width;
+                    const y = mapY(historyHybrid[i]);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+
+            updateSim();
+        }
+    </script>
+
+    <!-- 5. Neural Anatomy (Tech Specs) -->
+    <section class="story-section">
+        <div class="story-content reveal" style="text-align:center; margin-bottom:60px;">
+            <h3>Under The Hood</h3>
+            <h2>Neural Anatomy</h2>
+            <p>Engineered for efficiency. While Transformers exceed 100M parameters, the PI-Hybrid achieves superior
+                results with a lightweight, optimized architecture.</p>
+        </div>
+
+        <div class="reveal"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+
+            <!-- Spec Card 1: Input -->
+            <div class="highlight-card" style="text-align:center; position:relative; overflow:hidden;">
+                <div style="font-family:'Courier New'; color:var(--cyan); font-size:12px; margin-bottom:10px;">LAYER 01
+                </div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">24h x 15</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Input Tensor</p>
+                <div style="margin-top:20px; font-size:11px; color:var(--purple);">
+                    <div>+ Physics Vector</div>
+                    <div>+ Cyclic Time Encoding</div>
+                </div>
+            </div>
+
+            <!-- Spec Card 2: CNN -->
+            <div class="highlight-card" style="text-align:center; border-color:var(--purple);">
+                <div style="font-family:'Courier New'; color:var(--purple); font-size:12px; margin-bottom:10px;">SPATIAL
+                    CORE</div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">64 Filters</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">1D-CNN Feature Extractor</p>
+                <div
+                    style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px; font-size:11px;">
+                    Kernel Size: 3 <br>
+                    Padding: 'Same'
+                </div>
+            </div>
+
+            <!-- Spec Card 3: BiLSTM -->
+            <div class="highlight-card" style="text-align:center; border-color:var(--gold);">
+                <div style="font-family:'Courier New'; color:var(--gold); font-size:12px; margin-bottom:10px;">TEMPORAL
+                    CORE</div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">210 Units</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Bi-Directional LSTM</p>
+                <div style="margin-top:15px; font-size:11px; opacity:0.8;">
+                    Look-back: 24 Steps<br>
+                    Look-ahead: Awareness
+                </div>
+            </div>
+
+            <!-- Spec Card 4: Optimization -->
+            <div class="highlight-card"
+                style="text-align:center; border-color:var(--green); position:relative; overflow:hidden;">
+                <div style="font-family:'Courier New'; color:var(--green); font-size:12px; margin-bottom:10px;">
+                    OPTIMIZER</div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">Bayesian</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Hyperparameter Tuning</p>
+                <div style="margin-top:15px; margin-bottom:15px; font-size:30px;">
+                    🛠️
+                </div>
+                <a href="bayesian_opt.html"
+                    style="display:inline-block; padding:8px 20px; background:rgba(0, 255, 136, 0.1); border:1px solid var(--green); color:var(--green); text-decoration:none; border-radius:30px; font-size:10px; font-weight:bold; letter-spacing:1px; transition:all 0.3s;">
+                    LAUNCH BRAIN
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Total Params Badge -->
+        <div class="reveal" style="text-align:center; margin-top:50px;">
+            <div
+                style="display:inline-block; padding:15px 40px; background:rgba(3,3,8,0.8); border:1px solid rgba(255,255,255,0.2); border-radius:50px; backdrop-filter:blur(10px);">
+                <span style="font-family:'Outfit'; color:rgba(255,255,255,0.6); margin-right:15px;">TOTAL
+                    PARAMETERS</span>
+                <span style="font-family:'Courier New'; font-weight:bold; font-size:1.5rem; color:#fff;">492,200</span>
+                <span style="color:var(--green); margin-left:15px; font-size:12px;">(LIGHTWEIGHT)</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="map-section" id="explore">
+        <div class="section-header reveal">
+            <h2 style="font-family: 'Outfit'; font-size: 3rem; margin-bottom: 20px;">Architecture Exploration</h2>
+            <p style="color: rgba(255,255,255,0.4);">Click on each module to enter the high-detail simulation
+                environment.</p>
+        </div>
+
+        <div class="grid">
+            <a href="layers/layer0-input.html" class="card reveal">
+                <div class="card-num">00</div>
+                <div class="card-icon">📊</div>
+                <h3>Sequence Input</h3>
+                <p>24-hour historical window of 15 physics-informed solar features. The bedrock of our prediction.</p>
+                <div class="badge">Input Node</div>
+            </a>
+
+            <a href="layers/layer1-conv1d.html" class="card reveal">
+                <div class="card-num">01</div>
+                <div class="card-icon">🔍</div>
+                <h3>1D-Convolution</h3>
+                <p>Advanced CNN-1D filters extracting local temporal gradients from complex atmospheric noise.</p>
+                <div class="badge">Spatial-Temp</div>
+            </a>
+
+            <a href="layers/layer2-batchnorm.html" class="card reveal">
+                <div class="card-num">02</div>
+                <div class="card-icon">🌀</div>
+                <h3>Batch Normalization</h3>
+                <p>Feature standardization ensuring stable gradient flow across the entire network depth.</p>
+                <div class="badge">Stabilization</div>
+            </a>
+
+            <a href="layers/layer3-relu.html" class="card reveal">
+                <div class="card-num">03</div>
+                <div class="card-icon">⚡</div>
+                <h3>ReLU Activation</h3>
+                <p>Non-linear ReLU rectification to spark neural connectivity and discard negative noise.</p>
+                <div class="badge">Processing</div>
+            </a>
+
+            <a href="layers/layer4-dropout1.html" class="card reveal">
+                <div class="card-num">04</div>
+                <div class="card-icon">🛡️</div>
+                <h3>Dropout (1)</h3>
+                <p>Sparse Dropout deactivation at tuned rate to enforce robustness and prevent overfitting.</p>
+                <div class="badge">Regularizer</div>
+            </a>
+
+            <a href="layers/layer5-bilstm.html" class="card reveal">
+                <div class="card-num">05</div>
+                <div class="card-icon">🧬</div>
+                <h3>BiLSTM Memory</h3>
+                <p>Double-helix BiLSTM capturing forward and backward temporal causality perfectly.</p>
+                <div class="badge" style="color: var(--purple);">Bidirectional</div>
+            </a>
+
+            <a href="layers/layer6-dropout2.html" class="card reveal">
+                <div class="card-num">06</div>
+                <div class="card-icon">💀</div>
+                <h3>Dropout (2)</h3>
+                <p>Post-memory regularization preventing co-adaptation of temporal features from BiLSTM.</p>
+                <div class="badge" style="color: #E040FB;">Post-Memory</div>
+            </a>
+
+            <a href="layers/layer7-dense.html" class="card reveal">
+                <div class="card-num">07</div>
+                <div class="card-icon">🎯</div>
+                <h3>Fully Connected</h3>
+                <p>Dense neural compression translating complex temporal memory into a solar estimate.</p>
+                <div class="badge" style="color: var(--green);">Compression</div>
+            </a>
+
+            <a href="layers/layer8-relu2.html" class="card reveal">
+                <div class="card-num">08</div>
+                <div class="card-icon">🔥</div>
+                <h3>ReLU Activation (2)</h3>
+                <p>Dense layer activation adding non-linearity before final output projection to GHI.</p>
+                <div class="badge" style="color: #F59E0B;">Activation</div>
+            </a>
+
+            <a href="layers/layer9-output.html" class="card reveal">
+                <div class="card-num">09</div>
+                <div class="card-icon">☀️</div>
+                <h3>Output (Dense)</h3>
+                <p>Physics-constrained output layer generating the final Global Horizontal Irradiance.</p>
+                <div class="badge" style="color: var(--gold);">Prediction</div>
+            </a>
+
+            <a href="layers/layer10-regression.html" class="card reveal">
+                <div class="card-num">10</div>
+                <div class="card-icon">📉</div>
+                <h3>Regression Output</h3>
+                <p>Loss computation and gradient backpropagation. RMSE convergence driving model optimization.</p>
+                <div class="badge" style="color: #EF4444;">Loss Engine</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- SECTION: THE MASTERPIECE PORTAL -->
+    <section id="portal" class="map-section">
+        <div class="section-header reveal">
+            <span class="badge">Research Ecosystem</span>
+            <h2 style="font-family:'Outfit'; font-size:4rem; font-weight:900; margin-top:10px;">The Neural Portal</h2>
+            <p style="margin-top:20px;">Experience the 3D Masterpiece Library in ultra-fidelity.</p>
+        </div>
+
+        <div class="grid">
+            <a href="Neural_Metropolis_Masterpiece.html" class="card reveal active">
+                <div class="card-num">01</div>
+                <div class="card-icon">🏙️</div>
+                <h3>Neural Metropolis</h3>
+                <p>The pinnacle interaction experience. A procedural 3D city visualizing the Sudanese solar ecosystem.
+                </p>
+                <span class="badge">GOD-TIER MASTERPIECE</span>
+            </a>
+
+            <a href="SmartCity_Solar_Viz.html" class="card reveal">
+                <div class="card-num">02</div>
+                <div class="card-icon">🔋</div>
+                <h3>Smart Grid Flux</h3>
+                <p>Visualizing energy storage and transmission through high-fidelity voxel grids.</p>
+                <span class="badge">CORE VIZ</span>
+            </a>
+
+            <a href="Hyper_Aether_Flux.html" class="card reveal">
+                <div class="card-num">03</div>
+                <div class="card-icon">⚡</div>
+                <h3>Aether Flux</h3>
+                <p>A specialized shader experience focusing on clear-sky GHI differentials.</p>
+                <span class="badge">SHADER DEMO</span>
+            </a>
+
+            <a href="Ultimate_Solar_Quantum.html" class="card reveal">
+                <div class="card-num">04</div>
+                <div class="card-icon">💎</div>
+                <h3>Quantum Solar Core</h3>
+                <p>The deep-learning layers of the BiLSTM model visualized as a rotating core of intelligence.</p>
+                <span class="badge">ARCHITECTURE</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">PI-HYBRID VIZ</div>
+        <p>&copy; 2026 Advanced Neural Forecasting Laboratory</p>
+        <p
+            style="margin-top: 15px; font-family: 'Outfit'; font-weight: 600; font-size: 12px; color: var(--cyan); letter-spacing: 3px; opacity: 0.7;">
+            IZZELDEENM@GMAIL.COM</p>
+        <div style="margin-top: 50px; opacity: 0.1; font-size: 10px;">DESIGNED BY ANTIGRAVITY</div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // --- GOD-TIER NEURAL PORTAL ENGINE ---
+        let scene, camera, renderer, particles;
+        const particleCount = 2500;
+        const cursor = document.getElementById('cursor');
+        const dot = document.getElementById('cursor-dot');
+
+        function initPortal() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.z = 1000;
+
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Neural Constellation Points
+            const geo = new THREE.BufferGeometry();
+            const pos = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i++) pos[i] = (Math.random() - 0.5) * 2000;
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+            const mat = new THREE.PointsMaterial({
+                color: 0x06B6D4,
+                size: 2,
+                transparent: true,
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending
+            });
+
+            particles = new THREE.Points(geo, mat);
+            scene.add(particles);
+
+            animatePortal();
+        }
+
+        function animatePortal() {
+            requestAnimationFrame(animatePortal);
+            particles.rotation.y += 0.0005;
+            particles.rotation.x += 0.0002;
+            renderer.render(scene, camera);
+        }
+
+        // GSAP Initialization
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Bar Fill Animation
+        document.querySelectorAll('.bar-fill').forEach(bar => {
+            gsap.to(bar, {
+                width: bar.dataset.width || bar.getAttribute('data-width'),
+                scrollTrigger: {
+                    trigger: bar,
+                    start: "top 90%"
+                }
+            });
+        });
+
+        // Reveal Animation
+        document.querySelectorAll('.reveal').forEach(el => {
+            gsap.to(el, {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 85%"
+                }
+            });
+        });
+
+        // Cursor Logic
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.2 });
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.05 });
+
+            // Subtle camera lean
+            if (particles) {
+                particles.rotation.y += (e.clientX - window.innerWidth / 2) * 0.000001;
+                particles.rotation.x += (e.clientY - window.innerHeight / 2) * 0.000001;
+            }
+        });
+
+        // Preloader
+        window.addEventListener('load', () => {
+            gsap.to("#loader", {
+                opacity: 0, duration: 1, onComplete: () => {
+                    document.getElementById('loader').style.display = 'none';
+                    initPortal();
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Navigation Highlight
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('nav');
+            if (window.scrollY > 100) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // Section Snap Navigation (Direct Scroll)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const sections = Array.from(document.querySelectorAll('section, footer'));
+                const points = [0, ...sections.map(s => s.offsetTop)];
+                const currentScroll = window.scrollY;
+                let target = currentScroll;
+                if (e.key === 'ArrowDown') {
+                    const next = points.find(p => p > currentScroll + 50);
+                    target = next !== undefined ? next : document.body.scrollHeight;
+                } else {
+                    const prev = [...points].reverse().find(p => p < currentScroll - 50);
+                    target = prev !== undefined ? prev : 0;
+                }
+                window.scrollTo({ top: target, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+
+</html>
+</body>
+
+</html>
