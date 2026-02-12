@@ -35,9 +35,6 @@
 
 ---
 
-> **⚠️ IMPORTANT SETUP:**  
-> If the buttons don't work, go to **Settings > Pages** in this repo, enable **main branch**, and click Save.
-
 <br>
 
 ![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square&logo=github) ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
