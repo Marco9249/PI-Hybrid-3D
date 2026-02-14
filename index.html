@@ -636,8 +636,6 @@
     <nav id="nav">
         <div class="logo">PI-HYBRID</div>
         <div class="cta-group">
-            <a href="data_odyssey.html" class="btn btn-primary" style="font-size:12px; padding:10px 20px;">DATA
-                ODYSSEY</a>
             <a href="PI-Hybrid-Complete.html" class="btn btn-luxury">OIU</a>
         </div>
     </nav>
@@ -653,6 +651,9 @@
         <div class="nav-dot" data-target="#chapter5"></div>
         <div class="nav-dot" data-target="#chapter6"></div>
         <div class="nav-dot" data-target="#chapter7"></div>
+        <div class="nav-dot" data-target="#chapter8"></div>
+        <div class="nav-dot" data-target="#chapter9"></div>
+        <div class="nav-dot" data-target="#footer"></div>
     </div>
     <style>
         .nav-dot {
@@ -722,14 +723,18 @@
                     </div>
 
                     <div
-                        style="position:absolute; top:20px; left:20px; text-align:left; font-family:'Courier New'; font-size:10px; color:var(--cyan);">
-                        COORDS: 14.7°N, 33.2°E<br>
-                        GHI: 6.2 kWh/m²/day<br>
-                        STATUS: HIGH VOLATILITY
+                        style="position:absolute; top:20px; left:20px; text-align:left; font-family:'Outfit', sans-serif; font-size:12px; color:rgba(255,255,255,0.9); background:rgba(0,0,0,0.6); padding:10px 15px; border-radius:10px; border-left:2px solid var(--cyan); backdrop-filter:blur(5px);">
+                        <div style="font-size:10px; color:var(--cyan); letter-spacing:2px; margin-bottom:4px;">SITE
+                            COORDINATES</div>
+                        14.7°N, 33.2°E<br>
+                        <span style="font-size:10px; opacity:0.7;">GHI: 6.2 kWh/m²/day</span><br>
+                        <span style="color:var(--red); font-weight:bold; font-size:10px;">⚠ HIGH VOLATILITY</span>
                     </div>
                 </div>
                 <div style="padding:20px;">
-                    <h4 style="color:var(--white);">Omdurman, Sudan</h4>
+                    <h4
+                        style="color:var(--white); font-family:'Outfit', sans-serif; font-weight:600; letter-spacing:1px;">
+                        Omdurman, Sudan</h4>
                     <p style="font-size:0.9rem; margin-top:5px; color:rgba(255,255,255,0.5);">High Aerosol Load & Cloud
                         Transients</p>
                 </div>
@@ -750,10 +755,155 @@
         </div>
     </section>
 
-    <!-- Chapter 2: The Physics Vector -->
-    <section id="chapter2" class="story-section">
+
+    <!-- Strategy: Physics-Guided vs Physics-Informed (Chapter 02) -->
+    <section id="chapter2" class="story-section" style="padding-top:0;">
         <div class="story-grid">
-            <div class="highlight-card reveal" style="border-color:var(--cyan);">
+            <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    02
+                </div>
+                <h3>The Approach</h3>
+                <h2>Physics-Guided vs. Informed</h2>
+                <p>We faced a critical choice: <strong style="color:var(--red)">Physics-Informed (PINN)</strong> vs.
+                    <strong style="color:var(--green)">Physics-Guided (PGNN)</strong>.
+                </p>
+                <div class="strategy-details" style="margin-top:20px; font-size:0.9rem; color:rgba(255,255,255,0.7);">
+                    <p>Instead of forcing the model to solve complex differential equations during training (PINN), we
+                        chose the <strong>Physics-Guided</strong> approach. We pre-calculate physical laws and feed them
+                        as "Immutable Truths" into the input layer. This guarantees stability and allows the model to
+                        focus on learning the residuals.</p>
+                    <div style="margin-top:15px; font-size:11px; color:var(--cyan); letter-spacing:1px;">👇 CLICK CARDS
+                        FOR DETAILS</div>
+                </div>
+            </div>
+
+            <div class="reveal" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                <!-- Card 1: Physics-Informed (The Road Not Taken) -->
+                <div class="strategy-card" style="border-color:rgba(239,68,68,0.3); cursor:pointer;"
+                    onclick="openModal('pinn')">
+                    <div style="font-size:30px; margin-bottom:10px;">⚖️</div>
+                    <div class="card-title" style="color:rgba(255,255,255,0.6);">Physics-Informed (PINN)</div>
+                    <div class="card-desc">Modifying the <strong>Loss Function</strong> with complex differential
+                        equations.</div>
+                    <ul class="pros-cons">
+                        <li style="color:var(--red);">High Complexity</li>
+                        <li style="color:var(--red);">Unstable Gradients</li>
+                        <li style="color:var(--red);">Slow Convergence</li>
+                    </ul>
+                    <div style="font-size:10px; text-align:right; margin-top:10px; color:rgba(255,255,255,0.3);">CLICK
+                        TO VIEW ↗</div>
+                </div>
+
+                <!-- Card 2: Physics-Guided (Our Choice) -->
+                <div class="strategy-card active"
+                    style="border-color:var(--green); background:rgba(16,185,129,0.05); cursor:pointer;"
+                    onclick="openModal('pgnn')">
+                    <div
+                        style="position:absolute; top:-10px; right:-10px; background:var(--green); color:#000; font-size:10px; font-weight:bold; padding:4px 8px; border-radius:4px;">
+                        OUR CHOICE</div>
+                    <div style="font-size:30px; margin-bottom:10px;">🧭</div>
+                    <div class="card-title" style="color:var(--green);">Physics-Guided (PGNN)</div>
+                    <div class="card-desc">Augmenting <strong>Input Features</strong> with clear-sky laws & geometry.
+                    </div>
+                    <ul class="pros-cons">
+                        <li style="color:var(--green);">Stable Training</li>
+                        <li style="color:var(--green);">Computationally Efficient</li>
+                        <li style="color:var(--green);">Physical Consistency</li>
+                    </ul>
+                    <div style="font-size:10px; text-align:right; margin-top:10px; color:var(--green);">CLICK TO VIEW ↗
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .strategy-card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                padding: 25px;
+                position: relative;
+                transition: all 0.3s;
+            }
+
+            .strategy-card:hover {
+                transform: translateY(-5px);
+                background: rgba(255, 255, 255, 0.06);
+            }
+
+            .card-title {
+                font-family: 'Outfit', sans-serif;
+                font-weight: 700;
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .card-desc {
+                font-size: 0.85rem;
+                color: rgba(255, 255, 255, 0.6);
+                margin-bottom: 15px;
+                line-height: 1.4;
+            }
+
+            .pros-cons {
+                list-style: none;
+                padding: 0;
+                font-size: 0.8rem;
+                font-family: 'Space Mono', monospace;
+            }
+
+            .pros-cons li {
+                margin-bottom: 5px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .pros-cons li::before {
+                content: '•';
+                opacity: 0.5;
+            }
+        </style>
+    </section>
+
+    <!-- Chapter 3: Data Preprocessing & Pipeline -->
+    <section id="chapter3" class="story-section">
+        <div class="story-grid">
+            <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    03</div>
+                <h3>The Methodology</h3>
+                <h2>Data Clean-Up & Pipeline</h2>
+                <p>Raw satellite data is noisy. We apply a rigorous <strong>Physics-Guided</strong> cleaning pipeline
+                    before the data ever touches the neural network.</p>
+                <p>Crucially, <strong>Night Masking</strong> forces all solar values to true zero when the sun is below
+                    the horizon, eliminating "night noise" and easing the model's burden.</p>
+                <p>This includes a strict <strong>Chronological Split</strong> (2010-2015 Train / 2020-2024 Test) to act
+                    as a temporal stress test against climate shifts.</p>
+            </div>
+            <div class="highlight-card reveal"
+                style="border-color:var(--blue); cursor:pointer; text-align:center; padding:50px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:all 0.3s;"
+                onclick="window.location.href='data_pipeline.html'"
+                onmouseover="this.style.background='rgba(6,182,212,0.1)'; this.style.transform='scale(1.02)'"
+                onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.transform='scale(1)'">
+                <div style="font-size:50px; margin-bottom:20px; filter:drop-shadow(0 0 15px var(--cyan));">🧬</div>
+                <h3
+                    style="color:var(--cyan); margin-bottom:10px; font-family:'Outfit', sans-serif; letter-spacing:2px;">
+                    INTERACTIVE PIPELINE</h3>
+                <p style="font-size:13px; color:rgba(255,255,255,0.6); max-width:80%; line-height:1.6;">Launch the full
+                    interactive module to visualize Night Masking, Normalization, and Tensor Formation in real-time.</p>
+                <div
+                    style="margin-top:20px; font-size:11px; color:var(--cyan); letter-spacing:2px; border:1px solid var(--cyan); padding:8px 20px; border-radius:30px;">
+                    LAUNCH MODULE ↗</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 4: The Physics Engine -->
+    <section id="chapter4" class="story-section">
+        <div class="story-grid">
+            <div class="highlight-card reveal" style="border-color:var(--cyan); cursor:pointer;"
+                onclick="openModal('inputs')">
                 <div style="font-family:'Courier New'; color:var(--cyan); font-size:12px; margin-bottom:10px;">INPUT
                     TENSOR [15, 24]</div>
                 <!-- Scrolling Data Stream -->
@@ -794,7 +944,6 @@
                 <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
                     <div style="font-size:10px; color:var(--purple); margin-bottom:10px;">PHYSICS CONSTRAINT FORMULA
                     </div>
-                    <!-- CSS LaTeX-style Fraction -->
                     <div
                         style="font-family:'Times New Roman', serif; font-style:italic; font-size:1.5rem; display:flex; align-items:center; justify-content:center; gap:10px;">
                         <span>KT<sub>calc</sub></span>
@@ -810,16 +959,195 @@
 
             <div class="story-content reveal">
                 <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
-                    02</div>
-                <h3>The Methodology</h3>
-                <h2>The Physics Vector</h2>
-                <p>"Garbage In, Garbage Out." Traditional models blindly consume data.</p>
-                <p>We anchor our AI with <strong>15 Engineered Features</strong>. By explicitly calculating the
-                    <em>Clear Sky Baseline</em>, the model only needs to learn the "Stochastic Deviation" (Cloud Cover),
-                    radically simplifying the learning task.
-                </p>
+                    04</div>
+                <h3>The Engine</h3>
+                <h2>Physics-Guided Core</h2>
+                <p>Instead of relying on AI to implicitly learn the laws of physics, we <strong>inject explicit
+                        solar geometry</strong> directly into the learning process.</p>
+                <p>A local clear-sky calculation engine computes the theoretical irradiance baseline, anchoring the
+                    model with 15 engineered features.</p>
+                <p>By decoupling the <em>deterministic geometry</em> from <em>stochastic clouds</em>, the AI only needs
+                    to learn the residuals — solving the Phase Lag problem entirely.</p>
             </div>
         </div>
+    </section>
+    <div class="highlight-card reveal" style="border-color:var(--cyan);">
+        <div
+            style="font-family:'Courier New'; color:var(--cyan); font-size:11px; margin-bottom:15px; letter-spacing:1px;">
+            PHYSICS CALCULATION PIPELINE</div>
+
+        <style>
+            /* Professional Math Styling */
+            .math-eq {
+                font-family: 'Times New Roman', serif;
+                font-style: italic;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 5px;
+                margin-top: 5px;
+                pointer-events: none;
+            }
+
+            .math-frac {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
+                vertical-align: middle;
+                margin: 0 4px;
+            }
+
+            .math-num {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+                padding-bottom: 2px;
+                font-size: 0.9em;
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+
+            .math-den {
+                padding-top: 2px;
+                font-size: 0.9em;
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+
+            .math-op {
+                font-family: 'Outfit', sans-serif;
+                font-style: normal;
+                margin: 0 3px;
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            .math-sub {
+                font-size: 0.6em;
+                vertical-align: sub;
+                opacity: 0.8;
+                font-style: normal;
+            }
+
+            .math-sup {
+                font-size: 0.6em;
+                vertical-align: super;
+                opacity: 0.8;
+                font-style: normal;
+            }
+
+            /* Clickable Card Styling */
+            .equation-container {
+                cursor: pointer;
+                transition: transform 0.2s, background 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .equation-container:active {
+                transform: scale(0.98);
+            }
+
+            .equation-container::after {
+                content: '👆 اضغط للتفاصيل';
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-family: 'Dubai', sans-serif;
+                font-size: 10px;
+                color: rgba(255, 255, 255, 0.0);
+                transition: color 0.3s;
+            }
+
+            .equation-container:hover::after {
+                color: rgba(255, 255, 255, 0.8);
+            }
+        </style>
+
+        <!-- 1. Solar Declination -->
+        <div class="equation-container" onclick="openModal('declination')"
+            style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px 20px; margin-bottom:12px; border-left:3px solid var(--cyan);"
+            onmouseover="this.style.background='rgba(6,182,212,0.1)'"
+            onmouseout="this.style.background='rgba(0,0,0,0.4)'">
+            <div style="font-size:9px; color:var(--purple); letter-spacing:2px; margin-bottom:8px;">SOLAR
+                DECLINATION (δ)</div>
+            <div class="math-eq" style="color:var(--cyan);">
+                δ <span class="math-op">=</span> 23.45° <span class="math-op">·</span> sin
+                <span style="font-size:1.5em; font-style:normal;">(</span>
+                <div class="math-frac">
+                    <span class="math-num">360 (d<span class="math-sub">n</span> + 284)</span>
+                    <span class="math-den">365</span>
+                </div>
+                <span style="font-size:1.5em; font-style:normal;">)</span>
+            </div>
+        </div>
+
+        <!-- 2. Zenith Angle -->
+        <div class="equation-container" onclick="openModal('zenith')"
+            style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px 20px; margin-bottom:12px; border-left:3px solid var(--purple);"
+            onmouseover="this.style.background='rgba(139,92,246,0.1)'"
+            onmouseout="this.style.background='rgba(0,0,0,0.4)'">
+            <div style="font-size:9px; color:var(--purple); letter-spacing:2px; margin-bottom:8px;">ZENITH ANGLE
+                (θz)</div>
+            <div class="math-eq" style="color:#fff;">
+                cos(θ<span class="math-sub">z</span>) <span class="math-op">=</span> sin(φ)sin(δ) <span
+                    class="math-op">+</span> cos(φ)cos(δ)cos(ω)
+            </div>
+        </div>
+
+        <!-- 3. Clear Sky GHI -->
+        <div class="equation-container" onclick="openModal('clearsky')"
+            style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px 20px; margin-bottom:12px; border-left:3px solid var(--gold);"
+            onmouseover="this.style.background='rgba(245,158,11,0.1)'"
+            onmouseout="this.style.background='rgba(0,0,0,0.4)'">
+            <div style="font-size:9px; color:var(--gold); letter-spacing:2px; margin-bottom:8px;">CLEAR-SKY GHI
+                (Theoretical)</div>
+            <div class="math-eq" style="color:var(--gold);">
+                GHI<span class="math-sub">cs</span> <span class="math-op">=</span> I<span class="math-sub">sc</span>
+                <span class="math-op">·</span> f<span class="math-sub">ecc</span>
+                <span class="math-op">·</span> cos(θ<span class="math-sub">z</span>) <span class="math-op">·</span>
+                τ<span class="math-sup">m</span>
+            </div>
+        </div>
+
+        <!-- 4. Clearness Index -->
+        <div class="equation-container" onclick="openModal('clearness')"
+            style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px 20px; margin-bottom:12px; border-left:3px solid var(--green);"
+            onmouseover="this.style.background='rgba(16,185,129,0.1)'"
+            onmouseout="this.style.background='rgba(0,0,0,0.4)'">
+            <div style="font-size:9px; color:var(--green); letter-spacing:2px; margin-bottom:8px;">CLEARNESS
+                INDEX (Kt)</div>
+            <div class="math-eq" style="color:var(--green);">
+                K<span class="math-sub">t</span> <span class="math-op">=</span>
+                <div class="math-frac">
+                    <span class="math-num">GHI<span class="math-sub">meas</span></span>
+                    <span class="math-den">GHI<span class="math-sub">cs</span> <span class="math-op">+</span>
+                        1</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Volatility Index (Refined Visual) -->
+        <div class="equation-container" onclick="openModal('volatility')"
+            style="background:rgba(0,0,0,0.4); border-radius:12px; padding:15px 20px; border-left:3px solid #EF4444;"
+            onmouseover="this.style.background='rgba(239,68,68,0.1)'"
+            onmouseout="this.style.background='rgba(0,0,0,0.4)'">
+            <div style="font-size:9px; color:#EF4444; letter-spacing:2px; margin-bottom:8px;">VOLATILITY INDEX
+                (σ)</div>
+            <div class="math-eq" style="color:#EF4444;">
+                σ<span class="math-sub">t</span> <span class="math-op">=</span>
+                <span style="font-size:1.2em;">StdDev</span>
+                <span style="font-size:1.5em; font-style:normal;">(</span>
+                K<span class="math-sub">t-24</span> ... K<span class="math-sub">t</span>
+                <span style="font-size:1.5em; font-style:normal;">)</span>
+            </div>
+        </div>
+
+        <!-- Modal Moved to Global Root -->
+
+        <!-- Script Moved to Global Scope -->
+    </div>
+    </div>
     </section>
 
     <!-- 2. The Solution -->
@@ -851,10 +1179,142 @@
         </div>
     </section>
 
-    <!-- 3. The Paradox (Results) -->
-    <section class="story-section">
+
+
+
+
+
+    <!-- Chapter 5: Neural Anatomy (Was Tech Specs) -->
+    <section id="chapter5" class="story-section">
+        <div class="story-content reveal" style="text-align:center; margin-bottom:60px;">
+            <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER 05
+            </div>
+            <h3>Under The Hood</h3>
+            <h2>Neural Anatomy</h2>
+            <p>Engineered for efficiency. While Transformers exceed 100M parameters, PI-Hybrid achieves superior
+                results with a lightweight, optimized architecture of only <strong>492K</strong> parameters.</p>
+        </div>
+
+        <div class="reveal"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+
+            <!-- Spec Card 1: Input -->
+            <div class="highlight-card"
+                style="text-align:center; position:relative; overflow:hidden; border-color:var(--cyan);">
+                <div style="font-family:'Courier New'; color:var(--cyan); font-size:12px; margin-bottom:10px;">LAYER 01
+                </div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">24h x 15</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Input Tensor</p>
+                <div style="margin-top:20px; font-size:11px; color:var(--purple);">
+                    <div>+ Physics Vector</div>
+                    <div>+ Cyclic Time Encoding</div>
+                </div>
+            </div>
+
+            <!-- Spec Card 2: CNN -->
+            <div class="highlight-card" style="text-align:center; border-color:var(--purple);">
+                <div style="font-family:'Courier New'; color:var(--purple); font-size:12px; margin-bottom:10px;">SPATIAL
+                    CORE</div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">64 Filters</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">1D-CNN Feature Extractor</p>
+                <div
+                    style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px; font-size:11px;">
+                    Kernel Size: 3 <br>
+                    Padding: 'Same'
+                </div>
+            </div>
+
+            <!-- Spec Card 3: BiLSTM -->
+            <div class="highlight-card" style="text-align:center; border-color:var(--gold);">
+                <div style="font-family:'Courier New'; color:var(--gold); font-size:12px; margin-bottom:10px;">TEMPORAL
+                    CORE</div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">210 Units</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Bi-Directional LSTM</p>
+                <div style="margin-top:15px; font-size:11px; opacity:0.8;">
+                    Look-back: 24 Steps<br>
+                    Look-ahead: Awareness
+                </div>
+            </div>
+
+            <!-- Spec Card 4: Optimization -->
+            <div class="highlight-card"
+                style="text-align:center; border-color:var(--green); position:relative; overflow:hidden;">
+                <div style="font-family:'Courier New'; color:var(--green); font-size:12px; margin-bottom:10px;">
+                    OPTIMIZER</div>
+                <h4 style="font-size:2rem; margin-bottom:5px;">Bayesian</h4>
+                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Hyperparameter Tuning</p>
+                <div style="margin-top:15px; margin-bottom:15px; font-size:30px;">
+                    🛠️
+                </div>
+                <a href="bayesian_optimization.html"
+                    style="display:inline-block; padding:8px 20px; background:rgba(0, 255, 136, 0.1); border:1px solid var(--green); color:var(--green); text-decoration:none; border-radius:30px; font-size:10px; font-weight:bold; letter-spacing:1px; transition:all 0.3s;">
+                    LAUNCH BRAIN
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Total Params Badge -->
+        <div class="reveal" style="text-align:center; margin-top:50px;">
+            <div
+                style="display:inline-block; padding:15px 40px; background:rgba(3,3,8,0.8); border:1px solid rgba(255,255,255,0.2); border-radius:50px; backdrop-filter:blur(10px);">
+                <span style="font-family:'Outfit'; color:rgba(255,255,255,0.6); margin-right:15px;">TOTAL
+                    PARAMETERS</span>
+                <span style="font-family:'Courier New'; font-weight:bold; font-size:1.5rem; color:#fff;">492,200</span>
+                <span style="color:var(--green); margin-left:15px; font-size:12px;">(LIGHTWEIGHT)</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 06: Bayesian Intelligence -->
+    <section id="chapter6" class="story-section">
         <div class="story-grid">
             <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    06</div>
+                <h3>The Optimizer</h3>
+                <h2>Bayesian Intelligence</h2>
+                <p>Manual hyperparameter tuning is computationally irresponsible. We employed <strong>Bayesian
+                        Optimization</strong> with the <em>Expected Improvement Plus (EI+)</em> acquisition function.
+                </p>
+                <p>The algorithm iteratively updates a probabilistic surrogate model, balancing
+                    <strong>exploration</strong> (uncertain regions) and <strong>exploitation</strong> (promising
+                    regions) across 30 iterations.
+                </p>
+                <div
+                    style="margin-top:20px; padding:15px 20px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:15px;">
+                    <div style="font-size:10px; color:var(--green); letter-spacing:2px; margin-bottom:5px;">🔑 KEY
+                        INSIGHT</div>
+                    <p style="font-size:13px; color:rgba(255,255,255,0.8); margin:0;">Converged to <strong>high
+                            capacity</strong> (210 units) + <strong>low regularization</strong> (10.4% dropout). Physics
+                        features provide such a clean signal that aggressive regularization is unnecessary.</p>
+                </div>
+            </div>
+            <div class="highlight-card reveal"
+                style="border-color:var(--green); cursor:pointer; text-align:center; padding:50px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:all 0.3s;"
+                onclick="window.location.href='bayesian_optimization.html'"
+                onmouseover="this.style.background='rgba(16,185,129,0.1)'; this.style.transform='scale(1.02)'"
+                onmouseout="this.style.background='rgba(255,255,255,0.03)'; this.style.transform='scale(1)'">
+                <div style="font-size:50px; margin-bottom:20px; filter:drop-shadow(0 0 15px var(--green));">🧠</div>
+                <h3
+                    style="color:var(--green); margin-bottom:10px; font-family:'Outfit', sans-serif; letter-spacing:2px;">
+                    BAYESIAN ENGINE</h3>
+                <p style="font-size:13px; color:rgba(255,255,255,0.6); max-width:80%; line-height:1.6;">Enter the
+                    optimization lab to watch the Gaussian Process converge on the perfect architecture in real-time.
+                </p>
+                <div
+                    style="margin-top:20px; font-size:11px; color:var(--green); letter-spacing:2px; border:1px solid var(--green); padding:8px 20px; border-radius:30px;">
+                    LAUNCH ENGINE ↗</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. The Paradox (Results) -->
+    <section id="chapter7" class="story-section">
+        <div class="story-grid">
+            <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    07</div>
                 <h3>The Results</h3>
                 <h2>The Complexity Paradox</h2>
                 <p>Our research proved that in high-noise meteorological tasks, <strong>Explicit Physical
@@ -866,7 +1326,7 @@
                 <h4 style="margin-bottom: 20px;">RMSE Performance (Lower is Better)</h4>
 
                 <!-- Bar 1 (Ours) -->
-                <div>
+                <div onclick="openModal('comp_ours')" style="cursor:pointer;">
                     <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
                         <span>PI-Hybrid (Ours)</span>
                         <span style="color:var(--green)">19.53 W/m²</span>
@@ -877,7 +1337,7 @@
                 </div>
 
                 <!-- Bar 2 (No Physics) -->
-                <div>
+                <div onclick="openModal('comp_std')" style="cursor:pointer;">
                     <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
                         <span>Standard Hybrid (No Physics)</span>
                         <span style="color:var(--gold)">55.32 W/m²</span>
@@ -888,7 +1348,7 @@
                 </div>
 
                 <!-- Bar 3 (Transformer) -->
-                <div>
+                <div onclick="openModal('comp_trans')" style="cursor:pointer;">
                     <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
                         <span>PI-Hybrid + Self-Attention (Over-Complex)</span>
                         <span style="color:var(--red)">30.64 W/m²</span>
@@ -1048,85 +1508,319 @@
             updateSim();
         }
     </script>
+    <!-- 3. The Paradox (Results) -->
 
-    <!-- 5. Neural Anatomy (Tech Specs) -->
-    <section class="story-section">
-        <div class="story-content reveal" style="text-align:center; margin-bottom:60px;">
-            <h3>Under The Hood</h3>
-            <h2>Neural Anatomy</h2>
-            <p>Engineered for efficiency. While Transformers exceed 100M parameters, the PI-Hybrid achieves superior
-                results with a lightweight, optimized architecture.</p>
+
+
+
+    <!-- 4. The Validation: Ablation Study (Interactive Control Panel) -->
+    <section id="chapter7" class="story-section">
+        <div class="reveal">
+            <span class="badge">Scientific Proof</span>
+            <h2 style="font-family:'Outfit'; font-size:3rem; margin-top:10px;">07. Ablation Study</h2>
+            <p>Prove it yourself. <span class="highlight">Disable components</span> to see why the hybrid architecture
+                is essential.</p>
         </div>
 
         <div class="reveal"
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+            style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; margin-top:40px; align-items:center;">
 
-            <!-- Spec Card 1: Input -->
-            <div class="highlight-card" style="text-align:center; position:relative; overflow:hidden;">
-                <div style="font-family:'Courier New'; color:var(--cyan); font-size:12px; margin-bottom:10px;">LAYER 01
-                </div>
-                <h4 style="font-size:2rem; margin-bottom:5px;">24h x 15</h4>
-                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Input Tensor</p>
-                <div style="margin-top:20px; font-size:11px; color:var(--purple);">
-                    <div>+ Physics Vector</div>
-                    <div>+ Cyclic Time Encoding</div>
-                </div>
-            </div>
-
-            <!-- Spec Card 2: CNN -->
-            <div class="highlight-card" style="text-align:center; border-color:var(--purple);">
-                <div style="font-family:'Courier New'; color:var(--purple); font-size:12px; margin-bottom:10px;">SPATIAL
-                    CORE</div>
-                <h4 style="font-size:2rem; margin-bottom:5px;">64 Filters</h4>
-                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">1D-CNN Feature Extractor</p>
+            <!-- Left: Control Panel -->
+            <div
+                style="background:rgba(20,20,30,0.8); border:1px solid rgba(255,255,255,0.1); padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
                 <div
-                    style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px; font-size:11px;">
-                    Kernel Size: 3 <br>
-                    Padding: 'Same'
+                    style="font-family:'Courier New'; font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:20px; letter-spacing:2px;">
+                    MODEL ARCHITECT</div>
+
+                <!-- Toggle 1: Physics -->
+                <div class="toggle-row"
+                    style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <div>
+                        <div style="font-weight:bold; color:var(--cyan);">PHYSICS_MODULE</div>
+                        <div style="font-size:11px; color:rgba(255,255,255,0.5);">Solar Geometry & Limits</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked onchange="updateAblation()" id="toggle-physics">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <!-- Toggle 2: CNN (New) -->
+                <div class="toggle-row"
+                    style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <div>
+                        <div style="font-weight:bold; color:var(--purple);">1D_CNN_CORE</div>
+                        <div style="font-size:11px; color:rgba(255,255,255,0.5);">Local Feature Extraction</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked onchange="updateAblation()" id="toggle-cnn">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <!-- Toggle 3: Memory -->
+                <div class="toggle-row"
+                    style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <div>
+                        <div style="font-weight:bold; color:var(--gold);">BiLSTM_MEMORY</div>
+                        <div style="font-size:11px; color:rgba(255,255,255,0.5);">Long-Term Dependencies</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked onchange="updateAblation()" id="toggle-memory">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <!-- Toggle 4: Attention (Trap!) -->
+                <div class="toggle-row" style="display:flex; align-items:center; justify-content:space-between;">
+                    <div>
+                        <div style="font-weight:bold; color:var(--red);">ATTENTION_HEAD</div>
+                        <div style="font-size:11px; color:rgba(255,255,255,0.5);">Self-Attention Mechanism</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateAblation()" id="toggle-attention"> <!-- Default OFF -->
+                        <span class="slider round"></span>
+                    </label>
                 </div>
             </div>
 
-            <!-- Spec Card 3: BiLSTM -->
-            <div class="highlight-card" style="text-align:center; border-color:var(--gold);">
-                <div style="font-family:'Courier New'; color:var(--gold); font-size:12px; margin-bottom:10px;">TEMPORAL
-                    CORE</div>
-                <h4 style="font-size:2rem; margin-bottom:5px;">210 Units</h4>
-                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Bi-Directional LSTM</p>
-                <div style="margin-top:15px; font-size:11px; opacity:0.8;">
-                    Look-back: 24 Steps<br>
-                    Look-ahead: Awareness
+            <!-- Right: Dynamic Monitor -->
+            <div style="text-align:center;">
+                <div
+                    style="height:300px; width:60px; background:rgba(255,255,255,0.05); margin:0 auto; border-radius:30px; position:relative; overflow:hidden;">
+                    <div id="ablation-bar"
+                        style="position:absolute; bottom:0; width:100%; height:20%; background:var(--green); transition:all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    </div>
+                </div>
+                <div style="margin-top:20px;">
+                    <div style="font-size:12px; color:rgba(255,255,255,0.5); letter-spacing:2px;">PREDICTION ERROR
+                        (RMSE)</div>
+                    <div id="ablation-score" style="font-size:40px; font-weight:bold; color:var(--green);">19.53</div>
+                    <div style="font-size:14px; color:rgba(255,255,255,0.5);">W/m²</div>
+                </div>
+                <div id="ablation-text"
+                    style="margin-top:15px; font-size:14px; color:var(--cyan); height:60px; direction:rtl; line-height:1.4;">
+                    التكوين الأمثل: جميع الأنظمة تعمل بكفاءة قصوى.
                 </div>
             </div>
-
-            <!-- Spec Card 4: Optimization -->
-            <div class="highlight-card"
-                style="text-align:center; border-color:var(--green); position:relative; overflow:hidden;">
-                <div style="font-family:'Courier New'; color:var(--green); font-size:12px; margin-bottom:10px;">
-                    OPTIMIZER</div>
-                <h4 style="font-size:2rem; margin-bottom:5px;">Bayesian</h4>
-                <p style="font-size:0.9rem; color:rgba(255,255,255,0.5);">Hyperparameter Tuning</p>
-                <div style="margin-top:15px; margin-bottom:15px; font-size:30px;">
-                    🛠️
-                </div>
-                <a href="bayesian_opt.html"
-                    style="display:inline-block; padding:8px 20px; background:rgba(0, 255, 136, 0.1); border:1px solid var(--green); color:var(--green); text-decoration:none; border-radius:30px; font-size:10px; font-weight:bold; letter-spacing:1px; transition:all 0.3s;">
-                    LAUNCH BRAIN
-                </a>
-            </div>
-
         </div>
 
-        <!-- Total Params Badge -->
-        <div class="reveal" style="text-align:center; margin-top:50px;">
-            <div
-                style="display:inline-block; padding:15px 40px; background:rgba(3,3,8,0.8); border:1px solid rgba(255,255,255,0.2); border-radius:50px; backdrop-filter:blur(10px);">
-                <span style="font-family:'Outfit'; color:rgba(255,255,255,0.6); margin-right:15px;">TOTAL
-                    PARAMETERS</span>
-                <span style="font-family:'Courier New'; font-weight:bold; font-size:1.5rem; color:#fff;">492,200</span>
-                <span style="color:var(--green); margin-left:15px; font-size:12px;">(LIGHTWEIGHT)</span>
+        <style>
+            /* Toggle Switch CSS */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 26px;
+            }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #333;
+                transition: .4s;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+            }
+
+            input:checked+.slider {
+                background-color: var(--cyan);
+            }
+
+            input:checked+.slider:before {
+                transform: translateX(24px);
+            }
+
+            .slider.round {
+                border-radius: 34px;
+            }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+        </style>
+
+        <script>
+            function updateAblation() {
+                const phys = document.getElementById('toggle-physics').checked;
+                const cnn = document.getElementById('toggle-cnn').checked;
+                const mem = document.getElementById('toggle-memory').checked;
+                const att = document.getElementById('toggle-attention').checked;
+
+                let rmse = 19.53; // Base (Best)
+                let color = 'var(--green)';
+                let text = "التكوين الأمثل: جميع الأنظمة تعمل بكفاءة قصوى.";
+                let height = "20%"; // Low bar
+
+                // LOGIC MATRIX
+
+                // 1. Check Attention Trap First
+                if (att && phys && cnn && mem) {
+                    rmse = 26.4;
+                    color = 'var(--gold)';
+                    text = "تعارض! إضافة طبقة الانتباه مع الفيزياء تسبب التشويش (Overfitting). الفيزياء تغنينا عن التعقيد.";
+                    height = "45%";
+                }
+                else if (att && !phys) {
+                    rmse = 30.6; // Transformer Baseline
+                    color = 'var(--red)'; // Error but legitimate transformer
+                    text = "عودة للمحولات (Transformer): بدون فيزياء، الانتباه يحاول التعويض لكنه يفشل في فهم الظواهر.";
+                    height = "60%";
+                }
+                // 2. Removing Core Components (If no attention)
+                else {
+                    let penalties = 0;
+                    if (!phys) { rmse += 18.5; penalties++; }
+                    if (!cnn) { rmse += 4.2; penalties++; }
+                    if (!mem) { rmse += 10.2; penalties++; }
+
+                    if (penalties === 0) {
+                        // All ON (Best) - Default
+                    } else {
+                        // Specific Explanations for Single Removals
+                        if (!cnn && phys && mem) {
+                            text = "فقدان الملامح المحلية (Local Features): النموذج لا يميز الحواف الحادة للسحب والغبار.";
+                            color = 'var(--gold)';
+                            height = "35%";
+                        }
+                        else if (!mem && phys && cnn) {
+                            text = "فقدان الذاكرة (Memory Loss): النموذج لا يربط الماضي بالحاضر.";
+                            color = '#EF4444';
+                            height = "55%";
+                        }
+                        else if (!phys && cnn && mem) {
+                            text = "بدون الفيزياء: النموذج أعمى عن موقع الشمس وقوانين الإشعاع.";
+                            color = '#EF4444';
+                            height = "65%";
+                        }
+                        else {
+                            text = "تدهور شديد: النموذج فقد قدرته على الفهم.";
+                            color = '#EF4444';
+                            height = "85%";
+                        }
+                    }
+                }
+
+                // Apply
+                const bar = document.getElementById('ablation-bar');
+                const score = document.getElementById('ablation-score');
+                const txt = document.getElementById('ablation-text');
+
+                bar.style.height = height;
+                bar.style.background = color;
+                score.innerHTML = rmse.toFixed(2);
+                score.style.color = color;
+                txt.innerHTML = text;
+                txt.style.color = color;
+            }
+        </script>
+    </section>
+
+    <!-- Chapter: 5-Year Stress Test -->
+    <section id="chapter9" class="story-section">
+        <div class="story-content reveal">
+            <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                09</div>
+            <h3>The Proof</h3>
+            <h2>5-Year Robustness <span style="font-size:12px; vertical-align:middle; opacity:0.5; cursor:pointer;"
+                    onclick="openModal('stress_test')">ℹ️</span></h2>
+            <p>To ensure operational validity in a changing climate, a <strong>long-term Stress Test</strong> was
+                conducted on an independent dataset spanning <strong>2020–2024</strong>.</p>
+            <div style="font-size:11px; color:var(--cyan); margin-bottom:15px; cursor:pointer;"
+                onclick="openModal('stress_test')">CLICK FOR DETAILS ↗</div>
+            <p>The R² remained consistently above <strong style="color:var(--green);">0.995</strong> throughout the
+                entire five-year horizon — proving the model learned <em>true physical laws</em>, not temporary
+                weather patterns.</p>
+            <div style="display:flex; gap:15px; margin-top:25px; flex-wrap:wrap;">
+                <span class="feature-tag" style="border-color:var(--green); color:var(--green);">R² > 0.995</span>
+                <span class="feature-tag">5 Independent Years</span>
+                <span class="feature-tag">NASA POWER Data</span>
             </div>
+        </div>
+        <div class="highlight-card reveal" style="border-color:var(--gold);">
+            <div style="font-family:'Courier New'; color:var(--gold); font-size:11px; margin-bottom:20px;">ANNUAL
+                METRICS (TABLE VIII)</div>
+            <div style="margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                    <span style="color:rgba(255,255,255,0.7);">2020</span>
+                    <span style="font-family:'Courier New';">RMSE: <span style="color:var(--gold);">25.01</span> ·
+                        R²: <span style="color:var(--green);">0.9950</span></span>
+                </div>
+                <div class="comparison-bar" style="height:12px; margin-bottom:0;">
+                    <div class="bar-fill" data-width="45%"
+                        style="width:0%; background:linear-gradient(90deg, var(--gold), var(--green));"></div>
+                </div>
+            </div>
+            <div style="margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                    <span style="color:rgba(255,255,255,0.7);">2021</span>
+                    <span style="font-family:'Courier New';">RMSE: <span style="color:var(--gold);">22.31</span> ·
+                        R²: <span style="color:var(--green);">0.9960</span></span>
+                </div>
+                <div class="comparison-bar" style="height:12px; margin-bottom:0;">
+                    <div class="bar-fill" data-width="55%"
+                        style="width:0%; background:linear-gradient(90deg, var(--gold), var(--green));"></div>
+                </div>
+            </div>
+            <div style="margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                    <span style="color:rgba(255,255,255,0.7);">2022</span>
+                    <span style="font-family:'Courier New';">RMSE: <span style="color:var(--cyan);">19.69</span> ·
+                        R²: <span style="color:var(--green);">0.9968</span></span>
+                </div>
+                <div class="comparison-bar" style="height:12px; margin-bottom:0;">
+                    <div class="bar-fill" data-width="75%"
+                        style="width:0%; background:linear-gradient(90deg, var(--cyan), var(--green));"></div>
+                </div>
+            </div>
+            <div
+                style="margin-bottom:15px; background:rgba(6,182,212,0.05); border-radius:10px; padding:10px; border:1px solid rgba(6,182,212,0.2);">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                    <span style="color:#fff; font-weight:bold;">2023 ★ PEAK</span>
+                    <span style="font-family:'Courier New';">RMSE: <span
+                            style="color:var(--cyan); font-weight:bold;">19.53</span> · R²: <span
+                            style="color:var(--green); font-weight:bold;">0.9969</span></span>
+                </div>
+                <div class="comparison-bar" style="height:12px; margin-bottom:0;">
+                    <div class="bar-fill" data-width="85%"
+                        style="width:0%; background:linear-gradient(90deg, var(--cyan), var(--green));"></div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px;">
+                    <span style="color:rgba(255,255,255,0.7);">2024</span>
+                    <span style="font-family:'Courier New';">RMSE: <span style="color:var(--gold);">22.01</span> ·
+                        R²: <span style="color:var(--green);">0.9960</span></span>
+                </div>
+                <div class="comparison-bar" style="height:12px; margin-bottom:0;">
+                    <div class="bar-fill" data-width="60%"
+                        style="width:0%; background:linear-gradient(90deg, var(--gold), var(--green));"></div>
+                </div>
+            </div>
+        </div>
         </div>
     </section>
+
+
 
     <section class="map-section" id="explore">
         <div class="section-header reveal">
@@ -1136,95 +1830,208 @@
         </div>
 
         <div class="grid">
-            <a href="layers/layer0-input.html" class="card reveal">
+            <div onclick="openModal('layer0', 'layers/layer0-input.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">00</div>
                 <div class="card-icon">📊</div>
                 <h3>Sequence Input</h3>
                 <p>24-hour historical window of 15 physics-informed solar features. The bedrock of our prediction.</p>
                 <div class="badge">Input Node</div>
-            </a>
+            </div>
 
-            <a href="layers/layer1-conv1d.html" class="card reveal">
+            <div onclick="openModal('layer1', 'layers/layer1-conv1d.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">01</div>
                 <div class="card-icon">🔍</div>
                 <h3>1D-Convolution</h3>
                 <p>Advanced CNN-1D filters extracting local temporal gradients from complex atmospheric noise.</p>
                 <div class="badge">Spatial-Temp</div>
-            </a>
+            </div>
 
-            <a href="layers/layer2-batchnorm.html" class="card reveal">
+            <div onclick="openModal('layer2', 'layers/layer2-batchnorm.html')" class="card reveal"
+                style="cursor:pointer;">
                 <div class="card-num">02</div>
                 <div class="card-icon">🌀</div>
                 <h3>Batch Normalization</h3>
                 <p>Feature standardization ensuring stable gradient flow across the entire network depth.</p>
                 <div class="badge">Stabilization</div>
-            </a>
+            </div>
 
-            <a href="layers/layer3-relu.html" class="card reveal">
+            <div onclick="openModal('layer3', 'layers/layer3-relu.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">03</div>
                 <div class="card-icon">⚡</div>
                 <h3>ReLU Activation</h3>
                 <p>Non-linear ReLU rectification to spark neural connectivity and discard negative noise.</p>
                 <div class="badge">Processing</div>
-            </a>
+            </div>
 
-            <a href="layers/layer4-dropout1.html" class="card reveal">
+            <div onclick="openModal('layer4', 'layers/layer4-dropout1.html')" class="card reveal"
+                style="cursor:pointer;">
                 <div class="card-num">04</div>
                 <div class="card-icon">🛡️</div>
                 <h3>Dropout (1)</h3>
                 <p>Sparse Dropout deactivation at tuned rate to enforce robustness and prevent overfitting.</p>
                 <div class="badge">Regularizer</div>
-            </a>
+            </div>
 
-            <a href="layers/layer5-bilstm.html" class="card reveal">
+            <div onclick="openModal('layer5', 'layers/layer5-bilstm.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">05</div>
                 <div class="card-icon">🧬</div>
                 <h3>BiLSTM Memory</h3>
                 <p>Double-helix BiLSTM capturing forward and backward temporal causality perfectly.</p>
                 <div class="badge" style="color: var(--purple);">Bidirectional</div>
-            </a>
+            </div>
 
-            <a href="layers/layer6-dropout2.html" class="card reveal">
+            <div onclick="openModal('layer6', 'layers/layer6-dropout2.html')" class="card reveal"
+                style="cursor:pointer;">
                 <div class="card-num">06</div>
                 <div class="card-icon">💀</div>
                 <h3>Dropout (2)</h3>
                 <p>Post-memory regularization preventing co-adaptation of temporal features from BiLSTM.</p>
                 <div class="badge" style="color: #E040FB;">Post-Memory</div>
-            </a>
+            </div>
 
-            <a href="layers/layer7-dense.html" class="card reveal">
+            <div onclick="openModal('layer7', 'layers/layer7-dense.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">07</div>
                 <div class="card-icon">🎯</div>
                 <h3>Fully Connected</h3>
                 <p>Dense neural compression translating complex temporal memory into a solar estimate.</p>
                 <div class="badge" style="color: var(--green);">Compression</div>
-            </a>
+            </div>
 
-            <a href="layers/layer8-relu2.html" class="card reveal">
+            <div onclick="openModal('layer8', 'layers/layer8-relu2.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">08</div>
                 <div class="card-icon">🔥</div>
                 <h3>ReLU Activation (2)</h3>
                 <p>Dense layer activation adding non-linearity before final output projection to GHI.</p>
                 <div class="badge" style="color: #F59E0B;">Activation</div>
-            </a>
+            </div>
 
-            <a href="layers/layer9-output.html" class="card reveal">
+            <div onclick="openModal('layer9', 'layers/layer9-output.html')" class="card reveal" style="cursor:pointer;">
                 <div class="card-num">09</div>
                 <div class="card-icon">☀️</div>
                 <h3>Output (Dense)</h3>
                 <p>Physics-constrained output layer generating the final Global Horizontal Irradiance.</p>
                 <div class="badge" style="color: var(--gold);">Prediction</div>
-            </a>
+            </div>
 
-            <a href="layers/layer10-regression.html" class="card reveal">
+            <div onclick="openModal('layer10', 'layers/layer10-regression.html')" class="card reveal"
+                style="cursor:pointer;">
                 <div class="card-num">10</div>
                 <div class="card-icon">📉</div>
                 <h3>Regression Output</h3>
                 <p>Loss computation and gradient backpropagation. RMSE convergence driving model optimization.</p>
                 <div class="badge" style="color: #EF4444;">Loss Engine</div>
-            </a>
+            </div>
         </div>
     </section>
+
+    <!-- Chapter: Training Protocol -->
+    <section class="story-section">
+        <div class="story-grid">
+            <div class="story-content reveal">
+                <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER
+                    08</div>
+                <h3>The Protocol</h3>
+                <h2>Training Discipline</h2>
+                <p>A rigorous <strong>two-stage training strategy</strong> was adopted. During Bayesian search,
+                    candidates trained for <strong>50 epochs</strong> (rapid exploration). The final model retrained
+                    from scratch for <strong>100 epochs</strong> (deep convergence).</p>
+                <p>Remarkably, the physics-guided architecture exhibited <em>inherent numerical stability</em> —
+                    <strong>no gradient clipping was needed</strong>, a testament to the well-conditioned input space
+                    provided by engineered features.
+                </p>
+            </div>
+            <div class="highlight-card reveal" style="border-color:var(--blue);">
+                <div style="font-family:'Courier New'; color:var(--blue); font-size:11px; margin-bottom:20px;">TRAINING
+                    CONFIGURATION (TABLE V)</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div
+                        style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:rgba(255,255,255,0.6);">Optimizer</span>
+                        <span style="font-family:'Courier New'; color:var(--cyan); font-weight:bold;">Adam</span>
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:rgba(255,255,255,0.6);">Batch Size</span>
+                        <span style="font-family:'Courier New'; color:var(--cyan); font-weight:bold;">128</span>
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:rgba(255,255,255,0.6);">Max Epochs</span>
+                        <span style="font-family:'Courier New'; color:var(--cyan); font-weight:bold;">100</span>
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:rgba(255,255,255,0.6);">Early Stopping</span>
+                        <span style="font-family:'Courier New'; color:var(--gold); font-weight:bold;">Patience =
+                            20</span>
+                    </div>
+                    <div
+                        style="background:rgba(0,0,0,0.3); border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:rgba(255,255,255,0.6);">L2 Regularization</span>
+                        <span style="font-family:'Courier New'; color:var(--purple); font-weight:bold;">λ =
+                            1.2×10⁻⁴</span>
+                    </div>
+                    <div
+                        style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11px; color:var(--green);">Gradient Clipping</span>
+                        <span style="font-family:'Courier New'; color:var(--green); font-weight:bold;">NOT NEEDED
+                            ✓</span>
+                    </div>
+                </div>
+                <div style="margin-top:15px; font-size:10px; color:rgba(255,255,255,0.4); text-align:center;">MATLAB
+                    R2024b · Intel i5 · 16GB RAM · ~5hrs BayesOpt</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter: Conclusion & Future Directions -->
+    <section class="story-section">
+        <div class="story-content reveal" style="text-align:center; margin-bottom:60px;">
+            <div style="color:var(--cyan); font-family:'Courier New'; font-size:12px; margin-bottom:10px;">CHAPTER 09
+            </div>
+            <h3>The Vision</h3>
+            <h2
+                style="font-family:'Outfit'; font-size:3.5rem; font-weight:800; background:linear-gradient(90deg, #fff, var(--gold)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">
+                Conclusion & Future</h2>
+            <p style="max-width:800px; margin:20px auto;">Our research confirms that <strong>explicit physical
+                    constraints</strong> are a more efficient and accurate alternative to self-attention mechanisms. The
+                PI-Hybrid achieves state-of-the-art accuracy with a fraction of the computational cost.</p>
+        </div>
+        <div class="reveal"
+            style="max-width:800px; margin:0 auto 60px; padding:30px 40px; background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.3); border-radius:25px; text-align:center;">
+            <div style="font-size:50px; margin-bottom:10px;">💡</div>
+            <div style="font-size:14px; color:var(--gold); letter-spacing:3px; margin-bottom:10px;">KEY FINDING</div>
+            <p style="font-size:1.2rem; color:rgba(255,255,255,0.9); line-height:1.7;"><strong>47% of input
+                    features</strong> (7 out of 15) are zero-cost algorithmic computations — no external sensors
+                required. Physics is free, and it outperforms brute-force complexity.</p>
+        </div>
+        <div class="reveal"
+            style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:30px; max-width:1200px; margin:0 auto;">
+            <div class="highlight-card" style="text-align:center;">
+                <div style="font-size:40px; margin-bottom:15px;">🔌</div>
+                <h4 style="margin-bottom:10px;">Edge Deployment</h4>
+                <p style="font-size:13px; color:rgba(255,255,255,0.6);">Embed the lightweight model onto a
+                    <strong>Raspberry Pi</strong> or <strong>Jetson Nano</strong> for real-time inference in
+                    experimental microgrids.
+                </p>
+            </div>
+            <div class="highlight-card" style="text-align:center;">
+                <div style="font-size:40px; margin-bottom:15px;">🎮</div>
+                <h4 style="margin-bottom:10px;">MPC Integration</h4>
+                <p style="font-size:13px; color:rgba(255,255,255,0.6);">Integrate with <strong>Model Predictive
+                        Control</strong> to optimize energy dispatch of a hybrid <strong>PV-Battery</strong> system.</p>
+            </div>
+            <div class="highlight-card" style="text-align:center;">
+                <div style="font-size:40px; margin-bottom:15px;">🌐</div>
+                <h4 style="margin-bottom:10px;">Experimental Microgrid</h4>
+                <p style="font-size:13px; color:rgba(255,255,255,0.6);">Deploy and validate the complete framework in a
+                    <strong>physical microgrid</strong> with real sensor data streams.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
 
     <!-- SECTION: THE MASTERPIECE PORTAL -->
     <section id="portal" class="map-section">
@@ -1402,6 +2209,227 @@
     </script>
 
 
+    <!-- UNIVERSAL INTERACTIVE MODAL SYSTEM -->
+    <style>
+        /* Premium Glassmorphism Modal Styles */
+        #equation-modal {
+            display: none;
+            /* Flex when active */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            /* Lighter, clearer backdrop */
+            backdrop-filter: blur(12px);
+            /* Strong blur for focus */
+            z-index: 2147483647;
+            /* Maximum Z-index to cover EVERYTHING */
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #equation-modal.active {
+            opacity: 1;
+        }
+
+        #equation-modal .modal-card {
+            background: rgba(18, 18, 28, 0.90);
+            /* Deep sleek dark */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.02);
+            width: 90%;
+            max-width: 480px;
+            /* Compact width for elegance */
+            padding: 35px;
+            border-radius: 24px;
+            position: relative;
+            transform: scale(0.92) translateY(10px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Bouncy pop effect */
+            overflow: hidden;
+        }
+
+        #equation-modal.active .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        #modal-title {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        #modal-eq {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 26px;
+            margin-bottom: 25px;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.07));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #modal-desc {
+            font-family: 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            line-height: 1.8;
+            text-align: right;
+            direction: rtl;
+            font-weight: 300;
+        }
+
+        #modal-desc strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Launch Button Style */
+        .launch-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(90deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.2));
+            border: 1px solid var(--green);
+            color: var(--green);
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .launch-btn:hover {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+    </style>
+
+    <div id="equation-modal">
+        <div class="modal-card">
+            <div class="modal-close-btn" onclick="closeModal()">&times;</div>
+            <div id="modal-title"></div>
+            <div id="modal-eq"></div>
+            <div id="modal-desc"></div>
+        </div>
+    </div>
+
+    <script>
+        const equations = {
+            // Solar Geometry
+            'declination': { color: 'var(--cyan)', title: 'SOLAR DECLINATION (δ)', eq: 'δ = 23.45° · sin(360·(dn+284)/365)', desc: '<strong>ميل الشمس:</strong> هي الزاوية المحصورة بين أشعة الشمس ومستوى خط الاستواء السماوي.<br>تحدد الفصول وتؤثر على طول اليوم.' },
+            'zenith': { color: 'var(--purple)', title: 'ZENITH ANGLE (θz)', eq: 'cos(θz) = sin(φ)sin(δ) + cos(φ)cos(δ)cos(ω)', desc: '<strong>زاوية السمت:</strong> ارتفاع الشمس الظاهري عن الرأس.<br>كلما انخفضت الشمس، زاد مسار الضوء عبر الغلاف الجوي وتشتتت الطاقة.' },
+            'clearsky': { color: 'var(--gold)', title: 'CLEAR-SKY GHI', eq: 'GHI_cs = I_sc · f_ecc · cos(θz) · τ^m', desc: '<strong>الإشعاع النظري:</strong> كمية الطاقة الشمسية القصوى المتوقعة بدون سحب.<br>يعمل كخط أساس (Baseline) للشبكة العصبية.' },
+            'clearness': { color: 'var(--green)', title: 'CLEARNESS INDEX (Kt)', eq: 'Kt = GHI_meas / (GHI_cs + 1)', desc: '<strong>معامل الصفاء:</strong> نسبة نفاذية الغلاف الجوي.<br>قيمة 1 تعني سماء صافية، وقيمة 0 تعني غيوم كثيفة.' },
+            'volatility': { color: '#EF4444', title: 'VOLATILITY INDEX (σ)', eq: 'σ_t = StdDev( Kt_t-24 ... Kt_t )', desc: '<strong>معامل التقلب:</strong> الانحراف المعياري للطقس.<br>يخبر النموذج بمدى استقرار الحالة الجوية لزيادة الحذر في التنبؤ.' },
+
+            // Input Features
+            'inputs': { color: 'var(--cyan)', title: 'PHYSICS INPUT VECTOR', eq: 'Input ∈ ℝ¹⁵', desc: '<strong>متجه المدخلات الفيزيائي:</strong><br>بدلاً من الاعتماد على البيانات الخام فقط، قمنا بتغذية الشبكة بـ 15 خاصية محسوبة هندسياً، تشمل الرطوبة، درجة الحرارة، وزوايا الشمس الدقيقة.' },
+
+            // Preprocessing
+            'cleanup': { color: '#fff', title: 'STATISTICAL CLEANING', eq: 'x = max(0, x)', desc: '<strong>التنظيف الإحصائي:</strong><br>إزالة القيم السالبة الناتجة عن أخطاء المستشعرات، واستكمال البيانات المفقودة خطياً لضمان استمرارية السلاسل الزمنية.' },
+            'masking': { color: 'var(--cyan)', title: 'NIGHT MASKING', eq: 'if (Elevation < 0) x = 0', desc: '<strong>القناع الليلي الفيزيائي:</strong><br>إجبار جميع قيم الإشعاع على الصفر عندما تكون الشمس تحت الأفق. هذا يمنع النموذج من محاولة "تعلم" الضجيج الليلي.' },
+            'norm': { color: 'var(--purple)', title: 'HYBRID NORMALIZATION', eq: 'z = (x - μ) / σ', desc: '<strong>التطبيع الهجين:</strong><br>استخدام Z-Score لتوحيد المقاييس. ملاحظة هامة: يتم حساب المتوسط والانحراف المعياري من بيانات التدريب فقط لمنع تسرب المعلومات.' },
+
+            // Hyperparameters
+            'hyper_lr': { color: 'var(--cyan)', title: 'LEARNING RATE', eq: 'α = 0.00175', desc: '<strong>معدل التعلم:</strong><br>تم ضبطه بدقة باستخدام التحسين البايزي. قيمة صغيرة لضمان التقارب الدقيق نحو الحل الأمثل دون تذبذب.' },
+            'hyper_l2': { color: 'var(--cyan)', title: 'L2 REGULARIZATION', eq: 'λ = 1.2e-4', desc: '<strong>تنظيم L2:</strong><br>عقوبة خفيفة على الأوزان الكبيرة لمنع الحفظ الصم (Overfitting)، مما يحسن قدرة النموذج على التعميم.' },
+            'hyper_lstm': { color: 'var(--gold)', title: 'BiLSTM UNITS', eq: 'Units = 210', desc: '<strong>وحدات الذاكرة:</strong><br>استخدام 210 خلية ذاكرة ثنائية الاتجاه، مما يسمح للنموذج بربط الأنماط الزمنية من الماضي والمستقبل القريب.' },
+            'hyper_dropout': { color: 'var(--green)', title: 'DROPOUT RATE', eq: 'p = 10.4%', desc: '<strong>معدل الإسقاط:</strong><br>إيقاف تشغيل 10.4% من الخلايا عشوائياً أثناء التدريب. هذا يجبر الشبكة على تعلم مسارات بديلة ويجعلها أكثر قوة.' },
+
+            // Complexity Paradox
+            'comp_ours': { color: 'var(--green)', title: 'PI-HYBRID MODEL', eq: 'RMSE = 19.53 W/m²', desc: '<strong>نموذجنا الهجين:</strong><br>حقّق أقل نسبة خطأ بفضل التوجيه الفيزيائي، متفوقاً على النماذج الأكبر والأكثر تعقيداً.' },
+            'comp_std': { color: 'var(--gold)', title: 'STANDARD HYBRID', eq: 'RMSE = 55.32 W/m²', desc: '<strong>النموذج القياسي:</strong><br>يعتمد على البيانات فقط بدون فيزياء. فشل في فهم التقلبات الجوية المفاجئة (الغبار والسحب).' },
+            'comp_trans': { color: 'var(--red)', title: 'TRANSFORMER', eq: 'RMSE = 30.64 W/m²', desc: '<strong>المحولات (Transformers):<br>رغم قوتها النظرية، إلا أنها تعاني من التعقيد المفرط (Over-complexity) وتحتاج كميات بيانات هائلة غير متوفرة في هذا المجال.' },
+
+            // Architecture Layers
+            'layer0': { color: 'var(--cyan)', title: '00. SEQUENCE INPUT', eq: 'Input [24, 15]', desc: '<strong>المدخلات التسلسلية:</strong><br>تغذية الشبكة بـ 24 ساعة من البيانات التاريخية لكل من الخصائص الـ 15. الأساس الذي يبني عليه النموذج توقعاته.' },
+            'layer1': { color: 'var(--cyan)', title: '01. 1D-CONVOLUTION', eq: 'Conv1D(64, 3)', desc: '<strong>الالتفاف أحادي البعد:</strong><br>مصفوفة فلاتر (Filters) تقوم بمسح السلسلة الزمنية لاستخراج الأنماط المحلية، مثل التغيرات السريعة في الغطاء السحابي.' },
+            'layer2': { color: 'var(--purple)', title: '02. BATCH NORM', eq: 'Norm(x)', desc: '<strong>تطبيع الدفعة:</strong><br>يعيد توحيد توزيع البيانات داخل الشبكة، مما يسرع عملية التدريب ويمنع تلاشي التدرجات (Vanishing Gradients).' },
+            'layer3': { color: 'var(--gold)', title: '03. ReLU ACTIVATION', eq: 'f(x) = max(0, x)', desc: '<strong>دالة التفعيل (ReLU):</strong><br>تضيف "اللاخطية" (Non-linearity) للشبكة، مما يسمح لها بفهم العلاقات المعقدة جداً بين المتغيرات الجوية.' },
+            'mae': { color: 'var(--gold)', title: 'MEAN ABSOLUTE ERROR', eq: 'MAE = (1/n) Σ |y - ŷ|', desc: '<strong>متوسط الخطأ المطلق:</strong><br>مقياس لأداء النموذج يحسب متوسط الفروق المطلقة بين القيم المتوقعة والحقيقية. يعطي فكرة واضحة عن دقة النموذج دون تضخيم الأخطاء الكبيرة.' },
+            'pinn': { color: 'var(--red)', title: 'PHYSICS-INFORMED (PINN)', eq: '<span style="font-family:\'Times New Roman\', serif; font-style:italic; font-size:24px;">L = MSE + λ<sub>phy</sub> <span style="font-style:normal; margin:0 4px;">|</span>R(u)<span style="font-style:normal; margin:0 4px;">|</span></span>', desc: '<strong>الشبكات العصبية الموجهة بالفيزياء (في دالة الخسارة):</strong><br>في هذا النهج، يتم تضمين المعادلات التفاضلية كجزء من دالة الخسارة (Loss Function) لإجبار النموذج على تعلم الفيزياء.<br><br><strong>لماذا تجنبناه؟</strong><br>يعاني هذا الأسلوب من "تضارب التدرجات" (Gradient Conflict) مما يجعله غير مستقر وصعب التدريب للغاية في البيانات المناخية الصاخبة.' },
+            'pgnn': { color: 'var(--green)', title: 'PHYSICS-GUIDED (PGNN)', eq: '<span style="font-family:\'Times New Roman\', serif; font-style:italic; font-size:24px;">X<sub>in</sub> = [ X<sub>data</sub> <span style="font-style:normal; margin:0 4px;">⊕</span> Φ(X) ]</span>', desc: '<strong>الشبكات العصبية الموجهة بالفيزياء (في المدخلات):</strong><br>نهجنا المختار. بدلاً من تعقيد التدريب، نقوم بحساب القوانين الفيزيائية مسبقاً (مثل زاوية الشمس والإشعاع النظري) ونقدمها للنموذج كـ "حقائق ثابتة".<br><br><strong>النتيجة:</strong><br>تعلم أسرع بـ 3 أضعاف، واستقرار رياضي فائق، وقدرة على التفسير.' },
+            'layer5': { color: 'var(--purple)', title: '05. BiLSTM MEMORY', eq: 'BiLSTM(210)', desc: '<strong>الذاكرة ثنائية الاتجاه:</strong><br>قلب النموذج النابض. تعالج التسلسل الزمني في الاتجاهين (من الماضي للحاضر ومن المستقبل للماضي) لفهم السياق الكامل.' },
+            'layer6': { color: '#E040FB', title: '06. DROPOUT (2)', eq: 'Drop(0.1)', desc: '<strong>الإسقاط العشوائي الثاني:</strong><br>مرحلة ثانية من التنظيم لضمان أن المخرجات القادمة من طبقة الذاكرة ليست ناتجة عن حفظ صم (Memorization).' },
+            'layer7': { color: 'var(--green)', title: '07. FULLY CONNECTED', eq: 'Dense(64)', desc: '<strong>الطبقة الكثيفة:</strong><br>تقوم بتجميع كافة الملامح المستخرجة (الزمانية والمكانية) وترجمتها إلى شكل يمكن فهمه للتنبؤ النهائي.' },
+            'layer8': { color: '#F59E0B', title: '08. ReLU ACTIVATION', eq: 'Activation', desc: '<strong>تفعيل ما قبل النهائي:</strong><br>تحضير الإشارات العصبية للمرحلة الأخيرة من الإسقاط، مع التركيز على القيم الموجبة ذات الأهمية.' },
+            'layer9': { color: 'var(--gold)', title: '09. OUTPUT LAYER', eq: 'Dense(1)', desc: '<strong>طبقة المخرجات:</strong><br>عصبون واحد (Neuron) يقوم بدمج كل المعلومات لإصدار رقم واحد نهائي: قيمة الإشعاع الشمسي المتوقعة (GHI).' },
+            'layer10': { color: '#EF4444', title: '10. REGRESSION LOSS', eq: 'Loss = MSE', desc: '<strong>محرك الخسارة:</strong><br>يقيس الفرق بين توقع النموذج والقيمة الحقيقية، ويقوم بتعديل أوزان الشبكة عكسياً لتقليل نسبة الخطأ.' },
+            'stress_test': { color: 'var(--gold)', title: '5-YEAR STRESS TEST', eq: 'R² > 0.995 (2020-2024)', desc: '<strong>اختبار الإجهاد (Pressure Test):</strong><br>تم تعريض النموذج لبيانات مناخية مستقبلية لم يتدرب عليها مطلقاً (2020-2024) للتأكد من صلابته.<br><br><strong>النتيجة:</strong><br>حافظ النموذج على دقة قياسية (R² > 0.995) طوال الـ 5 سنوات، مما يثبت أنه تعلم القوانين الفيزيائية الحقيقية وليس مجرد حفظ للبيانات القديمة.' }
+        };
+
+        function openModal(type, link) {
+            if (!equations[type]) return;
+            const data = equations[type];
+            document.getElementById('modal-title').innerHTML = data.title;
+            document.getElementById('modal-title').style.color = data.color;
+            document.getElementById('modal-eq').innerHTML = data.eq;
+            document.getElementById('modal-eq').style.color = data.color;
+
+            let descHtml = data.desc;
+            if (link) {
+                descHtml += '<br><a href="' + link + '" class="launch-btn">ENTER 3D SIMULATION 🚀</a>';
+            }
+
+            document.getElementById('modal-desc').innerHTML = descHtml;
+
+            const modal = document.getElementById('equation-modal');
+            modal.style.display = 'flex';
+            // Small delay to allow display:flex to render before opacity transition
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('equation-modal');
+            modal.classList.remove('active');
+            // Wait for transition to finish
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        document.getElementById('equation-modal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
 </body>
 
 </html>
