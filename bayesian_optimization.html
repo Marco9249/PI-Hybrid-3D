@@ -472,6 +472,8 @@
             }
         }
     </style>
+    <!-- Arabic Panel CSS -->
+    <link rel="stylesheet" href="ar-panel.css">
 </head>
 
 <body>
@@ -482,6 +484,18 @@
         <div class="logo">PI-HYBRID // OPTIMIZER</div>
         <a href="index.html" class="back-btn">← BACK TO HUB</a>
     </nav>
+
+    <!-- ARABIC PANEL HTML -->
+    <div id="ar-panel-overlay" onclick="closeArPanel()"></div>
+    <div id="ar-panel">
+        <div class="ar-close">
+            <div style="font-family:'Courier New'; font-size:11px; letter-spacing:3px; color:var(--cyan);">الشرح
+                التفصيلي</div>
+            <div class="ar-close-btn" onclick="closeArPanel()">✕</div>
+        </div>
+        <div class="ar-panel-content" id="ar-panel-inner"></div>
+    </div>
+    <script src="ar-panel.js"></script>
 
     <!-- =============================== -->
     <!-- SECTION 1: Hero -->
@@ -516,7 +530,8 @@
     <section class="section">
         <div class="reveal">
             <span class="section-badge">THE PROBLEM</span>
-            <h2>Why Not Grid Search?</h2>
+            <h2>Why Not Grid Search? <span onclick="openArPanel('bo_hero')"
+                    style="font-size:0.5em; vertical-align:middle; cursor:pointer;" class="ar-mini-btn">ℹ️</span></h2>
             <p style="margin-bottom:40px">Grid Search tests every combination blindly. With 4 hyperparameters, this
                 requires <strong style="color:var(--red)">~10,000+ evaluations</strong>. Bayesian Optimization uses a
                 probabilistic model to find the optimum in just <strong style="color:var(--green)">30 smart
@@ -577,7 +592,7 @@
     <section class="section">
         <div class="reveal">
             <span class="section-badge">THE CORE IDEA</span>
-            <h2 style="cursor:pointer" onclick="openModal('gp_model')">The Surrogate Model</h2>
+            <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('bo_process')">The Surrogate Model</h2>
             <p>Bayesian Optimization builds a <strong>Gaussian Process (GP)</strong> — a probabilistic model of the
                 objective function. The blue band shows uncertainty. <strong style="color:var(--cyan)">Click on the
                     canvas</strong> to add observations and watch the GP update!</p>
@@ -610,7 +625,7 @@
     <section class="section">
         <div class="reveal">
             <span class="section-badge">THE BALANCE</span>
-            <h2 style="cursor:pointer" onclick="openModal('ei_plus')">Exploration vs Exploitation</h2>
+            <h2 style="cursor:pointer" onclick="openArPanel('bo_process')">Exploration vs Exploitation</h2>
             <p>The <strong>EI+ (Expected Improvement Plus)</strong> acquisition function decides where to sample next by
                 balancing two strategies:</p>
         </div>
@@ -639,7 +654,7 @@
     <section class="section">
         <div class="reveal">
             <span class="section-badge">THE JOURNEY</span>
-            <h2 style="cursor:pointer" onclick="openModal('convergence')">30-Iteration Convergence</h2>
+            <h2 style="cursor:pointer" onclick="openArPanel('bo_results')">30-Iteration Convergence</h2>
             <p>Watch the optimizer converge toward the global minimum over 30 iterations. Each point represents a
                 hyperparameter combination tested.</p>
         </div>
@@ -700,7 +715,7 @@
     <section class="section">
         <div class="reveal">
             <span class="section-badge">INTERACTIVE</span>
-            <h2 style="cursor:pointer" onclick="openModal('search_space')">Search Space Explorer</h2>
+            <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('bo_params')">The Search Space Explorer</h2>
             <p>Adjust the hyperparameters yourself and see how far your choice is from the Bayesian-optimized values.
                 Can you beat the optimizer?</p>
         </div>
@@ -773,7 +788,7 @@
     <section class="section">
         <div class="reveal">
             <span class="section-badge">THE RESULT — TABLE IV</span>
-            <h2 style="cursor:pointer" onclick="openModal('dashboard')">Optimized Configuration</h2>
+            <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('bo_results')">Optimized Configuration</h2>
             <p>After 30 Bayesian iterations (~5 hours of compute on Intel i5, 16GB RAM), the algorithm converged to this
                 configuration:</p>
         </div>

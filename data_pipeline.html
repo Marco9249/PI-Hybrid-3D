@@ -440,6 +440,8 @@
             }
         }
     </style>
+    <!-- Arabic Panel CSS -->
+    <link rel="stylesheet" href="ar-panel.css">
 </head>
 
 <body>
@@ -450,13 +452,26 @@
         <a href="index.html" class="back-btn">← BACK TO HUB</a>
     </nav>
 
+    <!-- ARABIC PANEL HTML -->
+    <div id="ar-panel-overlay" onclick="closeArPanel()"></div>
+    <div id="ar-panel">
+        <div class="ar-close">
+            <div style="font-family:'Courier New'; font-size:11px; letter-spacing:3px; color:var(--cyan);">الشرح
+                التفصيلي</div>
+            <div class="ar-close-btn" onclick="closeArPanel()">✕</div>
+        </div>
+        <div class="ar-panel-content" id="ar-panel-inner"></div>
+    </div>
+    <script src="ar-panel.js"></script>
+
     <!-- =============================== -->
     <!-- STAGE 0: Hero + Data Source -->
     <!-- =============================== -->
     <section class="section" style="display:flex;flex-direction:column;justify-content:center">
         <div class="reveal">
             <span class="section-badge">CHAPTER 05 // THE PIPELINE</span>
-            <h2>The Data Odyssey</h2>
+            <h2>The Data Odyssey <span onclick="openArPanel('dp_hero')"
+                    style="font-size:0.5em; vertical-align:middle; cursor:pointer;" class="ar-mini-btn">ℹ️</span></h2>
             <p>From raw NASA satellite data to model-ready tensors — a rigorous, physics-guided preprocessing pipeline
                 that transforms noisy observations into clean, structured intelligence.</p>
             <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
@@ -520,7 +535,8 @@
                 <div class="stage-num"
                     style="background:rgba(239,68,68,0.15);color:var(--red);border:2px solid var(--red)">1</div>
                 <div><span class="section-badge">STAGE 01</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openModal('cleanup')">Statistical Cleaning</h2>
+                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage1')">Statistical Cleaning
+                    </h2>
                 </div>
             </div>
             <p>Raw satellite data contains errors: negative irradiance values, sensor dropout codes (-999), and missing
@@ -579,7 +595,7 @@
                 <div class="stage-num"
                     style="background:rgba(139,92,246,0.15);color:var(--purple);border:2px solid var(--purple)">2</div>
                 <div><span class="section-badge">STAGE 02</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openModal('masking')">Physics-Guided Night
+                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage2')">Physics-Guided Night
                         Masking</h2>
                 </div>
             </div>
@@ -653,7 +669,8 @@
                 <div class="stage-num"
                     style="background:rgba(6,182,212,0.15);color:var(--cyan);border:2px solid var(--cyan)">3</div>
                 <div><span class="section-badge">STAGE 03</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openModal('norm')">Hybrid Normalization</h2>
+                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage3')">Hybrid Normalization
+                    </h2>
                 </div>
             </div>
             <p>Two different normalization strategies for two different roles. Click a feature to see its raw vs
@@ -696,7 +713,8 @@
                 <div class="stage-num"
                     style="background:rgba(245,158,11,0.15);color:var(--gold);border:2px solid var(--gold)">4</div>
                 <div><span class="section-badge">STAGE 04</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openModal('window')">Sliding Window Formation
+                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage4')">Sliding Window
+                        Formation
                     </h2>
                 </div>
             </div>
@@ -743,7 +761,8 @@
                 <div class="stage-num"
                     style="background:rgba(16,185,129,0.15);color:var(--green);border:2px solid var(--green)">5</div>
                 <div><span class="section-badge">STAGE 05</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openModal('split')">Chronological Split</h2>
+                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage5')">Chronological Split
+                    </h2>
                 </div>
             </div>
             <p>The final safeguard: <strong>No random shuffling</strong>. The data is split strictly by time to prevent
