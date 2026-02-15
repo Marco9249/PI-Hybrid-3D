@@ -1,4 +1,6 @@
 name: Build Android APK
+permissions:
+  contents: write
 
 on:
   push:
@@ -17,7 +19,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: '20'
     
     - name: Setup Java
       uses: actions/setup-java@v4
@@ -28,36 +30,38 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
     
-    - name: Create Capacitor project
+    - name: Prepare Capacitor App
       run: |
+        echo "📂 Creating app structure..."
         mkdir -p mobile-app/www
         
-        # Copy ALL html files from root
-        cp *.html mobile-app/www/ 2>/dev/null || true
-        cp manifest.json mobile-app/www/ 2>/dev/null || true
-        cp sw.js mobile-app/www/ 2>/dev/null || true
+        echo "📦 Copying files..."
+        # Copy files verbosely to ensure they exist
+        cp -v *.html mobile-app/www/ || echo "No HTML files found!"
+        cp -v manifest.json mobile-app/www/ || echo "No manifest found!"
+        cp -v sw.js mobile-app/www/ || echo "No SW found!"
         
-        # Copy layers
         if [ -d "layers" ]; then
+          echo "📦 Copying layers..."
           mkdir -p mobile-app/www/layers
-          cp layers/*.html mobile-app/www/layers/ 2>/dev/null || true
+          cp -v layers/*.html mobile-app/www/layers/
         fi
         
-        # Copy assets (icons + libs)
         if [ -d "assets" ]; then
-          cp -r assets mobile-app/www/assets 2>/dev/null || true
+          echo "📦 Copying assets..."
+          cp -r assets mobile-app/www/
         fi
         
-        echo "=== Files copied to www/ ==="
-        find mobile-app/www -type f | head -50
-        echo "==========================="
+        echo "🔍 VERIFYING WWW CONTENT:"
+        ls -R mobile-app/www
         
-        # Setup Capacitor
+        # Initialize Capacitor Project
         cd mobile-app
+        echo "🔧 Initializing NPM & Capacitor..."
         npm init -y
         npm install @capacitor/core @capacitor/cli @capacitor/android
         
-        # Create capacitor config
+        # Create config
         cat > capacitor.config.json << 'CAPCONFIG'
         {
           "appId": "com.pihybrid.solar",
@@ -65,6 +69,11 @@ jobs:
           "webDir": "www",
           "server": {
             "androidScheme": "https"
+          }, 
+          "plugins": {
+            "SplashScreen": {
+              "launchShowDuration": 0
+            }
           }
         }
         CAPCONFIG
@@ -72,15 +81,23 @@ jobs:
         npx cap add android
         npx cap sync
     
-    - name: Build APK
+    - name: Build APK with Gradle
       run: |
         cd mobile-app/android
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+        echo "🏗️ Building Debug APK..."
+        ./gradlew assembleDebug --stacktrace
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: PI-Hybrid-APK
+        name: PI-Hybrid-App-Debug
         path: mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
-        retention-days: 90
+    
+    - name: Upload Web Debug Assets (On Failure)
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-www-folder
+        path: mobile-app/www
+
