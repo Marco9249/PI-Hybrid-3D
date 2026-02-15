@@ -6,7 +6,12 @@ dist/
 .env
 .vscode/
 *.log
-*.bat 
-🟢_START_HERE.html 
-*.bat 
-🟢_START_HERE.html 
+
+# Local scripts (not needed on GitHub)
+*.bat
+build_app.js
+generate_icons.html
+🟢_START_HERE.html
+
+# Local mobile build artifacts
+mobile-app/
