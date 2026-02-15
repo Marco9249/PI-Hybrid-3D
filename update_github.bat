@@ -1,39 +1,35 @@
 @echo off
+chcp 65001 >nul
 echo ==========================================
-echo       UPDATING GITHUB REPOSITORY
-echo         [Advanced Sync Script]
+echo       تحديث مستودع GITHUB
+echo       GitHub Repository Updater
 echo ==========================================
 echo.
 
-echo 1. Checking status...
-git status
+echo 1. Pulling latest changes from online...
+echo    (سحب التعديلات الجديدة لتجنب التعارض)
+git pull origin main
 echo.
 
-echo 2. Staging all changes...
+echo 2. Adding all files...
+echo    (تجهيز الملفات للرفع)
 git add .
 echo.
 
 echo 3. Committing changes...
-set /p msg="Enter commit message (Press Enter for 'Auto Update: %date% %time%'): "
-if "%msg%"=="" set msg=Auto Update: %date% %time%
-git commit -m "%msg%"
+echo    (تأكيد التعديلات)
+git commit -m "Auto-Update: New Features & Fixes"
 echo.
 
-echo 4. Pulling latest changes (to avoid conflicts)...
-git pull origin main
-echo.
-
-echo 5. Pushing to GitHub...
+echo 4. Pushing to GitHub...
+echo    (رفع الملفات إلى الموقع)
 git push origin main
-if %errorlevel% neq 0 (
-    echo.
-    echo [ERROR] Push failed! Trying 'master' branch...
-    git push origin master
-)
 
 echo.
 echo ==========================================
-echo       UPDATE COMPLETE!
-echo       Check your repo online.
+echo       ✅ DONE! COMPLETED SUCCESSFULLY
+echo       تم التحديث بنجاح!
 echo ==========================================
+echo.
+echo You can close this window now.
 pause
