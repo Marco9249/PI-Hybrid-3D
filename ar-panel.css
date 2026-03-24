@@ -108,6 +108,7 @@
     font-size: 15px;
     line-height: 2.2;
     color: rgba(255, 255, 255, 0.8);
+    overflow-x: auto; /* Handle long formulas */
 }
 
 .ar-body strong {

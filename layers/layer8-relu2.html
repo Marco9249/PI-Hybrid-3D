@@ -5,21 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layer 8: ReLU | Rectified Linear Unit</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --pass-color: #00f3ff;
-            /* Cyan for Positive */
-            --block-color: #ff0055;
-            /* Magenta for Negative */
+            /* Unifying to Blue/Cyan Theme */
+            --pass-color: #06B6D4;
+            --block-color: #EF4444;
             --zero-plane: rgba(255, 255, 255, 0.1);
-            --bg-dark: #080810;
-            --panel-glass: rgba(10, 15, 30, 0.85);
-            --border-tech: 1px solid rgba(0, 243, 255, 0.3);
+            --bg-dark: #050510;
+            --panel-bg: rgba(5, 5, 20, 0.95);
+            --glass-border: rgba(6, 182, 212, 0.3);
         }
 
         * {
@@ -32,8 +28,11 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background: radial-gradient(circle at center, #1a1a25 0%, #000000 100%);
-            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #050510 0%, #0a0a20 50%, #050510 100%);
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
             color: white;
         }
 
@@ -56,67 +55,97 @@
         }
 
         /* HUD Header */
-        header {
+        /* Header - Cinematic Glass */
+        .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 90px;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 64px;
+            background: rgba(10, 10, 20, 0.7);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
-            background: linear-gradient(180deg, rgba(8, 8, 16, 0.95), transparent);
-            z-index: 10;
-            border-bottom: var(--border-tech);
+            padding: 0 28px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .layer-title h1 {
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .layer-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .layer-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--pass-color), #3B82F6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .layer-title-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            margin: 0;
+            text-transform: none;
+        }
+
+        .layer-title-text p {
+            font-size: 11px;
             color: var(--pass-color);
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
-        }
-
-        .layer-title span {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            display: block;
-            margin-top: 5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.8;
+            margin: 0;
         }
 
         .nav-btn {
-            background: rgba(0, 243, 255, 0.1);
-            border: var(--border-tech);
-            color: var(--pass-color);
-            padding: 8px 20px;
-            text-decoration: none;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
             font-weight: 600;
+            text-decoration: none;
             text-transform: uppercase;
-            font-size: 14px;
-            border-radius: 4px;
-            transition: 0.3s;
+            letter-spacing: 1px;
+            transition: all 0.3s;
         }
 
         .nav-btn:hover {
-            background: var(--pass-color);
-            color: #000;
-            box-shadow: 0 0 20px var(--pass-color);
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--pass-color);
+            border-color: var(--pass-color);
         }
 
         /* Scientific Control Panel */
         .panel {
             position: fixed;
-            top: 120px;
-            width: 320px;
-            background: var(--panel-glass);
-            border: var(--border-tech);
-            backdrop-filter: blur(12px);
-            padding: 20px;
-            border-radius: 8px;
+            top: 112px;
+            width: 300px;
+            background: rgba(10, 10, 20, 0.8);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 20;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
         }
 
         .panel-left {
@@ -234,6 +263,85 @@
             background: var(--block-color);
             box-shadow: 0 0 5px var(--block-color);
         }
+
+        /* ═══════════════════════════════════════════════════
+           INFO MODAL (Detailed Explanation)
+           ═══════════════════════════════════════════════════ */
+        #info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #info-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(10, 15, 30, 0.95);
+            border: 1px solid rgba(0, 243, 255, 0.4);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 243, 255, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: #fff;
+            direction: rtl;
+        }
+
+        #info-modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.1);
+        }
+
+        .modal-body h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--pass-color);
+            font-weight: 500;
+        }
+
+        .modal-body p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #d0d0e0;
+            margin-bottom: 24px;
+        }
     </style>
 </head>
 
@@ -241,10 +349,13 @@
     <div class="grid-lines"></div>
     <div id="canvas-container"></div>
 
-    <header>
-        <div class="layer-title">
-            <h1>ReLU Activation</h1>
-            <span>Mathematical Rectification</span>
+    <header class="header">
+        <div class="layer-badge">
+            <div class="layer-icon">08</div>
+            <div class="layer-title-text">
+                <h1>ReLU Activation</h1>
+                <p>Mathematical Rectification</p>
+            </div>
         </div>
         <div class="nav-group">
             <a href="layer7-dense.html" class="nav-btn">← Prev</a>
@@ -254,7 +365,12 @@
     </header>
 
     <div class="panel panel-left">
-        <h3>Function Analysis</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>Function Analysis</h3>
+            <button id="btn-info"
+                style="pointer-events: auto; width:22px; height:22px; border-radius:50%; background:rgba(0, 243, 255,0.2); border:1px solid rgba(0, 243, 255,0.5); color:#fff; cursor:pointer; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; transition:0.2s;"
+                title="Detailed Explanation">i</button>
+        </div>
         <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0 20px 0;">
 
         <div class="math-box">
@@ -787,9 +903,156 @@
 
         init();
     </script>
-    <div
-        style="position:fixed; bottom:14px; right:24px; z-index:9999; font-family:'Outfit','Segoe UI',sans-serif; font-weight:600; font-size:13px; color:rgba(0,243,255,0.7); letter-spacing:3px; text-transform:uppercase; pointer-events:none; text-shadow:0 0 8px rgba(0,243,255,0.3);">
-        IZZELDEENM@GMAIL.COM</div>
+    <!-- Info Modal -->
+    <div id="info-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="btn-close-modal">✕</button>
+            <div class="modal-body">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+                </style>
+                <h2
+                    style="color: #F72585; font-weight: 700; margin-bottom: 20px; font-size: 26px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    نظرة عميقة: طبقة التفعيل الثانية (ReLU)</h2>
+                <div style="display:none;">
+                    <h2 style="direction:ltr; text-align:right;">Deep Dive: ReLU Layer (2)</h2>
+                    <h2 style="margin-top:-10px;">نظرة عميقة: طبقة التفعيل الثانية (ReLU)</h2>
+                </div>
+
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid #F72585; margin-bottom: 20px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <h3 style="color: #F72585; font-size: 18px; margin-bottom: 10px;">ما الذي تفعله هذه الطبقة فعلياً؟
+                    </h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        بعد عملية الضغط المكثفة التي قامت بها طبقة Dense، تأتي طبقة التفعيل (ReLU) لتضيف اللاخطية
+                        (Non-linearity) الضرورية لنمذجة العلاقات والعوامل المعقدة في بيانات الطقس والطاقة.
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <p>
+                        <strong>ما الذي تفعله هذه الطبقة فعلياً؟</strong><br>
+                        بعد عملية الضغط المكثفة التي قامت بها طبقة Dense، تأتي طبقة التفعيل (ReLU) لتضيف اللاخطية
+                        (Non-linearity) الضرورية لنمذجة العلاقات والعوامل المعقدة في بيانات الطقس والطاقة.
+                    </p>
+                </div>>
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid #4CC9F0; margin-bottom: 20px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <h3 style="color: #4CC9F0; font-size: 18px; margin-bottom: 10px;">فرض الأرضية الصفرية (الندرة)</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        تقوم هذه الطبقة بفرض أرضية صفرية بصرامة، وتسمح فقط للإشارات والميزات الإيجابية (القوية وذات
+                        المعنى) بالمرور، بينما تقمع القيم السلبية تماماً بتحويلها إلى الصفر. هذا يضيف ما يسمى بـ"الندرة"
+                        (Sparsity) وحدوداً غير خطية حاسمة قبل حساب التوقع النهائي مباشرة.
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <p>
+                        تقوم هذه الطبقة بفرض أرضية صفرية بصرامة، وتسمح فقط للإشارات والميزات الإيجابية (القوية وذات
+                        المعنى)
+                        بالمرور، بينما تقمع القيم السلبية تماماً بتحويلها إلى الصفر. هذا يضيف ما يسمى بـ"الندرة"
+                        (Sparsity)
+                        وحدوداً غير خطية حاسمة قبل حساب التوقع النهائي مباشرة.
+                    </p>
+                </div>>
+                <div
+                    style="margin-top:25px; text-align:center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+                        للتواصل: <span
+                            style="color: var(--cyan); font-weight: bold; letter-spacing: 2px;">IZZELDEENM@GMAIL.COM</span>
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <div style="margin-top:20px; text-align:center; font-size:10px; opacity:0.3;">
+                        للتواصل: IZZELDEENM@GMAIL.COM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Info Modal Logic
+        const infoModal = document.getElementById('info-modal');
+        document.getElementById('btn-info').addEventListener('click', () => infoModal.classList.add('show'));
+        document.getElementById('btn-close-modal').addEventListener('click', () => infoModal.classList.remove('show'));
+        infoModal.addEventListener('click', (e) => { if (e.target === infoModal) infoModal.classList.remove('show'); });
+    </script>
+    <!-- React & Tailwind Interactive View Mode -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyan: '#06B6D4',
+                        purple: '#8B5CF6',
+                        gold: '#F59E0B',
+                        green: '#10B981',
+                        blue: '#3B82F6',
+                        red: '#EF4444',
+                        bg: '#030308',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .interactive-mode .glass, .interactive-mode .math-card, .interactive-mode .ctrl {
+                @apply bg-white/5 backdrop-blur-3xl border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.05)] transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)];
+            }
+            .interactive-mode .top-bar h1 {
+                @apply text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)];
+            }
+        }
+    </style>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.303.0/dist/umd/lucide-react.min.js"></script>
+
+    <div id="react-toggle-root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { Sparkles, MonitorPlay } = lucideReact;
+
+        function ViewToggle() {
+            const [isInteractive, setIsInteractive] = useState(false);
+
+            useEffect(() => {
+                const bodyClasses = document.body.classList;
+                if (isInteractive) {
+                    bodyClasses.add('interactive-mode');
+                    if (window.ScrollTrigger) setTimeout(() => window.ScrollTrigger.refresh(), 100);
+                } else {
+                    bodyClasses.remove('interactive-mode');
+                }
+            }, [isInteractive]);
+
+            return (
+                <div className="fixed bottom-8 right-8 z-[2147483647] flex items-center bg-black/60 backdrop-blur-2xl p-1.5 rounded-full border border-purple-500/30 shadow-[0_0_30px_rgba(139,92,246,0.3)] transition-all duration-500 hover:border-cyan-500/60 hover:shadow-[0_0_40px_rgba(6,182,212,0.4)]">
+                    <button
+                        onClick={() => setIsInteractive(false)}
+                        className={`px-5 py-2.5 rounded-full flex items-center gap-2 transition-all duration-500 ${!isInteractive ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white shadow-lg scale-100" : "text-gray-400 hover:text-white scale-95"}`}
+                    >
+                        <MonitorPlay size={18} className={!isInteractive ? "animate-pulse" : ""} />
+                        <span className="font-semibold text-sm tracking-wider" style={{ fontFamily: "'Outfit', sans-serif" }}>CLASSIC</span>
+                    </button>
+                    <button
+                        onClick={() => setIsInteractive(true)}
+                        className={`px-5 py-2.5 rounded-full flex items-center gap-2 transition-all duration-500 ${isInteractive ? "bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.6)] scale-100" : "text-gray-400 hover:text-white scale-95"}`}
+                    >
+                        <Sparkles size={18} className={isInteractive ? "animate-[spin_4s_linear_infinite]" : ""} />
+                        <span className="font-semibold text-sm tracking-wider" style={{ fontFamily: "'Outfit', sans-serif" }}>INTERACTIVE</span>
+                    </button>
+                </div>
+            );
+        }
+
+        const root = createRoot(document.getElementById('react-toggle-root'));
+        root.render(<ViewToggle />);
+    </script>
 </body>
 
 </html>

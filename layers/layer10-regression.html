@@ -10,15 +10,17 @@
         rel="stylesheet">
     <style>
         :root {
-            --gold: #F59E0B;
-            --orange: #F97316;
-            --red: #EF4444;
+            /* Unifying to Blue/Cyan Theme */
             --cyan: #06B6D4;
+            --blue: #3B82F6;
+            --gold: #06B6D4;
+            --orange: #3B82F6;
+            --red: #8B5CF6;
             --green: #10B981;
             --purple: #8B5CF6;
-            --bg: #020206;
-            --panel: rgba(6, 4, 16, 0.88);
-            --glass: rgba(245, 158, 11, 0.22);
+            --bg: #050510;
+            --panel-bg: rgba(5, 5, 20, 0.9);
+            --glass-border: rgba(6, 182, 212, 0.3);
             --font: 'Outfit', sans-serif;
             --mono: 'JetBrains Mono', monospace
         }
@@ -129,18 +131,24 @@
             font-weight: 600
         }
 
+        /* Header - Cinematic Glass */
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 85px;
-            background: linear-gradient(180deg, rgba(2, 2, 6, .98) 0%, rgba(2, 2, 6, .5) 80%, transparent);
-            z-index: 100;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 64px;
+            background: rgba(10, 10, 20, 0.7);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 32px
+            padding: 0 28px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
         }
 
         .layer-badge {
@@ -177,21 +185,21 @@
         }
 
         .layer-title h1 {
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: 3px;
-            background: linear-gradient(90deg, var(--gold), var(--orange), var(--red));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: none
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            margin: 0;
         }
 
         .layer-title p {
-            font-size: 10px;
-            color: rgba(255, 255, 255, .4);
-            letter-spacing: 5px;
-            text-transform: uppercase
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.8;
+            margin: 0;
         }
 
         .header-metrics {
@@ -217,9 +225,9 @@
 
         .metric-value {
             font-size: 16px;
-            font-weight: 200;
+            font-weight: 600;
             color: #fff;
-            font-family: var(--mono)
+            font-family: var(--font);
         }
 
         .nav-group {
@@ -229,22 +237,22 @@
 
         .nav-btn {
             padding: 8px 16px;
-            background: rgba(0, 0, 0, .5);
-            border: 1px solid rgba(245, 158, 11, .25);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            color: #fff;
-            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all .3s;
-            backdrop-filter: blur(10px)
+            transition: all 0.3s;
         }
 
         .nav-btn:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 25px var(--gold)
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--gold);
+            border-color: var(--gold);
         }
 
         .panel {
@@ -252,20 +260,20 @@
             top: 100px;
             width: 340px;
             max-height: calc(100vh - 115px);
-            background: var(--panel);
+            background: var(--panel-bg);
             backdrop-filter: blur(35px) saturate(150%);
-            border: 1px solid rgba(245, 158, 11, .15);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 22px;
             z-index: 50;
             overflow-y: auto;
             box-shadow: 0 25px 70px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .03);
-            transition: border-color .3s, box-shadow .3s
+            transition: all .3s;
         }
 
         .panel:hover {
-            border-color: rgba(245, 158, 11, .4);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, .7), 0 0 30px rgba(245, 158, 11, .08)
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, .7), 0 0 30px rgba(6, 182, 212, 0.08);
         }
 
         .panel-l {
@@ -277,16 +285,17 @@
         }
 
         .sec {
-            font-size: 9px;
-            color: var(--gold);
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--cyan);
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
             margin-bottom: 14px;
             padding-bottom: 10px;
-            border-bottom: 1px solid rgba(245, 158, 11, .12);
+            border-bottom: 1px solid rgba(6, 182, 212, .2);
             display: flex;
             align-items: center;
-            gap: 8px
+            gap: 8px;
         }
 
         .ghi-box {
@@ -865,6 +874,64 @@
         ::-webkit-scrollbar-track {
             background: transparent
         }
+
+        /* INFO MODAL */
+        #info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #info-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(10, 5, 5, 0.95);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: #fff;
+            direction: rtl;
+        }
+
+        #info-modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
     </style>
 </head>
 
@@ -879,35 +946,39 @@
 
     <header class="header">
         <div class="layer-badge">
-            <div class="layer-icon">⚡</div>
-            <div class="layer-title">
-                <h1>Linear Regression Output</h1>
-                <p>Layer 10 · Dense(1) · Linear Activation</p>
+            <div class="layer-icon" style="background: linear-gradient(135deg, var(--cyan), var(--blue)); border-radius: 12px; font-size: 24px;">📊</div>
+            <div class="layer-title-text">
+                <h1 style="font-size: 18px; margin: 0;">Regression Output</h1>
+                <p style="font-size: 10px; color: var(--cyan); margin: 0; text-transform: uppercase;">Final Multi-Target Prediction</p>
             </div>
         </div>
-        <div class="nav-group"><a href="layer9-output.html" class="nav-btn">← PREV</a><a href="../index.html"
-                class="nav-btn">HOME</a></div>
+
         <div class="header-metrics">
             <div class="metric-box">
-                <div class="metric-label">Input</div>
+                <div class="metric-label">Inputs</div>
                 <div class="metric-value">64</div>
             </div>
             <div class="metric-box">
-                <div class="metric-label">Output</div>
+                <div class="metric-label">Outputs</div>
                 <div class="metric-value">1</div>
             </div>
             <div class="metric-box">
-                <div class="metric-label">Activation</div>
-                <div class="metric-value">Linear</div>
-            </div>
-            <div class="metric-box">
                 <div class="metric-label">RMSE</div>
-                <div class="metric-value" style="color:var(--gold)">19.53</div>
+                <div class="metric-value" style="color: var(--cyan);">19.53</div>
             </div>
-            <div class="metric-box">
+            <div class="metric-box" style="border-right: none;">
                 <div class="metric-label">R²</div>
                 <div class="metric-value">0.997</div>
             </div>
+        </div>
+
+        <div class="nav-group">
+            <a href="layer9-output.html" class="nav-btn">
+                <span style="font-size: 1.2em; line-height: 0;">←</span> Prev
+            </a>
+            <a href="../index.html" class="nav-btn">
+                <span style="font-size: 1.1em; line-height: 0;">⬡</span> HUB
+            </a>
         </div>
     </header>
 
@@ -931,7 +1002,10 @@
 
     <!-- LEFT PANEL -->
     <div class="panel panel-l">
-        <div class="sec">☀️ GHI Prediction Output</div>
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;">
+            <div class="sec" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">☀️ GHI Prediction Output</div>
+            <button id="btn-info" style="pointer-events: auto; width:22px; height:22px; border-radius:50%; background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.5); color:#fff; cursor:pointer; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; transition:0.2s;" title="Detailed Explanation">i</button>
+        </div>
         <div class="ghi-box">
             <div class="ghi-val" id="ghiVal">542</div>
             <div class="ghi-unit">W/m²</div>
@@ -2137,6 +2211,66 @@
         }
         function onResize() { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight) }
         try { init(); } catch (e) { console.error(e); document.getElementById('loading').classList.add('hidden'); }
+    </script>
+
+    <!-- Info Modal -->
+    <div id="info-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="btn-close-modal">✕</button>
+            <div class="modal-body">
+                <style>@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');</style>
+                <h2 style="color: #FF5555; font-weight: 700; margin-bottom: 20px; font-size: 26px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">العقل المصحح: محرك الانحدار والتعلم (Regression Engine)</h2>
+                <div style="display:none;">
+                    <h2 style="direction:ltr; text-align:right;">Final Brain: Regression & Learning Engine</h2>
+                    <h2 style="margin-top:-10px;">العقل المصحح: محرك الانحدار والتعلم (Regression Engine)</h2>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid #FF5555; margin-bottom: 20px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <h3 style="color: #FF5555; font-size: 18px; margin-bottom: 10px;">لماذا تعتبر هذه المرحلة هي الأهم؟</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        طبقة الانحدار (Regression) ليست مجرد نهاية، بل هي البداية المتجددة لكل دورة تعلم. هنا يتم قياس "الخطأ" بين ما توقعه النموذج وبين الواقع الفعلي باستخدام خوارزميات مثل دالة متوسط مربع الخطأ (MSE).
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <p>
+                        <strong>لماذا تعتبر هذه المرحلة هي الأهم؟</strong><br>
+                        طبقة الانحدار (Regression) هي ليست مجرد نهاية، بل هي البداية المتجددة لكل دورة تعلم. هنا يتم قياس "الخطأ"
+                        بين ما توقعه النموذج وبين الواقع الفعلي باستخدام خوارزميات MSE (متوسط مربع الخطأ).
+                    </p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid #F59E0B; margin-bottom: 20px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <h3 style="color: #F59E0B; font-size: 18px; margin-bottom: 10px;">المهمة الجوهرية (تصحيح الأخطاء الذاتي)</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        تعتبر هذه المرحلة نقطة انطلاق عملية "الانتشار العكسي" (Backpropagation). يتم إرسال إشارات تصحيحية عبر كل طبقات الشبكة (بدءاً من هنا وصولاً للطبقة الأولى) لتعديل الأوزان والتحيزات. بفضل هذا المحرك الديناميكي، يتعلم النموذج من أخطائه السابقة، ويقوم بمعايرة نفسه ذاتياً ليصبح أكثر دقة مع استيعاب التغيرات المناخية بمرور الزمن.
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <p>
+                        <strong>المهمة الجوهرية (Error Correction):</strong><br>
+                        في هذه المرحلة، يتم إطلاق عملية "الانتشار العكسي" (Backpropagation). يتم إرسال إشارات تصحيحية عبر كل طبقات
+                        الشبكة (من الطبقة 10 وصولاً للطبقة 0) لتعديل الأوزان والتحيزات. بفضل هذا المحرك، يتعلم النموذج من أخطائه
+                        السابقة، ويقوم بمعايرة نفسه ذاتياً ليصبح أكثر دقة مع كل ساعة إضافية من البيانات، وهو ما يضمن استمرارية
+                        التحسن وتقليل الانحراف التنبؤي لأدنى مستوياته.
+                    </p>
+                </div>
+                <div style="margin-top:25px; text-align:center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+                        للتواصل: <span style="color: var(--cyan); font-weight: bold; letter-spacing: 2px;">IZZELDEENM@GMAIL.COM</span>
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <div style="margin-top:20px; text-align:center; font-size:10px; opacity:0.3;">
+                        للتواصل: IZZELDEENM@GMAIL.COM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const infoModal = document.getElementById('info-modal');
+        document.getElementById('btn-info').addEventListener('click', () => infoModal.classList.add('show'));
+        document.getElementById('btn-close-modal').addEventListener('click', () => infoModal.classList.remove('show'));
+        infoModal.addEventListener('click', (e) => { if (e.target === infoModal) infoModal.classList.remove('show'); });
     </script>
 </body>
 

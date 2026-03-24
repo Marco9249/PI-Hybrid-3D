@@ -5,15 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layer 2: BatchNorm | Physics-Informed CNN-BiLSTM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --orange: #FF9500;
-            --cyan: #00F2FF;
-            --gold: #FFD700;
-            --green: #00FF88;
-            --bg-dark: #0A0A0F;
-            --panel-bg: rgba(10, 10, 20, 0.92);
-            --glass-border: rgba(255, 149, 0, 0.3);
+            /* Map to Blue/Cyan Theme (CNN Style) */
+            --orange: #06B6D4;
+            --cyan: #3B82F6;
+            --gold: #06B6D4;
+            --green: #10B981;
+            --bg-dark: #050510;
+            --panel-bg: rgba(5, 5, 20, 0.95);
+            --glass-border: rgba(6, 182, 212, 0.3);
         }
 
         * {
@@ -28,7 +30,10 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Outfit', sans-serif;
-            background: #030308;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #050510 0%, #0a0a20 50%, #050510 100%);
             color: #fff;
         }
 
@@ -77,17 +82,23 @@
 
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.95), transparent);
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 64px;
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
             z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 30px;
-            border-bottom: 2px solid var(--orange);
+            padding: 0 28px;
+            box-shadow: 
+                0 16px 40px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
         .layer-badge {
@@ -97,14 +108,14 @@
         }
 
         .layer-num {
-            width: 60px;
-            height: 60px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--orange), #CC7700);
-            border-radius: 50%;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 900;
             color: #000;
             box-shadow: 0 0 40px rgba(255, 149, 0, 0.6);
@@ -124,7 +135,8 @@
         }
 
         .layer-title h1 {
-            font-size: 28px;
+            font-size: 18px;
+            letter-spacing: 1px;
             background: linear-gradient(90deg, var(--orange), var(--gold));
             -webkit-background-clip: text;
             background-clip: text;
@@ -132,27 +144,31 @@
         }
 
         .layer-title p {
-            font-size: 14px;
+            font-size: 9px;
             color: var(--cyan);
             letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .back-btn {
-            padding: 12px 25px;
-            background: rgba(255, 149, 0, 0.1);
-            border: 2px solid var(--orange);
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            color: var(--orange);
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
             text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .back-btn:hover {
-            background: var(--orange);
-            color: #000;
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--orange);
+            border-color: var(--orange);
+            transform: translateY(-1px);
         }
 
         .header-stats {
@@ -189,23 +205,24 @@
         }
 
         .nav-btn {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 149, 0, 0.3);
-            border-radius: 10px;
-            color: #fff;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-btn:hover:not(.disabled) {
-            background: var(--orange);
-            color: #000;
-            box-shadow: 0 0 20px var(--orange);
+            background: rgba(255, 149, 0, 0.1);
+            color: var(--orange);
+            border-color: var(--orange);
+            transform: translateY(-1px);
         }
 
         .nav-btn.disabled {
@@ -217,34 +234,36 @@
         /* Crystalline Panels */
         .left-panel {
             position: fixed;
-            left: 20px;
-            top: 100px;
-            width: 360px;
-            max-height: calc(100vh - 120px);
-            background: rgba(10, 5, 5, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(255, 149, 0, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            left: 24px;
+            top: 112px;
+            width: 300px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
         }
 
         .right-panel {
             position: fixed;
-            right: 20px;
-            top: 100px;
-            width: 360px;
-            max-height: calc(100vh - 120px);
-            background: rgba(10, 5, 5, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(255, 149, 0, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            right: 24px;
+            top: 112px;
+            width: 320px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
         }
 
         .panel-title {
@@ -504,6 +523,64 @@
             background: var(--orange);
             border-radius: 3px;
         }
+
+        /* INFO MODAL */
+        #info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #info-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 25, 0.95);
+            border: 1px solid rgba(255, 149, 0, 0.4);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 149, 0, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: #fff;
+            direction: rtl;
+        }
+
+        #info-modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
     </style>
 </head>
 
@@ -522,9 +599,15 @@
         </div>
 
         <div class="nav-group">
-            <a href="layer1-conv1d.html" class="nav-btn">← PREV</a>
-            <a href="../index.html" class="nav-btn">HOME</a>
-            <a href="layer3-relu.html" class="nav-btn">NEXT →</a>
+            <a href="layer1-conv1d.html" class="nav-btn">
+                <span style="font-size: 1.2em; line-height: 0;">←</span> Prev
+            </a>
+            <a href="../index.html" class="nav-btn">
+                <span style="font-size: 1.1em; line-height: 0;">⬡</span> HUB
+            </a>
+            <a href="layer3-relu.html" class="nav-btn">
+                Next <span style="font-size: 1.2em; line-height: 0;">→</span>
+            </a>
         </div>
 
         <div class="header-stats">
@@ -550,7 +633,10 @@
     <div id="canvas-container"></div>
 
     <div class="left-panel">
-        <div class="panel-title">📊 Statistics</div>
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid var(--glass-border); padding-bottom:12px;">
+            <div class="panel-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">📊 Statistics</div>
+            <button id="btn-info" style="pointer-events: auto; width:22px; height:22px; border-radius:50%; background:rgba(255,149,0,0.2); border:1px solid rgba(255,149,0,0.5); color:#fff; cursor:pointer; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; transition:0.2s;" title="Detailed Explanation">i</button>
+        </div>
         <div class="stats-display">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -1045,6 +1131,45 @@
         }
 
         init();
+    </script>
+
+    <!-- Info Modal -->
+    <style>@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');</style>
+    <div id="info-modal">
+        <div class="modal-content" style="border-color: var(--blue); font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; direction: rtl; text-align: right;">
+            <button class="modal-close" id="btn-close-modal">✕</button>
+            <div class="modal-body">
+                <h2 style="color: var(--blue); font-weight: 700; margin-bottom: 20px; font-size: 26px;">
+                    نظرة تفصيلية: تسوية أو تطبيع الدفعة (BatchNorm)
+                </h2>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid var(--blue); margin-bottom: 20px;">
+                    <h3 style="color: var(--blue); font-size: 18px; margin-bottom: 10px;">لماذا نحتاج لهذه المرحلة؟</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        أثناء انتقال البيانات عبر طبقات الشبكة العصبية، قد "تتضخم" القيم العشوائية وتصبح كبيرة جداً، أو تتضاءل لتصبح قريبة من الصفر، مما يجعل الموديل يفقد توازنه أثناء التدريب ويرفض أحيانًا التعلم (مشكلة تلاشي/انفجار التدرجات). هذه الطبقة بمثابة المنظم والمرور.
+                    </p>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid var(--gold); margin-bottom: 20px;">
+                    <h3 style="color: var(--gold); font-size: 18px; margin-bottom: 10px;">آلية عمل صمام الأمان</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        تعمل هذه الطبقة كصمام أمان يعيد توزيع القيم وإجبارها على أن تكون بمتوسط 0 وانحراف معياري 1. هذا الضبط المستمر يضمن أن كل طبقة قادمة تتلقى بيانات متوازنة ومستقرة، مما يسرع عملية التعلم بشكل مذهل، ويقلل اعتماده على القيم الابتدائية، ويضيف تأثيراً منظّماً (Regularization) يمنع حفظ البيانات.
+                    </p>
+                </div>
+
+                <div style="margin-top:25px; text-align:center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+                        للتواصل: <span style="color: var(--cyan); font-weight: bold; letter-spacing: 2px;">IZZELDEENM@GMAIL.COM</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const infoModal = document.getElementById('info-modal');
+        document.getElementById('btn-info').addEventListener('click', () => infoModal.classList.add('show'));
+        document.getElementById('btn-close-modal').addEventListener('click', () => infoModal.classList.remove('show'));
+        infoModal.addEventListener('click', (e) => { if (e.target === infoModal) infoModal.classList.remove('show'); });
     </script>
 </body>
 

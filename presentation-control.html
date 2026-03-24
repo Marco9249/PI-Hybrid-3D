@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>PI-HYBRID — Control System Journey</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="ar-panel.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@200;300;400;600;800&family=Outfit:wght@200;400;600;900&family=Space+Mono&display=swap');
+
+        :root {
+            --cyan: #06B6D4;
+            --purple: #8B5CF6;
+            --gold: #F59E0B;
+            --green: #10B981;
+            --red: #EF4444;
+            --bg: #030308;
+            --card-bg: rgba(10, 10, 25, 0.4);
+            --border: rgba(139, 92, 246, 0.2);
+            --glow: rgba(139, 92, 246, 0.15)
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: auto !important
+        }
+
+        @media(min-width:1024px) {
+            * {
+                cursor: none !important
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none
+        }
+
+        ::-webkit-scrollbar {
+            display: none
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden
+        }
+
+        /* BG Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .3s, height .3s, border-color .3s;
+            mix-blend-mode: difference
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%)
+        }
+
+        @media(max-width:1023px) {
+
+            .cursor,
+            .cursor-dot {
+                display: none
+            }
+        }
+
+        /* Progress */
+        #progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--green), var(--cyan), var(--gold));
+            z-index: 10000;
+            width: 0%
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+            padding: 22px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: .5s
+        }
+
+        nav.scrolled {
+            background: rgba(3, 3, 8, .92);
+            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            padding: 16px 50px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo {
+            font-family: 'Outfit';
+            font-weight: 900;
+            font-size: 22px;
+            background: linear-gradient(135deg, var(--green), var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .nav-tag {
+            font-family: 'Space Mono';
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            opacity: 0;
+            transition: .5s
+        }
+
+        nav.scrolled .nav-tag {
+            opacity: 1
+        }
+
+        .nav-btn {
+            color: rgba(255, 255, 255, .6);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 18px;
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 20px;
+            transition: .3s
+        }
+
+        .nav-btn:hover {
+            color: #fff;
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, .2)
+        }
+
+        /* Shared */
+        .sec {
+            padding: 140px 60px;
+            position: relative;
+            z-index: 2
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px)
+        }
+
+        .stag {
+            font-family: 'Space Mono';
+            font-size: 10px;
+            letter-spacing: 5px;
+            margin-bottom: 12px
+        }
+
+        .sh2 {
+            font-family: 'Outfit';
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px
+        }
+
+        .sp {
+            font-size: 15px;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.9;
+            margin-bottom: 15px
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center
+        }
+
+        .bcard {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 35px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transition: .5s;
+            position: relative;
+            overflow: hidden
+        }
+
+        .bcard:hover {
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, .4);
+            box-shadow: 0 5px 40px var(--glow)
+        }
+
+        /* Interactive Title */
+        .ititle {
+            cursor: pointer !important;
+            position: relative;
+            display: inline-block;
+            transition: .3s
+        }
+
+        .ititle:hover {
+            opacity: .85
+        }
+
+        .ititle:hover::after {
+            opacity: 1
+        }
+
+        /* Hero */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2
+        }
+
+        @keyframes premiumShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            background: linear-gradient(
+                to right,
+                #ffffff 0%,
+                #10b981 25%,
+                #ffffff 50%,
+                #3b82f6 75%,
+                #ffffff 100%
+            );
+            background-size: 200% auto;
+            color: #fff;
+            background-clip: text;
+            text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: premiumShine 6s linear infinite;
+            filter: drop-shadow(0 0 25px rgba(16, 185, 129, 0.4));
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, .4);
+            max-width: 650px;
+            margin: 0 auto 40px;
+            line-height: 1.8
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            text-align: center
+        }
+
+        .scroll-cue span {
+            font-family: 'Space Mono';
+            font-size: 9px;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 45px;
+            background: linear-gradient(180deg, var(--green), transparent);
+            margin: 10px auto 0;
+            animation: sp 2s ease-in-out infinite
+        }
+
+        @keyframes sp {
+
+            0%,
+            100% {
+                opacity: .3;
+                transform: scaleY(.6)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1)
+            }
+        }
+
+        /* Signal Flow */
+        .flow-bar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            position: relative;
+            gap: 3px
+        }
+
+        .flow-node {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Space Mono';
+            font-size: 9px;
+            letter-spacing: 1px;
+            cursor: pointer !important;
+            transition: .4s;
+            background: rgba(10, 10, 25, .6);
+            text-align: center;
+            min-width: 85px
+        }
+
+        .flow-node:hover,
+        .flow-node.active {
+            border-color: var(--green);
+            background: rgba(16, 185, 129, .1);
+            color: var(--green);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(16, 185, 129, .15)
+        }
+
+        .flow-arrow {
+            color: var(--cyan);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            opacity: .3;
+            animation: ap 2s infinite
+        }
+
+        @keyframes ap {
+
+            0%,
+            100% {
+                opacity: .2;
+                transform: translateX(0)
+            }
+
+            50% {
+                opacity: .7;
+                transform: translateX(3px)
+            }
+        }
+
+        /* Scenario Buttons */
+        .sc-wrap {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap
+        }
+
+        .sc-btn {
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: 1px solid;
+            cursor: pointer !important;
+            transition: .4s;
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 12px;
+            background: none;
+            color: #fff;
+            letter-spacing: 1px
+        }
+
+        .sc-btn:hover {
+            transform: translateY(-3px)
+        }
+
+        .sc-btn.s0 {
+            border-color: rgba(16, 185, 129, .4)
+        }
+
+        .sc-btn.s0.on {
+            background: rgba(16, 185, 129, .15);
+            border-color: var(--green);
+            color: var(--green)
+        }
+
+        .sc-btn.s1 {
+            border-color: rgba(245, 158, 11, .4)
+        }
+
+        .sc-btn.s1.on {
+            background: rgba(245, 158, 11, .15);
+            border-color: var(--gold);
+            color: var(--gold)
+        }
+
+        .sc-btn.s2 {
+            border-color: rgba(239, 68, 68, .4)
+        }
+
+        .sc-btn.s2.on {
+            background: rgba(239, 68, 68, .15);
+            border-color: var(--red);
+            color: var(--red)
+        }
+
+        /* Param Grid */
+        .pgrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 18px 0
+        }
+
+        .pm {
+            background: rgba(0, 0, 0, .3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            transition: .4s
+        }
+
+        .pm:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px)
+        }
+
+        .pm .v {
+            font-family: 'Outfit';
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--cyan)
+        }
+
+        .pm .l {
+            font-family: 'Space Mono';
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, .4);
+            margin-top: 4px
+        }
+
+        /* Accordion */
+        .acc {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: rgba(10, 10, 25, .3);
+            transition: .4s
+        }
+
+        .acc.open {
+            border-color: var(--green)
+        }
+
+        .acc-h {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer !important;
+            transition: .3s
+        }
+
+        .acc-h:hover {
+            background: rgba(255, 255, 255, .02)
+        }
+
+        .acc-h h3 {
+            font-family: 'Outfit';
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .acc-arr {
+            transition: .4s transform;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .acc.open .acc-arr {
+            transform: rotate(180deg);
+            color: var(--green)
+        }
+
+        .acc-b {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .5s cubic-bezier(.19, 1, .22, 1)
+        }
+
+        .acc.open .acc-b {
+            max-height: 600px
+        }
+
+        .acc-in {
+            padding: 0 25px 22px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.9
+        }
+
+        /* Info Box */
+        .ibox {
+            padding: 14px;
+            border-radius: 12px;
+            margin: 12px 0;
+            font-size: 13px;
+            line-height: 1.8
+        }
+
+        .ibox.r {
+            background: rgba(239, 68, 68, .08);
+            border: 1px solid rgba(239, 68, 68, .25)
+        }
+
+        .ibox.g {
+            background: rgba(16, 185, 129, .08);
+            border: 1px solid rgba(16, 185, 129, .25)
+        }
+
+        .ibox.y {
+            background: rgba(245, 158, 11, .08);
+            border: 1px solid rgba(245, 158, 11, .25)
+        }
+
+        .ibox.c {
+            background: rgba(6, 182, 212, .08);
+            border: 1px solid rgba(6, 182, 212, .25)
+        }
+
+        /* Tank */
+        .tank-box {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            height: 210px;
+            margin-top: 20px
+        }
+
+        .tank {
+            width: 110px;
+            height: 190px;
+            border: 2px solid rgba(6, 182, 212, .3);
+            border-radius: 0 0 12px 12px;
+            border-top: none;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, .3)
+        }
+
+        .tank-w {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(6, 182, 212, .6), rgba(6, 182, 212, .2));
+            transition: height .5s ease;
+            border-radius: 0 0 10px 10px
+        }
+
+        .tank-lbl {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Outfit';
+            font-weight: 900;
+            font-size: 22px;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(0, 0, 0, .8)
+        }
+
+        /* CTA */
+        .cta-btn {
+            display: inline-block;
+            padding: 16px 45px;
+            text-decoration: none;
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 3px;
+            border-radius: 50px;
+            transition: .4s;
+            margin: 8px
+        }
+
+        .cta-btn.fill {
+            background: linear-gradient(135deg, var(--green), var(--cyan));
+            color: #fff
+        }
+
+        .cta-btn.fill:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(6, 182, 212, .4)
+        }
+
+        .cta-btn.out {
+            background: none;
+            border: 1px solid rgba(245, 158, 11, .5);
+            color: #fff
+        }
+
+        .cta-btn.out:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 30px rgba(245, 158, 11, .2)
+        }
+
+        /* Cinematic Overlays */
+        .overlay-v {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(ellipse, transparent 55%, rgba(0, 0, 0, .7))
+        }
+
+        .overlay-s {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: .03;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, .03) 2px, rgba(255, 255, 255, .03) 4px)
+        }
+
+        footer {
+            padding: 50px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            position: relative;
+            z-index: 2
+        }
+
+        @media(max-width:900px) {
+            .grid2 {
+                grid-template-columns: 1fr
+            }
+
+            #hero h1 {
+                font-size: 2.5rem
+            }
+
+            .sec {
+                padding: 80px 25px
+            }
+
+            .sh2 {
+                font-size: 2rem
+            }
+
+            .flow-node {
+                font-size: 7px;
+                padding: 8px 10px;
+                min-width: 60px
+            }
+
+            .tank-box {
+                flex-direction: column;
+                align-items: center;
+                height: auto
+            }
+
+            nav {
+                padding: 16px 20px
+            }
+
+            nav.scrolled {
+                padding: 12px 20px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="overlay-v"></div>
+    <div class="overlay-s"></div>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div id="progress"></div>
+
+    <nav id="nav">
+        <div class="logo">PI-HYBRID</div>
+        <div style="display:flex;gap:12px;align-items:center">
+            <span class="nav-tag">CONTROL SYSTEM JOURNEY</span>
+            <a href="presentation-intro.html" class="nav-btn">← Intro</a>
+            <a href="index.html" class="nav-btn">Main</a>
+        </div>
+    </nav>
+
+    <div id="ar-panel-overlay" class="ar-panel-overlay" onclick="closeArPanel()"></div>
+    <div id="ar-panel" class="ar-panel">
+        <button class="ar-close-btn" onclick="closeArPanel()">×</button>
+        <div id="ar-panel-inner" class="ar-panel-content"></div>
+    </div>
+
+    <!-- ═══ HERO ═══ -->
+    <section id="hero">
+        <div class="stag" style="color:var(--gold);margin-bottom:20px;position:relative;z-index:2">THE COMPLETE
+            SIMULATION WALKTHROUGH</div>
+        <h1>The Control<br>System Journey</h1>
+        <p class="hero-sub">A sequential engineering tour inside the MATLAB/Simulink simulation — from raw weather data
+            to the last drop of water.</p>
+        <div class="scroll-cue"><span>SCROLL TO BEGIN</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ═══ SIGNAL FLOW MAP ═══ -->
+    <div class="sec" style="padding-top:60px;padding-bottom:20px">
+        <div class="reveal" style="text-align:center;margin-bottom:20px">
+            <div class="stag" style="color:var(--cyan)">SIGNAL PATH — CLICK TO NAVIGATE</div>
+        </div>
+        <div class="flow-bar reveal" id="flowBar">
+            <div class="flow-node active" onclick="scrollToSec('sec1')">📡 DATA</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" onclick="scrollToSec('sec2')">☀️ PV</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" onclick="scrollToSec('sec3')">🧠 AI</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" onclick="scrollToSec('sec4')">📋 MPC</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" onclick="scrollToSec('sec5')">🛡️ FOPID</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" onclick="scrollToSec('sec6')">⚙️ VFD</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" onclick="scrollToSec('sec7')">💧 TANK</div>
+        </div>
+    </div>
+
+    <!-- ═══ PART 1: SCENARIOS ═══ -->
+    <section class="sec" id="sec1">
+        <div class="grid2">
+            <div class="reveal">
+                <div class="stag" style="color:var(--green)">PART 01 — DATA PREPARATION</div>
+                <h2 class="sh2 ititle" onclick="openArPanel('ctrl_scenarios')">Climate Scenarios</h2>
+                <p class="sp">72 continuous hours (3 days) per scenario. The <strong style="color:#fff">Multiport
+                        Switch</strong> mechanism allows instant scenario switching.</p>
+                <p class="sp">Select a scenario:</p>
+                <div class="sc-wrap">
+                    <button class="sc-btn s0 on" onclick="setScenario(0)">☀️ CLEAR 950W/m²</button>
+                    <button class="sc-btn s1" onclick="setScenario(1)">⛅ VARIABLE 750W/m²</button>
+                    <button class="sc-btn s2" onclick="setScenario(2)">☁️ CLOUDY 550W/m²</button>
+                </div>
+                <div class="ibox c" style="font-size:12px;cursor:pointer" onclick="openArPanel('ctrl_multiport')">
+                    <strong>Clearness Index (KT)</strong> — distinguishes natural sunset from passing clouds. 7 of 15
+                    features are zero-cost physics. ℹ️</div>
+            </div>
+            <div class="bcard reveal">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--cyan);letter-spacing:2px;margin-bottom:12px">
+                    72-HOUR IRRADIANCE</div>
+                <canvas id="scenarioCanvas" onclick="openArPanel('ctrl_scenarios')"
+                    style="width:100%;height:180px;display:block;border-radius:12px;cursor:pointer"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PART 2: PV PHYSICS ═══ -->
+    <section class="sec" id="sec2">
+        <div class="grid2">
+            <div class="bcard reveal">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--green);letter-spacing:2px;margin-bottom:15px">
+                    PV ARRAY CONFIGURATION</div>
+                <div class="pgrid">
+                    <div class="pm">
+                        <div class="v">22</div>
+                        <div class="l">PANELS</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v">590W</div>
+                        <div class="l">PER PANEL</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v">11S×2P</div>
+                        <div class="l">TOPOLOGY</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v">~13kW</div>
+                        <div class="l">INSTALLED</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v" style="color:var(--red)">12kW</div>
+                        <div class="l">CLIPPED</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v" style="color:var(--green)">MPPT</div>
+                        <div class="l">EMBEDDED</div>
+                    </div>
+                </div>
+                <div class="ibox r" style="cursor:pointer" onclick="openArPanel('ctrl_pv')"><strong>⚡ Power
+                        Clipping:</strong> Strict 12kW cap protects pump motor from uncalculated peak currents. ℹ️</div>
+                <canvas id="mpptCanvas" onclick="openArPanel('ctrl_mppt')"
+                    style="width:100%;height:120px;display:block;border-radius:12px;margin-top:12px;cursor:pointer"></canvas>
+            </div>
+            <div class="reveal">
+                <div class="stag" style="color:var(--cyan)">PART 02 — PV PHYSICS MODEL</div>
+                <h2 class="sh2 ititle" onclick="openArPanel('ctrl_pv')">The Physical Heart</h2>
+                <p class="sp">Complete mathematical physics model built from scratch. MPPT embedded as dynamic equations
+                    — instantaneous maximum power tracking.</p>
+                <p class="sp">The model generates realistic, weather-volatile, <strong
+                        style="color:var(--green)">engineering-constrained power</strong> ready for AI analysis.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PART 3: AI BRAIN ═══ -->
+    <section class="sec" id="sec3">
+        <div class="reveal" style="text-align:center;margin-bottom:40px">
+            <div class="stag" style="color:var(--purple)">PART 03 — THE AI BRAIN</div>
+            <h2 class="sh2 ititle" onclick="openArPanel('ctrl_ai')">Hybrid Intelligence</h2>
+            <p class="sp" style="max-width:650px;margin:0 auto">CNN-BiLSTM compressed via <strong
+                    style="color:var(--purple)">Knowledge Distillation</strong> + <strong
+                    style="color:var(--cyan)">Lottery Ticket Pruning</strong></p>
+        </div>
+        <div class="grid2 reveal">
+            <div>
+                <div class="acc open">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>📦 24h History Input</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in">AI cannot start from blank state. It ingests the <strong>previous 24
+                                hours</strong> of 4 features as historical context.</div>
+                    </div>
+                </div>
+                <div class="acc">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>🪟 Sliding Window</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in">Each simulation second, the window slides forward — dropping the oldest
+                            reading, absorbing the newest. The model always has the latest temporal context.</div>
+                    </div>
+                </div>
+                <div class="acc">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>🔮 5-Hour Recursive Horizon</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in">Predict → feed back → predict next → repeat. Output: a <strong>ray of
+                                predictions</strong> extending 5 hours, enabling fully proactive MPC control.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bcard" style="text-align:center">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--purple);letter-spacing:2px;margin-bottom:12px">
+                    SLIDING WINDOW ANIMATION</div>
+                <canvas id="windowCanvas" onclick="openArPanel('ctrl_sliding')"
+                    style="width:100%;height:200px;display:block;border-radius:12px;cursor:pointer"></canvas>
+                <div
+                    style="margin-top:10px;display:flex;justify-content:center;gap:12px;font-size:9px;font-family:'Space Mono'">
+                    <span style="color:rgba(255,255,255,.4)">◻ HISTORY</span><span style="color:var(--purple)">◼
+                        WINDOW</span><span style="color:var(--green)">◼ PREDICTION</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PART 4: MPC ═══ -->
+    <section class="sec" id="sec4">
+        <div class="grid2">
+            <div class="reveal">
+                <div class="stag" style="color:var(--gold)">PART 04 — HIERARCHICAL CONTROL</div>
+                <h2 class="sh2 ititle" onclick="openArPanel('ctrl_mpc')">MPC Manager + Controller</h2>
+                <p class="sp"><strong style="color:var(--gold)">Manager</strong> decides WHEN & HOW MUCH. <strong
+                        style="color:var(--cyan)">Controller</strong> finds the SMOOTHEST PATH.</p>
+                <div class="acc open">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>📋 MPC Manager (Strategy)</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in"><strong>Safe Start:</strong> 5 min above 2400W. <strong>Smart
+                                Braking:</strong> √-based flow reduction. <strong>Anti Short-Cycling:</strong> 2-min
+                            minimum off-time.</div>
+                    </div>
+                </div>
+                <div class="acc">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>🎯 MPC Controller (Execution)</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in"><strong>Ts=60s</strong>, <strong>300-step horizon</strong> (5hr). Output
+                            Weight Q: LOW. Rate Weight R: 20× HIGH. Inverse tuning eliminates oscillations.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bcard reveal" style="text-align:center">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:12px">
+                    RESPONSE COMPARISON</div>
+                <canvas id="responseCanvas" onclick="openArPanel('ctrl_response')"
+                    style="width:100%;height:200px;display:block;border-radius:12px;cursor:pointer"></canvas>
+                <div
+                    style="margin-top:10px;display:flex;justify-content:center;gap:12px;font-size:9px;font-family:'Space Mono'">
+                    <span style="color:var(--red)">— PID (OSCILLATING)</span><span style="color:var(--green)">—
+                        MPC+FOPID (SMOOTH)</span><span style="color:rgba(255,255,255,.3)">--- TARGET</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PART 5: FOPID ═══ -->
+    <section class="sec" id="sec5">
+        <div class="grid2">
+            <div class="bcard reveal">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--red);letter-spacing:2px;margin-bottom:12px">
+                    FOPID PARAMETERS</div>
+                <div class="pgrid">
+                    <div class="pm">
+                        <div class="v">1.0</div>
+                        <div class="l">Kp</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v">0.5</div>
+                        <div class="l">Ki</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v">0.01</div>
+                        <div class="l">Kd</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v" style="color:var(--gold)">0.9</div>
+                        <div class="l">λ LAMBDA</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v" style="color:var(--gold)">0.7</div>
+                        <div class="l">μ MU</div>
+                    </div>
+                    <div class="pm">
+                        <div class="v" style="color:var(--red)">±400W</div>
+                        <div class="l">HYSTERESIS</div>
+                    </div>
+                </div>
+                <div class="ibox y" style="cursor:pointer" onclick="openArPanel('ctrl_fopid')"><strong>🛡️
+                        Hysteresis:</strong> ON > 2400W · OFF < 2000W — eliminates chattering at sunrise/sunset.
+                        ℹ️</div>
+                </div>
+                <div class="reveal">
+                    <div class="stag" style="color:var(--red)">PART 05 — DYNAMIC CONTROLLER</div>
+                    <h2 class="sh2 ititle" onclick="openArPanel('ctrl_fopid')">FOPID: Shock Absorber</h2>
+                    <p class="sp">Fractional-Order PID with 2 extra degrees of freedom (λ, μ). Parameters optimized via
+                        <strong style="color:#fff">Finite Difference</strong> gradient search.</p>
+                    <p class="sp">Output: a single, <strong style="color:var(--green)">silky-smooth control
+                            signal</strong> (P_control) sent to VFD — ensuring soft starts and no inrush currents.</p>
+                </div>
+            </div>
+    </section>
+
+    <!-- ═══ PARTS 6-8: VFD + PUMP + TANK ═══ -->
+    <section class="sec" id="sec6">
+        <div class="reveal" style="text-align:center;margin-bottom:40px">
+            <div class="stag" style="color:var(--cyan)">PARTS 06–08 — EXECUTION & STORAGE</div>
+            <h2 class="sh2 ititle" onclick="openArPanel('ctrl_vfd')">VFD → Pump → Tank</h2>
+        </div>
+        <div class="grid2 reveal" id="sec7">
+            <div>
+                <div class="acc open">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>⚙️ VFD (Inverter + Drive)</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in"><strong>Soft Start:</strong> Calculated burst for stiction then smooth ramp.
+                            <strong>Hydraulic Saturation:</strong> Clips excess commands. <strong>Dead Zone:</strong>
+                            Below 690 RPM → full cutoff.</div>
+                    </div>
+                </div>
+                <div class="acc">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>💧 Pump (State Observer)</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in">Linear centrifugal pump model with mechanical saturation at <strong>1550
+                                RPM</strong>. Converts flow to speed for monitoring.</div>
+                    </div>
+                </div>
+                <div class="acc">
+                    <div class="acc-h" onclick="toggleAcc(this)">
+                        <h3>🏗️ Water Tank (Gravity Battery)</h3><span class="acc-arr">▼</span>
+                    </div>
+                    <div class="acc-b">
+                        <div class="acc-in">Stores excess solar energy as <strong>gravitational potential</strong>.
+                            (Q_in − Q_out) × (1/A) → ∫ → Level. Feeds back to MPC Manager → <strong>loop
+                                closed!</strong></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bcard" style="text-align:center">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--cyan);letter-spacing:2px;margin-bottom:12px">
+                    LIVE TANK SIMULATION</div>
+                <div class="tank-box" style="justify-content:center">
+                    <div class="tank" onclick="openArPanel('ctrl_tank')" style="cursor:pointer">
+                        <div class="tank-w" id="tankW" style="height:20%"></div>
+                        <div class="tank-lbl" id="tankLbl">20%</div>
+                    </div>
+                    <div style="text-align:left;flex:1;max-width:220px">
+                        <div style="font-size:11px;margin-bottom:8px"><span style="color:var(--green)">▲ PUMP:</span>
+                            <span id="pIn">0.8</span> L/s</div>
+                        <div style="font-size:11px;margin-bottom:8px"><span style="color:var(--red)">▼ DEMAND:</span>
+                            <span id="pOut">0.3</span> L/s</div>
+                        <div style="font-size:11px;margin-bottom:12px"><span style="color:var(--cyan)">NET:</span> <span
+                                id="pNet">+0.5</span> L/s</div>
+                        <div style="font-size:9px;color:var(--gold)">⟳ FEEDBACK → MPC MANAGER</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="sec" style="text-align:center">
+        <div class="reveal">
+            <h2 class="sh2"
+                style="background:linear-gradient(90deg,#fff,var(--green));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">
+                The Loop Is Closed</h2>
+            <p class="sp" style="max-width:600px;margin:0 auto 30px">From predicting clouds to delivering every drop of
+                water — <strong style="color:var(--green)">a system that anticipates nature.</strong></p>
+            <a href="presentation-conclusion.html" class="cta-btn fill">CONCLUSIONS & VISION →</a>
+            <a href="index.html" class="cta-btn out">EXPLORE CHAPTERS</a>
+            <a href="presentation-intro.html" class="cta-btn out">INTRODUCTION</a>
+        </div>
+    </section>
+
+    <footer>
+        <div style="font-family:'Outfit';font-weight:900;font-size:22px;margin-bottom:8px">PI-HYBRID VIZ</div>
+        <p style="color:rgba(255,255,255,.3);font-size:11px">© 2026 Advanced Neural Forecasting Laboratory</p>
+    </footer>
+
+    <script src="ar-panel.js"></script>
+    <script>
+        // ═══ THREE.JS STARFIELD ═══
+        let scene, camera, renderer, stars;
+        (function initStars() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
+            camera.position.z = 1000;
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
+            renderer.setSize(innerWidth, innerHeight);
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            const g = new THREE.BufferGeometry(), p = new Float32Array(3000 * 3);
+            for (let i = 0; i < p.length; i++)p[i] = (Math.random() - 0.5) * 2000;
+            g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+            stars = new THREE.Points(g, new THREE.PointsMaterial({ color: 0x06B6D4, size: 2, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending }));
+            scene.add(stars);
+            (function anim() { requestAnimationFrame(anim); stars.rotation.y += 0.0004; stars.rotation.x += 0.0002; renderer.render(scene, camera) })();
+        })();
+        addEventListener('resize', () => { if (camera && renderer) { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight) } });
+
+        // ═══ CURSOR ═══
+        const cur = document.getElementById('cursor'), dot = document.getElementById('cursor-dot');
+        addEventListener('mousemove', e => {
+            gsap.to(cur, { x: e.clientX, y: e.clientY, duration: 0.2 });
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.05 });
+            if (stars) { stars.rotation.y += (e.clientX - innerWidth / 2) * 0.0000008; stars.rotation.x += (e.clientY - innerHeight / 2) * 0.0000008 }
+        });
+
+        // ═══ SCROLL ═══
+        addEventListener('scroll', () => {
+            const h = document.documentElement.scrollHeight - innerHeight;
+            document.getElementById('progress').style.width = (scrollY / h * 100) + '%';
+            document.getElementById('nav').classList.toggle('scrolled', scrollY > 80);
+            const secs = ['sec1', 'sec2', 'sec3', 'sec4', 'sec5', 'sec6', 'sec7'];
+            const nodes = document.querySelectorAll('.flow-node');
+            secs.forEach((id, i) => { const el = document.getElementById(id); if (el && scrollY >= el.offsetTop - 300) { nodes.forEach(n => n.classList.remove('active')); if (nodes[i]) nodes[i].classList.add('active') } });
+        });
+        function scrollToSec(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }
+
+        // ═══ GSAP ═══
+        gsap.registerPlugin(ScrollTrigger);
+        document.querySelectorAll('.reveal').forEach(el => { gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } }) });
+
+        // ═══ ACCORDION ═══
+        function toggleAcc(h) { const it = h.parentElement; const o = it.classList.contains('open'); it.parentElement.querySelectorAll('.acc').forEach(i => i.classList.remove('open')); if (!o) it.classList.add('open') }
+
+        // ═══ SCENARIO CANVAS ═══
+        let curSc = 0; const scC = document.getElementById('scenarioCanvas');
+        function drawSc() {
+            if (!scC) return; const ctx = scC.getContext('2d'); const W = scC.width = scC.parentElement.clientWidth - 70; const H = scC.height = 180;
+            ctx.clearRect(0, 0, W, H);
+            ctx.strokeStyle = 'rgba(255,255,255,.04)'; ctx.lineWidth = 1;
+            for (let i = 0; i < W; i += W / 6) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, H); ctx.stroke() }
+            ctx.font = '9px "Space Mono"'; ctx.fillStyle = 'rgba(255,255,255,.2)';
+            ctx.fillText('DAY 1', W * .1, H - 6); ctx.fillText('DAY 2', W * .43, H - 6); ctx.fillText('DAY 3', W * .77, H - 6);
+            const pk = [950, 750, 550], cl = ['#10B981', '#F59E0B', '#EF4444'];
+            ctx.strokeStyle = cl[curSc]; ctx.lineWidth = 2.5; ctx.beginPath();
+            for (let i = 0; i < W; i++) {
+                const t = i / W * 72, dp = t % 24; let g = 0;
+                if (dp > 6 && dp < 18) { g = pk[curSc] * Math.exp(-Math.pow(dp - 12, 2) / 24.5); if (curSc === 1) g *= (.7 + Math.random() * .3); if (curSc === 2) g *= (.5 + Math.random() * .2) }
+                const y = H - 20 - (g / 1000) * (H - 40); i === 0 ? ctx.moveTo(i, y) : ctx.lineTo(i, y)
+            } ctx.stroke();
+            ctx.fillStyle = cl[curSc]; ctx.font = 'bold 11px "Outfit"'; ctx.fillText('Peak: ' + pk[curSc] + ' W/m²', 10, 20);
+        }
+        drawSc(); addEventListener('resize', drawSc);
+        function setScenario(n) { curSc = n; document.querySelectorAll('.sc-btn').forEach(b => b.classList.remove('on')); document.querySelectorAll('.sc-btn')[n].classList.add('on'); drawSc() }
+
+        // ═══ MPPT CANVAS ═══
+        const mpC = document.getElementById('mpptCanvas');
+        if (mpC) {
+            const mx = mpC.getContext('2d'); let t = 0;
+            function drawMppt() {
+                const W = mpC.width = mpC.parentElement.clientWidth - 70, H = mpC.height = 120; mx.clearRect(0, 0, W, H); t += 0.02;
+                mx.strokeStyle = 'rgba(255,255,255,.04)'; mx.lineWidth = 1; for (let i = 0; i < W; i += 40) { mx.beginPath(); mx.moveTo(i, 0); mx.lineTo(i, H); mx.stroke() }
+                // Power curve
+                mx.strokeStyle = 'var(--cyan)'; mx.lineWidth = 2; mx.beginPath();
+                for (let i = 0; i < W; i++) {
+                    const x = i / W; let p = 8000 + 5000 * Math.sin(t + x * 6) * Math.max(0, Math.sin(x * 3.14)); if (p > 12000) p = 12000;
+                    const y = H - 10 - (p / 13000) * (H - 20); i === 0 ? mx.moveTo(i, y) : mx.lineTo(i, y)
+                } mx.stroke();
+                // Clip line
+                mx.strokeStyle = 'rgba(239,68,68,.4)'; mx.setLineDash([5, 5]); mx.lineWidth = 1; mx.beginPath();
+                const clipY = H - 10 - (12000 / 13000) * (H - 20); mx.moveTo(0, clipY); mx.lineTo(W, clipY); mx.stroke(); mx.setLineDash([]);
+                mx.fillStyle = 'rgba(239,68,68,.6)'; mx.font = '9px "Space Mono"'; mx.fillText('12kW CLIP', W - 80, clipY - 5);
+                requestAnimationFrame(drawMppt)
+            } drawMppt()
+        }
+
+        // ═══ SLIDING WINDOW CANVAS ═══
+        const wC = document.getElementById('windowCanvas');
+        if (wC) {
+            const wx = wC.getContext('2d'); let wo = 0;
+            function drawWin() {
+                const W = wC.width = wC.parentElement.clientWidth - 70, H = wC.height = 200; wx.clearRect(0, 0, W, H); wo += 0.25; if (wo > W) wo = 0;
+                const n = 60, bw = W / n;
+                for (let i = 0; i < n; i++) {
+                    const x = i * bw, h = 30 + Math.sin(i * .3 + wo * .02) * 25 + Math.random() * 8;
+                    const ws = Math.floor((wo / W) * n) % n, we = (ws + 14) % n, ps = we % n, pe = (ps + 8) % n;
+                    let iw = false, ip = false;
+                    if (ws < we) { iw = i >= ws && i < we } else { iw = i >= ws || i < we }
+                    if (ps < pe) { ip = i >= ps && i < pe } else { ip = i >= ps || i < pe }
+                    wx.fillStyle = ip ? 'rgba(16,185,129,.5)' : iw ? 'rgba(139,92,246,.5)' : 'rgba(255,255,255,.07)';
+                    wx.fillRect(x + 1, H - h, bw - 2, h)
+                }
+                requestAnimationFrame(drawWin)
+            }
+            const wObs = new IntersectionObserver(e => { if (e[0].isIntersecting) { drawWin(); wObs.disconnect() } }); wObs.observe(wC)
+        }
+
+        // ═══ RESPONSE CANVAS ═══
+        const rC = document.getElementById('responseCanvas');
+        if (rC) {
+            const rx = rC.getContext('2d'); let rt = 0;
+            function drawResp() {
+                const W = rC.width = rC.parentElement.clientWidth - 70, H = rC.height = 200; rx.clearRect(0, 0, W, H); rt += 0.015;
+                rx.strokeStyle = 'rgba(255,255,255,.04)'; rx.lineWidth = 1;
+                for (let i = 0; i < W; i += 50) { rx.beginPath(); rx.moveTo(i, 0); rx.lineTo(i, H); rx.stroke() }
+                const mid = H / 2, amp = 60;
+                // Target (dashed)
+                rx.strokeStyle = 'rgba(255,255,255,.2)'; rx.setLineDash([5, 5]); rx.lineWidth = 1; rx.beginPath();
+                for (let i = 0; i < W; i++) {
+                    const x = i / W; const tgt = mid - amp * Math.sign(Math.sin(x * 6 + rt));
+                    i === 0 ? rx.moveTo(i, tgt) : rx.lineTo(i, tgt)
+                } rx.stroke(); rx.setLineDash([]);
+                // PID (oscillating)
+                rx.strokeStyle = '#EF4444'; rx.lineWidth = 2; rx.beginPath();
+                for (let i = 0; i < W; i++) {
+                    const x = i / W; const tgt = mid - amp * Math.sign(Math.sin(x * 6 + rt));
+                    const osc = tgt + Math.sin(x * 40 + rt * 3) * 20 * Math.exp(-((x * 6 + rt) % 1) * 2);
+                    i === 0 ? rx.moveTo(i, osc) : rx.lineTo(i, osc)
+                } rx.stroke();
+                // MPC+FOPID (smooth)
+                rx.strokeStyle = '#10B981'; rx.lineWidth = 2.5; rx.beginPath();
+                for (let i = 0; i < W; i++) {
+                    const x = i / W; const ph = (x * 6 + rt); const tgt = mid - amp * Math.sign(Math.sin(ph));
+                    const frac = ph % 1; const smooth = mid - (mid - tgt) * (1 - Math.exp(-frac * 4));
+                    i === 0 ? rx.moveTo(i, smooth) : rx.lineTo(i, smooth)
+                } rx.stroke();
+                requestAnimationFrame(drawResp)
+            }
+            const rObs = new IntersectionObserver(e => { if (e[0].isIntersecting) { drawResp(); rObs.disconnect() } }); rObs.observe(rC)
+        }
+
+        // ═══ TANK SIM ═══
+        let tLvl = 20;
+        (function simT() {
+            const pi = .5 + Math.sin(Date.now() / 3000) * .4, po = .25 + Math.sin(Date.now() / 5000) * .1, n = pi - po;
+            tLvl += n * .05; if (tLvl > 98) tLvl = 98; if (tLvl < 2) tLvl = 2;
+            document.getElementById('tankW').style.height = tLvl + '%';
+            document.getElementById('tankLbl').textContent = Math.round(tLvl) + '%';
+            document.getElementById('pIn').textContent = pi.toFixed(2);
+            document.getElementById('pOut').textContent = po.toFixed(2);
+            document.getElementById('pNet').textContent = (n > 0 ? '+' : '') + n.toFixed(2);
+            document.getElementById('pNet').style.color = n > 0 ? 'var(--green)' : 'var(--red)';
+            requestAnimationFrame(simT)
+        })();
+    </script>
+</body>
+
+</html>

@@ -5,16 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layer 5: BiLSTM | Temporal Memory Cathedral</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
+            /* Unifying to Blue/Cyan Theme */
             --cyan: #06B6D4;
             --purple: #8B5CF6;
-            --gold: #F59E0B;
+            --gold: #06B6D4;
             --green: #10B981;
             --blue: #3B82F6;
             --bg-dark: #050510;
             --panel-bg: rgba(5, 5, 20, 0.95);
-            --glass-border: rgba(139, 92, 246, 0.4);
+            --glass-border: rgba(6, 182, 212, 0.3);
         }
 
         * {
@@ -29,7 +32,10 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Outfit', sans-serif;
-            background: #030308;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #050510 0%, #0a0a20 50%, #050510 100%);
             color: #fff;
         }
 
@@ -42,16 +48,23 @@
         /* Header - Cinematic Style */
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 90px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.6) 70%, transparent 100%);
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 64px;
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
             z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 28px;
+            box-shadow:
+                0 16px 40px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
         .layer-badge {
@@ -61,14 +74,14 @@
         }
 
         .layer-icon {
-            width: 70px;
-            height: 70px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--cyan), var(--purple));
-            border-radius: 18px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 24px;
             box-shadow: 0 0 50px rgba(139, 92, 246, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.1);
             animation: iconGlow 3s ease-in-out infinite;
         }
@@ -86,9 +99,9 @@
         }
 
         .layer-title h1 {
-            font-size: 32px;
+            font-size: 18px;
             font-weight: 300;
-            letter-spacing: 4px;
+            letter-spacing: 1px;
             background: linear-gradient(90deg, var(--cyan), var(--purple));
             -webkit-background-clip: text;
             background-clip: text;
@@ -96,9 +109,9 @@
         }
 
         .layer-title p {
-            font-size: 12px;
+            font-size: 9px;
             color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 6px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
@@ -110,21 +123,21 @@
         .metric-box {
             background: rgba(139, 92, 246, 0.1);
             border: 1px solid var(--glass-border);
-            padding: 12px 24px;
+            padding: 8px 16px;
             border-radius: 12px;
             text-align: center;
             backdrop-filter: blur(10px);
         }
 
         .metric-label {
-            font-size: 9px;
+            font-size: 8px;
             color: var(--purple);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
         }
 
         .metric-value {
-            font-size: 22px;
+            font-size: 16px;
             font-weight: 200;
             color: #fff;
             font-family: 'Courier New', monospace;
@@ -138,23 +151,24 @@
         }
 
         .nav-btn {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 10px;
-            color: #fff;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-btn:hover:not(.disabled) {
-            background: var(--purple);
-            color: #fff;
-            box-shadow: 0 0 20px var(--purple);
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--purple);
+            border-color: var(--purple);
+            transform: translateY(-1px);
         }
 
         .nav-btn.disabled {
@@ -164,40 +178,42 @@
         }
 
         .back-btn {
-            padding: 14px 28px;
-            background: transparent;
-            border: 2px solid var(--purple);
-            border-radius: 30px;
-            color: var(--purple);
-            font-size: 13px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.4s;
             text-decoration: none;
-            letter-spacing: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .back-btn:hover {
-            background: var(--purple);
-            color: #fff;
-            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--purple);
+            border-color: var(--purple);
+            transform: translateY(-1px);
         }
 
         /* Crystalline Panels */
         .left-panel {
             position: fixed;
-            left: 30px;
-            top: 110px;
-            width: 340px;
-            max-height: calc(100vh - 130px);
-            background: rgba(10, 10, 25, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            left: 24px;
+            top: 112px;
+            width: 300px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
         }
 
         .section-title {
@@ -216,8 +232,8 @@
         /* Memory Cell Diagram */
         .memory-cell {
             background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 20px;
-            padding: 25px;
+            border-radius: 16px;
+            padding: 15px;
             margin-bottom: 20px;
             position: relative;
             border: 1px solid rgba(139, 92, 246, 0.3);
@@ -272,7 +288,7 @@
         }
 
         .gate-icon {
-            font-size: 20px;
+            font-size: 16px;
         }
 
         .gate-label {
@@ -342,8 +358,8 @@
 
         .direction-card {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 14px;
-            padding: 18px;
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
             border: 2px solid transparent;
             cursor: pointer;
@@ -356,17 +372,17 @@
 
         .direction-card.active {
             border-color: var(--cyan);
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
         }
 
         .direction-card.backward.active {
             border-color: var(--purple);
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
         .direction-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
+            font-size: 18px;
+            margin-bottom: 6px;
         }
 
         .direction-name {
@@ -384,18 +400,18 @@
         /* Right Panel */
         .right-panel {
             position: fixed;
-            right: 30px;
-            top: 110px;
-            width: 360px;
-            max-height: calc(100vh - 130px);
+            right: 20px;
+            top: 90px;
+            width: 280px;
+            max-height: calc(100vh - 110px);
             background: rgba(10, 10, 25, 0.75);
             backdrop-filter: blur(30px) saturate(140%);
             border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 20px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
         }
 
         /* Control Sliders */
@@ -450,19 +466,19 @@
         }
 
         .toggle-btn {
-            padding: 14px;
+            padding: 8px 12px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: 12px;
+            border-radius: 8px;
             color: rgba(255, 255, 255, 0.6);
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .toggle-btn:hover {
@@ -480,10 +496,10 @@
         /* Equations */
         .equation-card {
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--purple);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--purple);
         }
 
         .equation-title {
@@ -511,13 +527,13 @@
 
         .stat-card {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 8px;
+            padding: 10px;
             text-align: center;
         }
 
         .stat-number {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 200;
             color: var(--cyan);
             font-family: 'Courier New', monospace;
@@ -676,6 +692,163 @@
             box-shadow: 0 0 40px rgba(139, 92, 246, 0.15);
             border-color: rgba(139, 92, 246, 0.5);
         }
+
+        /* ═══════════════════════════════════════════════════
+           INFO MODAL (Detailed Explanation)
+           ═══════════════════════════════════════════════════ */
+        #info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #info-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 25, 0.95);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: #fff;
+            direction: rtl;
+        }
+
+        #info-modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.1);
+        }
+
+        .modal-body h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--cyan);
+            font-weight: 500;
+        }
+
+        .modal-body p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #d0d0e0;
+            margin-bottom: 16px;
+        }
+
+        .modal-body h3 {
+            font-size: 18px;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--purple);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+            padding-bottom: 8px;
+        }
+
+        @keyframes pulse-attn-border {
+
+            0%,
+            100% {
+                box-shadow: 0 0 15px rgba(245, 158, 11, 0.3), inset 0 0 10px rgba(245, 158, 11, 0.1);
+                border-color: rgba(245, 158, 11, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(245, 158, 11, 0.7), inset 0 0 20px rgba(245, 158, 11, 0.3);
+                border-color: rgba(245, 158, 11, 1);
+                transform: scale(1.02);
+            }
+        }
+
+        @keyframes shine-attn {
+            0% {
+                left: -100%;
+            }
+
+            20% {
+                left: 200%;
+            }
+
+            100% {
+                left: 200%;
+            }
+        }
+
+        #btn-compare-attn {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15));
+            border: 1px solid rgba(245, 158, 11, 0.8);
+            border-radius: 8px;
+            color: #F59E0B;
+            padding: 8px 20px;
+            margin-left: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-attn-border 2.5s infinite ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        #btn-compare-attn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.4), transparent);
+            transform: skewX(-20deg);
+            animation: shine-attn 3s infinite;
+        }
+
+        #btn-compare-attn:hover {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.8), rgba(239, 68, 68, 0.8));
+            color: #fff;
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.9);
+            transform: translateY(-2px) scale(1.05);
+            border-color: #fff;
+        }
     </style>
 </head>
 
@@ -707,6 +880,8 @@
             <a href="layer4-dropout1.html" class="nav-btn">← PREV</a>
             <a href="../index.html" class="nav-btn">HOME</a>
             <a href="layer6-dropout2.html" class="nav-btn">NEXT →</a>
+            <a href="layer5b-attention.html" class="nav-btn" id="btn-compare-attn"><span
+                    style="font-size: 16px; margin-bottom: 2px;">⑂</span> RESEARCH: ATTENTION PATH</a>
         </div>
 
         <div class="header-metrics">
@@ -733,7 +908,12 @@
 
     <!-- Left Panel -->
     <div class="left-panel">
-        <div class="section-title">🧠 Memory Cell Architecture</div>
+        <div class="section-title" style="justify-content: space-between;">
+            <div>🧠 Memory Cell Architecture</div>
+            <button id="btn-info"
+                style="pointer-events: auto; width:22px; height:22px; border-radius:50%; background:rgba(139,92,246,0.2); border:1px solid rgba(139,92,246,0.5); color:#fff; cursor:pointer; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; transition:0.2s;"
+                title="Detailed Explanation">i</button>
+        </div>
 
         <div class="memory-cell">
             <div class="cell-visual">
@@ -893,6 +1073,54 @@
     </div>
 
 
+    <!-- Info Modal -->
+    <!-- Info Modal -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    </style>
+    <div id="info-modal">
+        <div class="modal-content"
+            style="border-color: var(--purple); font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; direction: rtl; text-align: right;">
+            <button class="modal-close" id="btn-close-modal">✕</button>
+            <div class="modal-body">
+                <h2 style="color: var(--cyan); font-weight: 700; margin-bottom: 20px; font-size: 26px;">
+                    الذاكرة الزمنية: شبكة BiLSTM
+                </h2>
+
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid var(--purple); margin-bottom: 20px;">
+                    <h3 style="color: var(--purple); font-size: 18px; margin-bottom: 10px;">المحرك الزمني للنموذج</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        تعتبر طبقة الذاكرة طويلة وقصيرة المدى ثنائية الاتجاه (BiLSTM) بمثابة "الدماغ الزمني" للنموذج
+                        الهجين. على عكس الشبكات التقليدية، تمتلك هذه الشبكة "بوابات" داخلية (بوابة النسيان، الإدخال،
+                        والإخراج) قادرة على تنظيم تدفق المعلومات، مما يسمح لها بتذكر تفاصيل الطقس على المدى الطويل
+                        وتجاهل الضوضاء اللحظية.
+                    </p>
+                </div>
+
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid var(--cyan); margin-bottom: 20px;">
+                    <h3 style="color: var(--cyan); font-size: 18px; margin-bottom: 10px;">نظرة للمستقبل والماضي في آن
+                        واحد</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        تقوم هذه الطبقة بمعالجة تسلسل الـ 24 ساعة في اتجاهين متزامنين: المسار الأمامي يدرس كيف تؤثر شمس
+                        الصباح على فترة الظهيرة، بينما المسار الخلفي يقيم الساعات الأخيرة في سياق اليوم بأكمله. يخلق هذا
+                        رؤية كاملة للديناميكية الزمنية، مدعومة بـ 210 خلية في كل اتجاه كجسر أخير قبل التنبؤ المعقد.
+                    </p>
+                </div>
+
+                <div
+                    style="margin-top:25px; text-align:center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+                        للتواصل: <span
+                            style="color: var(--cyan); font-weight: bold; letter-spacing: 2px;">IZZELDEENM@GMAIL.COM</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three.js Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
@@ -1502,13 +1730,24 @@
                     panel.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
                 });
             });
+
+            // Info Modal Logic
+            const infoModal = document.getElementById('info-modal');
+            document.getElementById('btn-info').addEventListener('click', () => {
+                infoModal.classList.add('show');
+            });
+            document.getElementById('btn-close-modal').addEventListener('click', () => {
+                infoModal.classList.remove('show');
+            });
+            infoModal.addEventListener('click', (e) => {
+                if (e.target === infoModal) {
+                    infoModal.classList.remove('show');
+                }
+            });
         }
 
         init();
     </script>
-    <div
-        style="position:fixed; bottom:14px; right:24px; z-index:9999; font-family:'Outfit','Segoe UI',sans-serif; font-weight:600; font-size:13px; color:rgba(139,92,246,0.7); letter-spacing:3px; text-transform:uppercase; pointer-events:none; text-shadow:0 0 8px rgba(139,92,246,0.3);">
-        IZZELDEENM@GMAIL.COM</div>
 </body>
 
 </html>

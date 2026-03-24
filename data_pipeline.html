@@ -5,6 +5,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PI-Hybrid: Data Pipeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyan: '#06B6D4',
+                        purple: '#8B5CF6',
+                        gold: '#F59E0B',
+                        green: '#10B981',
+                        blue: '#3B82F6',
+                        red: '#EF4444',
+                        bg: '#030308',
+                        background: 'hsl(0, 0%, 0%)',
+                        foreground: 'hsl(0, 0%, 12%)',
+                        primary: 'hsl(0, 0%, 95%)',
+                        'primary-foreground': 'hsl(0, 0%, 12%)',
+                        'accent-warm': 'hsl(25, 90%, 55%)'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style id="premium-styles">
+        html.premium-view-active {
+            scroll-behavior: smooth;
+        }
+
+        .premium-view-active #classic-view {
+            display: none !important;
+        }
+
+        .premium-view-active #premium-view {
+            display: block !important;
+        }
+
+        .premium-view-active {
+            background-color: hsl(0, 0%, 0%) !important;
+            color: hsl(0, 0%, 95%) !important;
+        }
+
+        #premium-view {
+            display: none;
+            font-family: 'Outfit', sans-serif;
+            background-color: hsl(0, 0%, 0%);
+            color: hsl(0, 0%, 95%);
+            min-height: 100vh;
+        }
+    </style>
+    <style type="text/tailwindcss">
+        @layer components {
+            .interactive-mode .glass, .interactive-mode .terminal, .interactive-mode .chart-canvas, .interactive-mode .norm-box, .interactive-mode .insight-box {
+                @apply bg-white/5 backdrop-blur-3xl border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.05)] transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)];
+            }
+            .interactive-mode .section h2 {
+                @apply text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.5)];
+            }
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link
@@ -445,879 +513,1658 @@
 </head>
 
 <body>
-    <canvas id="bg-canvas"></canvas>
+    <div id="classic-view">
+        <canvas id="bg-canvas"></canvas>
 
-    <nav class="top-nav">
-        <div class="logo">PI-HYBRID // DATA PIPELINE</div>
-        <a href="index.html" class="back-btn">← BACK TO HUB</a>
-    </nav>
+        <nav class="top-nav">
+            <div class="logo">PI-HYBRID // DATA PIPELINE</div>
+            <a href="index.html" class="back-btn">← BACK TO HUB</a>
+        </nav>
 
-    <!-- ARABIC PANEL HTML -->
-    <div id="ar-panel-overlay" onclick="closeArPanel()"></div>
-    <div id="ar-panel">
-        <div class="ar-close">
-            <div style="font-family:'Courier New'; font-size:11px; letter-spacing:3px; color:var(--cyan);">الشرح
-                التفصيلي</div>
-            <div class="ar-close-btn" onclick="closeArPanel()">✕</div>
-        </div>
-        <div class="ar-panel-content" id="ar-panel-inner"></div>
-    </div>
-    <script src="ar-panel.js"></script>
-
-    <!-- =============================== -->
-    <!-- STAGE 0: Hero + Data Source -->
-    <!-- =============================== -->
-    <section class="section" style="display:flex;flex-direction:column;justify-content:center">
-        <div class="reveal">
-            <span class="section-badge">CHAPTER 05 // THE PIPELINE</span>
-            <h2>The Data Odyssey <span onclick="openArPanel('dp_hero')"
-                    style="font-size:0.5em; vertical-align:middle; cursor:pointer;" class="ar-mini-btn">ℹ️</span></h2>
-            <p>From raw NASA satellite data to model-ready tensors — a rigorous, physics-guided preprocessing pipeline
-                that transforms noisy observations into clean, structured intelligence.</p>
-            <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
-                <div onclick="openModal('nasa_power')"
-                    style="cursor:pointer;padding:10px 18px;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--cyan)">
-                    NASA POWER API</div>
-                <div onclick="openModal('omdurman')"
-                    style="cursor:pointer;padding:10px 18px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--purple);font-family:'Outfit',sans-serif;font-weight:700">
-                    OMDURMAN 14.7°N</div>
-                <div onclick="openModal('timespan')"
-                    style="cursor:pointer;padding:10px 18px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--gold)">
-                    2010–2024</div>
-                <div onclick="openModal('resolution')"
-                    style="cursor:pointer;padding:10px 18px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--green)">
-                    HOURLY RESOLUTION</div>
-            </div>
-        </div>
-        <div class="grid-2 reveal" style="margin-top:50px">
-            <div class="terminal">
-                <div class="terminal-bar">
-                    <span style="color:var(--cyan)">nasa_power_stream.py</span>
-                    <span style="color:var(--green);animation:blink 1s infinite">● LIVE</span>
+        <!-- =============================== -->
+        <!-- CHAPTER 01: The Context (3D Globe) -->
+        <!-- =============================== -->
+        <section id="chapter1" class="section" style="min-height:auto; padding-top:150px; padding-bottom:50px;">
+            <div class="grid-2 reveal">
+                <div class="story-content">
+                    <span class="section-badge">CHAPTER 01 // THE CONTEXT</span>
+                    <h2 onclick="openArPanel('ch01')">The Stochastic Challenge</h2>
+                    <p><strong>Location:</strong> Omdurman, Sudan (14.7°N, 33.2°E)</p>
+                    <p>In arid regions, grid stability is constantly threatened by "Aerosol Optical Depth" (Dust Storms) and
+                        rapid Cloud Transients. These make solar generation wildly unpredictable.</p>
+                    <p>Standard AI treats this as random noise. We treat it as <strong>Physics</strong>.</p>
                 </div>
-                <div class="terminal-body" id="api-terminal"></div>
-            </div>
-            <div>
-                <div class="glass">
-                    <div onclick="openModal('profile')"
-                        style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:15px">
-                        DATASET PROFILE
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
-                        <div class="live-stat">
-                            <div class="val" style="color:var(--cyan)">131,400</div>
-                            <div class="lbl">Total Records</div>
-                        </div>
-                        <div class="live-stat">
-                            <div class="val" style="color:var(--purple)">15</div>
-                            <div class="lbl">Features</div>
-                        </div>
-                        <div class="live-stat">
-                            <div class="val" style="color:var(--gold)">15 yrs</div>
-                            <div class="lbl">Time Span</div>
-                        </div>
-                        <div class="live-stat">
-                            <div class="val" style="color:var(--green)">1 hr</div>
-                            <div class="lbl">Resolution</div>
+
+                <div class="glass reveal" style="padding:0; overflow:hidden; position:relative; min-height:400px; display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at center, #0a0a1a, #000);">
+                    <!-- Enhanced 3D Globe Visual -->
+                    <div id="sudan-globe-container" style="width:100%; height:400px; position:relative; outline:none;">
+                        <canvas id="globe-canvas" style="width:100%; height:100%; outline:none;"></canvas>
+
+                        <div style="position:absolute; top:20px; left:20px; text-align:left; font-family:'Outfit', sans-serif; font-size:12px; color:rgba(255,255,255,0.9); background:rgba(0,0,0,0.6); padding:10px 15px; border-radius:10px; border-left:2px solid var(--cyan); backdrop-filter:blur(5px); z-index:5;">
+                            <div style="font-size:10px; color:var(--cyan); letter-spacing:2px; margin-bottom:4px;">SITE COORDINATES</div>
+                            14.7°N, 33.2°E<br>
+                            <span style="font-size:10px; opacity:0.7;">GHI: 6.2 kWh/m²/day</span><br>
+                            <span style="color:var(--red); font-weight:bold; font-size:10px;">⚠ HIGH VOLATILITY</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- =============================== -->
-    <!-- STAGE 1: Statistical Cleaning -->
-    <!-- =============================== -->
-    <section class="section">
-        <div class="reveal">
-            <div class="stage-header">
-                <div class="stage-num"
-                    style="background:rgba(239,68,68,0.15);color:var(--red);border:2px solid var(--red)">1</div>
-                <div><span class="section-badge">STAGE 01</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage1')">Statistical Cleaning
-                    </h2>
-                </div>
+            <div class="reveal" style="margin-top:40px; text-align:center;">
+                <p style="margin: 0 auto; color:rgba(255,255,255,0.5); font-style: italic;">Omdurman: Precision analysis of aerosol optical depth and cloud transients in the Nile basin.</p>
             </div>
-            <p>Raw satellite data contains errors: negative irradiance values, sensor dropout codes (-999), and missing
-                gaps. We clean everything before physics enters the picture.</p>
-        </div>
-        <div class="grid-2 reveal" style="margin-top:30px">
-            <div>
-                <canvas id="clean-canvas" class="chart-canvas"></canvas>
-                <div style="display:flex;gap:15px;margin-top:15px;align-items:center">
-                    <button class="btn-action" id="btn-clean" onclick="runCleaning()">▶ RUN CLEANING</button>
-                    <span id="clean-status" style="font-size:12px;color:rgba(255,255,255,0.4)">Showing raw data with
-                        errors</span>
-                </div>
-            </div>
-            <div>
-                <div class="glass" style="text-align:center">
-                    <div style="font-size:10px;letter-spacing:2px;color:var(--red);margin-bottom:20px">CLEANING RESULTS
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
-                        <div class="live-stat">
-                            <div class="val" id="stat-errors" style="color:var(--red)">—</div>
-                            <div class="lbl">Errors Detected</div>
-                        </div>
-                        <div class="live-stat">
-                            <div class="val" id="stat-fixed" style="color:var(--green)">—</div>
-                            <div class="lbl">Fixed</div>
-                        </div>
-                        <div class="live-stat">
-                            <div class="val" id="stat-neg" style="color:var(--gold)">—</div>
-                            <div class="lbl">Negatives Removed</div>
-                        </div>
-                        <div class="live-stat">
-                            <div class="val" id="stat-quality" style="color:var(--cyan)">—</div>
-                            <div class="lbl">Data Quality</div>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    style="margin-top:15px;padding:15px 20px;background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6)">
-                    <div style="color:var(--cyan);margin-bottom:8px">RULES APPLIED:</div>
-                    <div>① Remove GHI &lt; 0 (non-physical)</div>
-                    <div>② Replace -999 error codes → NaN</div>
-                    <div>③ Linear interpolation for gaps</div>
-                    <div>④ Temporal alignment → Δt = 3600s</div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =============================== -->
-    <!-- STAGE 2: Night Masking -->
-    <!-- =============================== -->
-    <section class="section">
-        <div class="reveal">
-            <div class="stage-header">
-                <div class="stage-num"
-                    style="background:rgba(139,92,246,0.15);color:var(--purple);border:2px solid var(--purple)">2</div>
-                <div><span class="section-badge">STAGE 02</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage2')">Physics-Guided Night
-                        Masking</h2>
+        <!-- Divider -->
+        <div class="reveal" style="max-width: 1300px; margin: 0 auto; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent);"></div>
+
+        <!-- ARABIC PANEL HTML -->
+        <div id="ar-panel-overlay" onclick="closeArPanel()"></div>
+        <div id="ar-panel">
+            <div class="ar-close">
+                <div style="font-family:'Courier New'; font-size:11px; letter-spacing:3px; color:var(--cyan);">الشرح
+                    التفصيلي</div>
+                <div class="ar-close-btn" onclick="closeArPanel()">✕</div>
+            </div>
+            <div class="ar-panel-content" id="ar-panel-inner"></div>
+        </div>
+        <script src="ar-panel.js"></script>
+
+        <!-- =============================== -->
+        <!-- STAGE 0: Hero + Data Source -->
+        <!-- =============================== -->
+        <section class="section" style="display:flex;flex-direction:column;justify-content:center">
+            <div class="reveal">
+                <span class="section-badge">CHAPTER 05 // THE PIPELINE</span>
+                <h2>The Data Odyssey <span onclick="openArPanel('dp_hero')"
+                        style="font-size:0.5em; vertical-align:middle; cursor:pointer;" class="ar-mini-btn">ℹ️</span>
+                </h2>
+                <p>From raw NASA satellite data to model-ready tensors — a rigorous, physics-guided preprocessing
+                    pipeline
+                    that transforms noisy observations into clean, structured intelligence.</p>
+                <div style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap">
+                    <div onclick="openModal('nasa_power')"
+                        style="cursor:pointer;padding:10px 18px;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--cyan)">
+                        NASA POWER API</div>
+                    <div onclick="openModal('omdurman')"
+                        style="cursor:pointer;padding:10px 18px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--purple);font-family:'Outfit',sans-serif;font-weight:700">
+                        OMDURMAN 14.7°N</div>
+                    <div onclick="openModal('timespan')"
+                        style="cursor:pointer;padding:10px 18px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--gold)">
+                        2010–2024</div>
+                    <div onclick="openModal('resolution')"
+                        style="cursor:pointer;padding:10px 18px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:30px;font-size:11px;letter-spacing:1px;color:var(--green)">
+                        HOURLY RESOLUTION</div>
                 </div>
             </div>
-            <p>At night, solar sensors still read noise. We use the Clear-Sky GHI model to identify nighttime and
-                <strong>force all radiative variables to zero</strong>. Drag the slider to move through a 24-hour cycle.
-            </p>
-        </div>
-        <div class="grid-2 reveal" style="margin-top:30px">
-            <div>
-                <canvas id="sun-arc-canvas"></canvas>
-                <div style="margin-top:15px">
+            <div class="grid-2 reveal" style="margin-top:50px">
+                <div class="terminal">
+                    <div class="terminal-bar">
+                        <span style="color:var(--cyan)">nasa_power_stream.py</span>
+                        <span style="color:var(--green);animation:blink 1s infinite">● LIVE</span>
+                    </div>
+                    <div class="terminal-body" id="api-terminal"></div>
+                </div>
+                <div>
+                    <div class="glass">
+                        <div onclick="openModal('profile')"
+                            style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:15px">
+                            DATASET PROFILE
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+                            <div class="live-stat">
+                                <div class="val" style="color:var(--cyan)">131,400</div>
+                                <div class="lbl">Total Records</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" style="color:var(--purple)">15</div>
+                                <div class="lbl">Features</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" style="color:var(--gold)">15 yrs</div>
+                                <div class="lbl">Time Span</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" style="color:var(--green)">1 hr</div>
+                                <div class="lbl">Resolution</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================== -->
+        <!-- STAGE 1: Statistical Cleaning -->
+        <!-- =============================== -->
+        <section class="section">
+            <div class="reveal">
+                <div class="stage-header">
+                    <div class="stage-num"
+                        style="background:rgba(239,68,68,0.15);color:var(--red);border:2px solid var(--red)">1</div>
+                    <div><span class="section-badge">STAGE 01</span>
+                        <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage1')">Statistical
+                            Cleaning
+                        </h2>
+                    </div>
+                </div>
+                <p>Raw satellite data contains errors: negative irradiance values, sensor dropout codes (-999), and
+                    missing
+                    gaps. We clean everything before physics enters the picture.</p>
+            </div>
+            <div class="grid-2 reveal" style="margin-top:30px">
+                <div>
+                    <canvas id="clean-canvas" class="chart-canvas"></canvas>
+                    <div style="display:flex;gap:15px;margin-top:15px;align-items:center">
+                        <button class="btn-action" id="btn-clean" onclick="runCleaning()">▶ RUN CLEANING</button>
+                        <span id="clean-status" style="font-size:12px;color:rgba(255,255,255,0.4)">Showing raw data with
+                            errors</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="glass" style="text-align:center">
+                        <div style="font-size:10px;letter-spacing:2px;color:var(--red);margin-bottom:20px">CLEANING
+                            RESULTS
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+                            <div class="live-stat">
+                                <div class="val" id="stat-errors" style="color:var(--red)">—</div>
+                                <div class="lbl">Errors Detected</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" id="stat-fixed" style="color:var(--green)">—</div>
+                                <div class="lbl">Fixed</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" id="stat-neg" style="color:var(--gold)">—</div>
+                                <div class="lbl">Negatives Removed</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" id="stat-quality" style="color:var(--cyan)">—</div>
+                                <div class="lbl">Data Quality</div>
+                            </div>
+                        </div>
+                    </div>
                     <div
-                        style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:5px">
-                        <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+                        style="margin-top:15px;padding:15px 20px;background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6)">
+                        <div style="color:var(--cyan);margin-bottom:8px">RULES APPLIED:</div>
+                        <div>① Remove GHI &lt; 0 (non-physical)</div>
+                        <div>② Replace -999 error codes → NaN</div>
+                        <div>③ Linear interpolation for gaps</div>
+                        <div>④ Temporal alignment → Δt = 3600s</div>
                     </div>
-                    <input type="range" id="hour-slider" min="0" max="240" value="120"
-                        style="width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(139,92,246,0.3),var(--gold),var(--gold),rgba(139,92,246,0.3));outline:none"
-                        oninput="updateSunArc()">
                 </div>
             </div>
-            <div>
-                <div class="glass" id="mask-info">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-                        <div>
-                            <div style="font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:5px">CURRENT
-                                TIME</div>
-                            <div id="mask-time"
-                                style="font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:900">12:00</div>
-                        </div>
-                        <div id="mask-status"
-                            style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(245,158,11,0.15);border:1px solid var(--gold);color:var(--gold)">
-                            ☀️ DAYTIME</div>
+        </section>
+
+        <!-- =============================== -->
+        <!-- STAGE 1.5: Log Transformation   -->
+        <!-- =============================== -->
+        <section class="section">
+            <div class="reveal">
+                <div class="stage-header">
+                    <div class="stage-num"
+                        style="background:rgba(251,146,60,0.15);color:#fb923c;border:2px solid #fb923c">𝑓</div>
+                    <div><span class="section-badge">STAGE 01.5 // TRANSFORMATION</span>
+                        <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_log')">Logarithmic
+                            Transformation</h2>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px">
-                        <div onclick="openModal('ghi_cs')"
-                            style="cursor:pointer;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;text-align:center">
-                            <div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px">GHI_cs</div>
-                            <div id="mask-ghi"
-                                style="font-family:'Space Mono',monospace;font-size:18px;color:var(--gold)">850</div>
-                            <div style="font-size:9px;color:rgba(255,255,255,0.3)">W/m²</div>
-                        </div>
-                        <div onclick="openModal('zenith')"
-                            style="cursor:pointer;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;text-align:center">
-                            <div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px">ZENITH</div>
-                            <div id="mask-zen"
-                                style="font-family:'Space Mono',monospace;font-size:18px;color:var(--cyan)">15°</div>
-                        </div>
-                    </div>
-                    <div id="mask-rule"
-                        style="padding:12px 15px;border-radius:10px;font-size:12px;font-family:'Space Mono',monospace;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green)">
-                        ✓ GHI_cs ≥ 5 W/m² → Data passes through</div>
                 </div>
-                <div class="insight-box" style="margin-top:15px">
-                    <div class="tag">💡 WHY NIGHT MASKING?</div>
-                    <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0">Without masking, the model wastes
-                        capacity "learning" that nighttime GHI is zero. By explicitly clamping, we give the AI a
-                        <strong>free physics constraint</strong> — reducing noise and improving sunrise/sunset accuracy
-                        by 23%.
+                <p>Solar irradiance data is heavily <strong>right-skewed</strong>. A log transformation compresses the dynamic range, accelerating neural network convergence and improving Adam optimizer efficiency by making the distribution more Gaussian.</p>
+            </div>
+
+            <!-- Interactive Visualization -->
+            <div class="grid-2 reveal" style="margin-top:30px">
+                <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <div style="font-size:10px;letter-spacing:2px;color:#fb923c">DISTRIBUTION VIEW</div>
+                        <button class="btn-action" id="btn-log-toggle" onclick="toggleLogTransform()" style="background:rgba(251,146,60,0.15);border-color:#fb923c;color:#fb923c">
+                            ▶ APPLY LOG₁₀(1+x)
+                        </button>
+                    </div>
+                    <canvas id="log-canvas" class="chart-canvas" style="height:280px"></canvas>
+                    <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.4);margin-top:10px">
+                        <span id="log-x-label">GHI (W/m²)</span>
+                        <span id="log-state-label" style="color:#fb923c">Original Distribution</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="glass" style="text-align:center">
+                        <div style="font-size:10px;letter-spacing:2px;color:#fb923c;margin-bottom:20px">TRANSFORMATION IMPACT</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px">
+                            <div class="live-stat">
+                                <div class="val" id="log-skew-before" style="color:var(--red)">2.34</div>
+                                <div class="lbl">Skew (Before)</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" id="log-skew-after" style="color:var(--green)">—</div>
+                                <div class="lbl">Skew (After)</div>
+                            </div>
+                            <div class="live-stat">
+                                <div class="val" id="log-range" style="color:#fb923c">—</div>
+                                <div class="lbl">Compression</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:15px;padding:15px 20px;background:rgba(0,0,0,0.3);border-radius:12px;border:1px solid rgba(251,146,60,0.2);font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,0.6)">
+                        <div style="color:#fb923c;margin-bottom:8px">EQUATIONS & CONDITIONS:</div>
+                        <div>• Forward: x' = log₁₀(1 + x)</div>
+                        <div>• Inverse: x = 10^(x') - 1</div>
+                        <div style="margin-top:8px;color:rgba(255,255,255,0.4)">* Uses (1+x) to prevent undefined log(0) and preserve night masking zeros.</div>
+                        <div style="color:var(--cyan);margin-top:15px;margin-bottom:8px">APPLIED TO 7 VARIABLES:</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+                            <div>- GHI</div><div>- DHI</div>
+                            <div>- Clear-sky GHI</div><div>- Amb. Temp</div>
+                            <div>- KT Satellite</div><div>- Wet Bulb Temp</div>
+                            <div>- DNI</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="reveal" style="margin-top:15px">
+                <div class="warning-badge" style="display:flex;align-items:center;font-size:11px;line-height:1.6;border-color:rgba(251,146,60,0.3);background:rgba(251,146,60,0.05)">
+                    ⚠️ PIPELINE SEQUENCE: Cleaning → Night Mask → <strong style="color:#fb923c;margin:0 4px">Log Transform</strong> → Normalization → Sliding Window
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================== -->
+        <!-- STAGE 2: Night Masking -->
+        <!-- =============================== -->
+        <section class="section">
+            <div class="reveal">
+                <div class="stage-header">
+                    <div class="stage-num"
+                        style="background:rgba(139,92,246,0.15);color:var(--purple);border:2px solid var(--purple)">2
+                    </div>
+                    <div><span class="section-badge">STAGE 02</span>
+                        <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage2')">Physics-Guided
+                            Night
+                            Masking</h2>
+                    </div>
+                </div>
+                <p>At night, solar sensors still read noise. We use the Clear-Sky GHI model to identify nighttime and
+                    <strong>force all radiative variables to zero</strong>. Drag the slider to move through a 24-hour
+                    cycle.
+                </p>
+            </div>
+            <div class="grid-2 reveal" style="margin-top:30px">
+                <div>
+                    <canvas id="sun-arc-canvas"></canvas>
+                    <div style="margin-top:15px">
+                        <div
+                            style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:5px">
+                            <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span>
+                        </div>
+                        <input type="range" id="hour-slider" min="0" max="240" value="120"
+                            style="width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(139,92,246,0.3),var(--gold),var(--gold),rgba(139,92,246,0.3));outline:none"
+                            oninput="updateSunArc()">
+                    </div>
+                </div>
+                <div>
+                    <div class="glass" id="mask-info">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                            <div>
+                                <div style="font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:5px">
+                                    CURRENT
+                                    TIME</div>
+                                <div id="mask-time"
+                                    style="font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:900">12:00</div>
+                            </div>
+                            <div id="mask-status"
+                                style="padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(245,158,11,0.15);border:1px solid var(--gold);color:var(--gold)">
+                                ☀️ DAYTIME</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px">
+                            <div onclick="openModal('ghi_cs')"
+                                style="cursor:pointer;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;text-align:center">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px">GHI_cs</div>
+                                <div id="mask-ghi"
+                                    style="font-family:'Space Mono',monospace;font-size:18px;color:var(--gold)">850
+                                </div>
+                                <div style="font-size:9px;color:rgba(255,255,255,0.3)">W/m²</div>
+                            </div>
+                            <div onclick="openModal('zenith')"
+                                style="cursor:pointer;padding:12px;background:rgba(0,0,0,0.3);border-radius:10px;text-align:center">
+                                <div style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:1px">ZENITH</div>
+                                <div id="mask-zen"
+                                    style="font-family:'Space Mono',monospace;font-size:18px;color:var(--cyan)">15°
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mask-rule"
+                            style="padding:12px 15px;border-radius:10px;font-size:12px;font-family:'Space Mono',monospace;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:var(--green)">
+                            ✓ GHI_cs ≥ 5 W/m² → Data passes through</div>
+                    </div>
+                    <div class="insight-box" style="margin-top:15px">
+                        <div class="tag">💡 WHY NIGHT MASKING?</div>
+                        <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0">Without masking, the model wastes
+                            capacity "learning" that nighttime GHI is zero. By explicitly clamping, we give the AI a
+                            <strong>free physics constraint</strong> — reducing noise and improving sunrise/sunset
+                            accuracy
+                            by 23%.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================== -->
+        <!-- STAGE 3: Hybrid Normalization -->
+        <!-- =============================== -->
+        <section class="section">
+            <div class="reveal">
+                <div class="stage-header">
+                    <div class="stage-num"
+                        style="background:rgba(6,182,212,0.15);color:var(--cyan);border:2px solid var(--cyan)">3</div>
+                    <div><span class="section-badge">STAGE 03</span>
+                        <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage3')">Hybrid
+                            Normalization
+                        </h2>
+                    </div>
+                </div>
+                <p>Two different normalization strategies for two different roles. Click a feature to see its raw vs
+                    normalized distribution.</p>
+            </div>
+            <div class="grid-2 reveal" style="margin-top:30px">
+                <div class="norm-box" style="border-color:rgba(6,182,212,0.3)">
+                    <div onclick="openModal('zscore')"
+                        style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--cyan);margin-bottom:15px">
+                        INPUT
+                        FEATURES →
+                        Z-SCORE</div>
+                    <canvas id="zscore-canvas" class="chart-canvas" style="height:200px"></canvas>
+                    <div style="margin-top:15px;font-family:'Space Mono',monospace;font-size:14px;color:var(--cyan)">z =
+                        (x
+                        − μ<sub>train</sub>) / σ<sub>train</sub></div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px">Zero mean, unit variance
+                    </div>
+                </div>
+                <div class="norm-box" style="border-color:rgba(245,158,11,0.3)">
+                    <div onclick="openModal('minmax')"
+                        style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:15px">
+                        TARGET
+                        (GHI) →
+                        MIN-MAX</div>
+                    <canvas id="minmax-canvas" class="chart-canvas" style="height:200px"></canvas>
+                    <div style="margin-top:15px;font-family:'Space Mono',monospace;font-size:14px;color:var(--gold)">x̂
+                        = (x
+                        − min) / (max − min)</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px">Scaled to [0, 1]</div>
+                </div>
+            </div>
+            <div class="reveal" style="margin-top:20px">
+                <div class="warning-badge">⚠️ LEAKAGE PREVENTION: μ and σ computed ONLY on training set, frozen for
+                    validation and test</div>
+            </div>
+        </section>
+
+        <!-- =============================== -->
+        <!-- STAGE 4: Sliding Window  -->
+        <!-- =============================== -->
+        <section class="section">
+            <div class="reveal">
+                <div class="stage-header">
+                    <div class="stage-num"
+                        style="background:rgba(245,158,11,0.15);color:var(--gold);border:2px solid var(--gold)">4</div>
+                    <div><span class="section-badge">STAGE 04</span>
+                        <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage4')">Sliding Window
+                            Formation
+                        </h2>
+                    </div>
+                </div>
+                <p>The final step: slice the clean, normalized data into <strong>24-hour lookback windows</strong>. Each
+                    window forms a <strong>24×15 tensor</strong> — the exact input shape the neural network expects.</p>
+            </div>
+            <div class="reveal" style="margin-top:30px">
+                <canvas id="window-canvas"></canvas>
+                <div style="display:flex;gap:15px;margin-top:15px;align-items:center">
+                    <button class="btn-action" id="btn-step" onclick="stepWindow()">→ STEP FORWARD</button>
+                    <button class="btn-action" onclick="autoWindow()" id="btn-auto">▶ AUTO PLAY</button>
+                    <span style="font-size:12px;color:rgba(255,255,255,0.4)">Window: <span id="win-pos"
+                            style="color:var(--cyan);font-weight:bold">t=0</span> → Predicting: <span id="win-target"
+                            style="color:var(--gold);font-weight:bold">GHI<sub>t+1</sub></span></span>
+                </div>
+            </div>
+            <div class="grid-2 reveal" style="margin-top:25px">
+                <div class="glass" style="text-align:center">
+                    <div onclick="openModal('tensor_shape')"
+                        style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--cyan);margin-bottom:10px">
+                        INPUT
+                        TENSOR SHAPE
+                    </div>
+                    <div style="font-family:'Outfit',sans-serif;font-size:3rem;font-weight:900">24 × 15</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:5px">timesteps × features</div>
+                </div>
+                <div class="glass" style="text-align:center">
+                    <div onclick="openModal('target_shape')"
+                        style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">
+                        OUTPUT
+                        TARGET</div>
+                    <div style="font-family:'Outfit',sans-serif;font-size:3rem;font-weight:900">GHI<sub
+                            style="font-size:1.5rem">t+1</sub></div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:5px">Next-hour forecast
+                        (Sequence-to-One)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =============================== -->
+        <!-- STAGE 5: Chronological Split -->
+        <!-- =============================== -->
+        <section class="section">
+            <div class="reveal">
+                <div class="stage-header">
+                    <div class="stage-num"
+                        style="background:rgba(16,185,129,0.15);color:var(--green);border:2px solid var(--green)">5
+                    </div>
+                    <div><span class="section-badge">STAGE 05</span>
+                        <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage5')">Chronological
+                            Split
+                        </h2>
+                    </div>
+                </div>
+                <p>The final safeguard: <strong>No random shuffling</strong>. The data is split strictly by time to
+                    prevent
+                    any future information from leaking into the training set.</p>
+            </div>
+            <div class="reveal" style="margin-top:30px">
+                <div class="glass">
+                    <div style="font-size:10px;letter-spacing:2px;color:var(--green);margin-bottom:25px">TEMPORAL SPLIT
+                        STRATEGY</div>
+                    <!-- Train block -->
+                    <div style="margin-bottom:20px">
+                        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:8px">MODEL DEVELOPMENT
+                            (2010–2015)</div>
+                        <div style="display:flex;height:45px;border-radius:12px;overflow:hidden">
+                            <div
+                                style="width:70%;background:linear-gradient(90deg,var(--cyan),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold">
+                                TRAIN 70%</div>
+                            <div
+                                style="width:15%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold">
+                                VAL 15%</div>
+                            <div
+                                style="width:15%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#000">
+                                TEST 15%</div>
+                        </div>
+                    </div>
+                    <!-- Gap -->
+                    <div style="text-align:center;padding:10px 0">
+                        <div style="border-left:2px dashed rgba(239,68,68,0.3);height:25px;margin:0 auto;width:0"></div>
+                        <div
+                            style="display:inline-block;padding:6px 18px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:20px;font-size:10px;color:var(--red);letter-spacing:2px;font-weight:bold">
+                            5-YEAR TEMPORAL GAP</div>
+                        <div style="border-left:2px dashed rgba(239,68,68,0.3);height:25px;margin:0 auto;width:0"></div>
+                    </div>
+                    <!-- Test block -->
+                    <div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:8px">STRESS TEST
+                            (2020–2024)
+                        </div>
+                        <div
+                            style="height:45px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,var(--red),#B91C1C);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold">
+                            INDEPENDENT EXTERNAL TEST 100%</div>
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <div class="tag">💡 WHY CHRONOLOGICAL SPLIT?</div>
+                    <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0">Random shuffling creates
+                        <strong>temporal
+                            leakage</strong> — the model sees "future" data during training. The 5-year gap proves the
+                        model
+                        learned <strong>true physical laws</strong>, not temporary weather patterns. Result: R² > 0.995
+                        across all 5 test years.
                     </p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =============================== -->
-    <!-- STAGE 3: Hybrid Normalization -->
-    <!-- =============================== -->
-    <section class="section">
-        <div class="reveal">
-            <div class="stage-header">
-                <div class="stage-num"
-                    style="background:rgba(6,182,212,0.15);color:var(--cyan);border:2px solid var(--cyan)">3</div>
-                <div><span class="section-badge">STAGE 03</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage3')">Hybrid Normalization
-                    </h2>
-                </div>
-            </div>
-            <p>Two different normalization strategies for two different roles. Click a feature to see its raw vs
-                normalized distribution.</p>
+        <div class="page-footer">
+            <a href="index.html" class="back-btn" style="font-size:16px">← RETURN TO MAIN PRESENTATION</a>
         </div>
-        <div class="grid-2 reveal" style="margin-top:30px">
-            <div class="norm-box" style="border-color:rgba(6,182,212,0.3)">
-                <div onclick="openModal('zscore')"
-                    style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--cyan);margin-bottom:15px">INPUT
-                    FEATURES →
-                    Z-SCORE</div>
-                <canvas id="zscore-canvas" class="chart-canvas" style="height:200px"></canvas>
-                <div style="margin-top:15px;font-family:'Space Mono',monospace;font-size:14px;color:var(--cyan)">z = (x
-                    − μ<sub>train</sub>) / σ<sub>train</sub></div>
-                <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px">Zero mean, unit variance</div>
-            </div>
-            <div class="norm-box" style="border-color:rgba(245,158,11,0.3)">
-                <div onclick="openModal('minmax')"
-                    style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:15px">TARGET
-                    (GHI) →
-                    MIN-MAX</div>
-                <canvas id="minmax-canvas" class="chart-canvas" style="height:200px"></canvas>
-                <div style="margin-top:15px;font-family:'Space Mono',monospace;font-size:14px;color:var(--gold)">x̂ = (x
-                    − min) / (max − min)</div>
-                <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:5px">Scaled to [0, 1]</div>
-            </div>
-        </div>
-        <div class="reveal" style="margin-top:20px">
-            <div class="warning-badge">⚠️ LEAKAGE PREVENTION: μ and σ computed ONLY on training set, frozen for
-                validation and test</div>
-        </div>
-    </section>
 
-    <!-- =============================== -->
-    <!-- STAGE 4: Sliding Window  -->
-    <!-- =============================== -->
-    <section class="section">
-        <div class="reveal">
-            <div class="stage-header">
-                <div class="stage-num"
-                    style="background:rgba(245,158,11,0.15);color:var(--gold);border:2px solid var(--gold)">4</div>
-                <div><span class="section-badge">STAGE 04</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage4')">Sliding Window
-                        Formation
-                    </h2>
-                </div>
-            </div>
-            <p>The final step: slice the clean, normalized data into <strong>24-hour lookback windows</strong>. Each
-                window forms a <strong>24×15 tensor</strong> — the exact input shape the neural network expects.</p>
-        </div>
-        <div class="reveal" style="margin-top:30px">
-            <canvas id="window-canvas"></canvas>
-            <div style="display:flex;gap:15px;margin-top:15px;align-items:center">
-                <button class="btn-action" id="btn-step" onclick="stepWindow()">→ STEP FORWARD</button>
-                <button class="btn-action" onclick="autoWindow()" id="btn-auto">▶ AUTO PLAY</button>
-                <span style="font-size:12px;color:rgba(255,255,255,0.4)">Window: <span id="win-pos"
-                        style="color:var(--cyan);font-weight:bold">t=0</span> → Predicting: <span id="win-target"
-                        style="color:var(--gold);font-weight:bold">GHI<sub>t+1</sub></span></span>
-            </div>
-        </div>
-        <div class="grid-2 reveal" style="margin-top:25px">
-            <div class="glass" style="text-align:center">
-                <div onclick="openModal('tensor_shape')"
-                    style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--cyan);margin-bottom:10px">INPUT
-                    TENSOR SHAPE
-                </div>
-                <div style="font-family:'Outfit',sans-serif;font-size:3rem;font-weight:900">24 × 15</div>
-                <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:5px">timesteps × features</div>
-            </div>
-            <div class="glass" style="text-align:center">
-                <div onclick="openModal('target_shape')"
-                    style="cursor:pointer;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:10px">OUTPUT
-                    TARGET</div>
-                <div style="font-family:'Outfit',sans-serif;font-size:3rem;font-weight:900">GHI<sub
-                        style="font-size:1.5rem">t+1</sub></div>
-                <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:5px">Next-hour forecast
-                    (Sequence-to-One)</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =============================== -->
-    <!-- STAGE 5: Chronological Split -->
-    <!-- =============================== -->
-    <section class="section">
-        <div class="reveal">
-            <div class="stage-header">
-                <div class="stage-num"
-                    style="background:rgba(16,185,129,0.15);color:var(--green);border:2px solid var(--green)">5</div>
-                <div><span class="section-badge">STAGE 05</span>
-                    <h2 style="margin-bottom:0;cursor:pointer" onclick="openArPanel('dp_stage5')">Chronological Split
-                    </h2>
-                </div>
-            </div>
-            <p>The final safeguard: <strong>No random shuffling</strong>. The data is split strictly by time to prevent
-                any future information from leaking into the training set.</p>
-        </div>
-        <div class="reveal" style="margin-top:30px">
-            <div class="glass">
-                <div style="font-size:10px;letter-spacing:2px;color:var(--green);margin-bottom:25px">TEMPORAL SPLIT
-                    STRATEGY</div>
-                <!-- Train block -->
-                <div style="margin-bottom:20px">
-                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:8px">MODEL DEVELOPMENT
-                        (2010–2015)</div>
-                    <div style="display:flex;height:45px;border-radius:12px;overflow:hidden">
-                        <div
-                            style="width:70%;background:linear-gradient(90deg,var(--cyan),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold">
-                            TRAIN 70%</div>
-                        <div
-                            style="width:15%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold">
-                            VAL 15%</div>
-                        <div
-                            style="width:15%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:#000">
-                            TEST 15%</div>
-                    </div>
-                </div>
-                <!-- Gap -->
-                <div style="text-align:center;padding:10px 0">
-                    <div style="border-left:2px dashed rgba(239,68,68,0.3);height:25px;margin:0 auto;width:0"></div>
-                    <div
-                        style="display:inline-block;padding:6px 18px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:20px;font-size:10px;color:var(--red);letter-spacing:2px;font-weight:bold">
-                        5-YEAR TEMPORAL GAP</div>
-                    <div style="border-left:2px dashed rgba(239,68,68,0.3);height:25px;margin:0 auto;width:0"></div>
-                </div>
-                <!-- Test block -->
-                <div>
-                    <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:8px">STRESS TEST (2020–2024)
-                    </div>
-                    <div
-                        style="height:45px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,var(--red),#B91C1C);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold">
-                        INDEPENDENT EXTERNAL TEST 100%</div>
-                </div>
-            </div>
-            <div class="insight-box">
-                <div class="tag">💡 WHY CHRONOLOGICAL SPLIT?</div>
-                <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0">Random shuffling creates <strong>temporal
-                        leakage</strong> — the model sees "future" data during training. The 5-year gap proves the model
-                    learned <strong>true physical laws</strong>, not temporary weather patterns. Result: R² > 0.995
-                    across all 5 test years.</p>
-            </div>
-        </div>
-    </section>
-
-    <div class="page-footer">
-        <a href="index.html" class="back-btn" style="font-size:16px">← RETURN TO MAIN PRESENTATION</a>
-    </div>
-
-    <script>
-        gsap.registerPlugin(ScrollTrigger);
-        document.querySelectorAll('.reveal').forEach(el => {
-            ScrollTrigger.create({ trigger: el, start: 'top 85%', onEnter: () => el.classList.add('active') });
-        });
-
-        // ---- Terminal Animation ----
-        const termLines = [
-            { t: '$ python nasa_power_stream.py --location=Omdurman', c: 't-dim' },
-            { t: '[INFO] Connecting to NASA POWER API...', c: 't-cyan' },
-            { t: '[INFO] Endpoint: https://power.larc.nasa.gov/api/temporal/hourly', c: 't-dim' },
-            { t: '[INFO] Parameters: GHI, DNI, DHI, T2M, RH2M, ...', c: 't-dim' },
-            { t: '[OK] Connection established. Streaming...', c: 't-green' },
-            { t: '[STREAM] 2010-01-01 → 2024-12-31 (15 years)', c: 't-cyan' },
-            { t: '[FETCH] Year 2010... 8760 records ✓', c: 't-green' },
-            { t: '[FETCH] Year 2011... 8760 records ✓', c: 't-green' },
-            { t: '[FETCH] Year 2012... 8784 records ✓ (leap)', c: 't-green' },
-            { t: '[WARN] 2013-07-15: Sensor dropout detected (-999)', c: 't-gold' },
-            { t: '[FETCH] Year 2013... 8760 records ✓', c: 't-green' },
-            { t: '[WARN] 2015-03-22: Negative GHI (-12.4 W/m²)', c: 't-red' },
-            { t: '[FETCH] Year 2014-2015... 17520 records ✓', c: 't-green' },
-            { t: '···', c: 't-dim' },
-            { t: '[DONE] Total: 131,400 hourly records loaded.', c: 't-green' },
-            { t: '[INFO] Feature Vector Constructed [15×24]', c: 't-cyan' },
-            { t: '[NEXT] → Statistical Cleaning Pipeline...', c: 't-gold' },
-        ];
-        const termEl = document.getElementById('api-terminal');
-        let tIdx = 0;
-        function addTermLine() {
-            if (tIdx >= termLines.length) return;
-            const l = termLines[tIdx++];
-            const div = document.createElement('div');
-            div.className = 'line ' + l.c;
-            div.textContent = l.t;
-            div.style.animationDelay = (tIdx * 0.05) + 's';
-            termEl.appendChild(div);
-            termEl.scrollTop = termEl.scrollHeight;
-            setTimeout(addTermLine, 300 + Math.random() * 400);
-        }
-        setTimeout(addTermLine, 1000);
-
-        // ---- Statistical Cleaning ----
-        const cleanCanvas = document.getElementById('clean-canvas');
-        const cleanCtx = cleanCanvas.getContext('2d');
-        let rawData = [], cleanedData = [], isCleaned = false;
-        // Generate raw data with errors
-        (function () {
-            for (let i = 0; i < 100; i++) {
-                const h = i % 24;
-                const base = h < 6 || h > 18 ? 0 : Math.max(0, 800 * Math.sin(Math.PI * (h - 6) / 12));
-                const noise = (Math.random() - 0.5) * 50;
-                let val = base + noise;
-                // Inject errors
-                if (i === 15) val = -999; // error code
-                if (i === 32) val = -45; // negative
-                if (i === 55) val = null; // gap
-                if (i === 71) val = -999;
-                if (i === 88) val = -20;
-                rawData.push(val);
-            }
-        })();
-
-        function resizeClean() { cleanCanvas.width = cleanCanvas.offsetWidth; cleanCanvas.height = cleanCanvas.offsetHeight; drawCleanChart(); }
-        window.addEventListener('resize', resizeClean); setTimeout(resizeClean, 100);
-
-        function drawCleanChart() {
-            const W = cleanCanvas.width, H = cleanCanvas.height, pad = 40, gW = W - 2 * pad, gH = H - 2 * pad;
-            cleanCtx.clearRect(0, 0, W, H);
-            // Grid
-            cleanCtx.strokeStyle = 'rgba(255,255,255,0.04)'; cleanCtx.lineWidth = 1;
-            for (let i = 0; i <= 5; i++) { const y = pad + gH * i / 5; cleanCtx.beginPath(); cleanCtx.moveTo(pad, y); cleanCtx.lineTo(pad + gW, y); cleanCtx.stroke(); }
-            // Data
-            const data = isCleaned ? cleanedData : rawData;
-            const mx = x => pad + (x / data.length) * gW, my = v => {
-                const clamped = Math.max(-200, Math.min(900, v || 0));
-                return pad + gH - (clamped + 200) / (900 + 200) * gH;
-            };
-            // Draw line
-            cleanCtx.strokeStyle = isCleaned ? 'var(--green)' : 'var(--cyan)'; cleanCtx.lineWidth = 2; cleanCtx.beginPath();
-            let started = false;
-            data.forEach((v, i) => {
-                if (v === null || v === -999) return;
-                const px = mx(i), py = my(v);
-                if (!started) { cleanCtx.moveTo(px, py); started = true; } else cleanCtx.lineTo(px, py);
+        <script>
+            gsap.registerPlugin(ScrollTrigger);
+            document.querySelectorAll('.reveal').forEach(el => {
+                ScrollTrigger.create({ trigger: el, start: 'top 85%', onEnter: () => el.classList.add('active') });
             });
-            cleanCtx.stroke();
-            // Highlight errors
-            if (!isCleaned) {
-                rawData.forEach((v, i) => {
-                    if (v === null || v === -999 || v < 0) {
-                        const px = mx(i), py = v === null ? my(0) : my(v);
-                        cleanCtx.beginPath(); cleanCtx.arc(px, py, 6, 0, Math.PI * 2);
-                        cleanCtx.fillStyle = 'rgba(239,68,68,0.8)'; cleanCtx.fill();
-                        cleanCtx.beginPath(); cleanCtx.arc(px, py, 12, 0, Math.PI * 2);
-                        cleanCtx.strokeStyle = 'rgba(239,68,68,0.3)'; cleanCtx.lineWidth = 2; cleanCtx.stroke();
-                    }
+
+            // ---- Terminal Animation ----
+            const termLines = [
+                { t: '$ python nasa_power_stream.py --location=Omdurman', c: 't-dim' },
+                { t: '[INFO] Connecting to NASA POWER API...', c: 't-cyan' },
+                { t: '[INFO] Endpoint: https://power.larc.nasa.gov/api/temporal/hourly', c: 't-dim' },
+                { t: '[INFO] Parameters: GHI, DNI, DHI, T2M, RH2M, ...', c: 't-dim' },
+                { t: '[OK] Connection established. Streaming...', c: 't-green' },
+                { t: '[STREAM] 2010-01-01 → 2024-12-31 (15 years)', c: 't-cyan' },
+                { t: '[FETCH] Year 2010... 8760 records ✓', c: 't-green' },
+                { t: '[FETCH] Year 2011... 8760 records ✓', c: 't-green' },
+                { t: '[FETCH] Year 2012... 8784 records ✓ (leap)', c: 't-green' },
+                { t: '[WARN] 2013-07-15: Sensor dropout detected (-999)', c: 't-gold' },
+                { t: '[FETCH] Year 2013... 8760 records ✓', c: 't-green' },
+                { t: '[WARN] 2015-03-22: Negative GHI (-12.4 W/m²)', c: 't-red' },
+                { t: '[FETCH] Year 2014-2015... 17520 records ✓', c: 't-green' },
+                { t: '···', c: 't-dim' },
+                { t: '[DONE] Total: 131,400 hourly records loaded.', c: 't-green' },
+                { t: '[INFO] Feature Vector Constructed [15×24]', c: 't-cyan' },
+                { t: '[NEXT] → Statistical Cleaning Pipeline...', c: 't-gold' },
+            ];
+            const termEl = document.getElementById('api-terminal');
+            let tIdx = 0;
+            function addTermLine() {
+                if (tIdx >= termLines.length) return;
+                const l = termLines[tIdx++];
+                const div = document.createElement('div');
+                div.className = 'line ' + l.c;
+                div.textContent = l.t;
+                div.style.animationDelay = (tIdx * 0.05) + 's';
+                termEl.appendChild(div);
+                termEl.scrollTop = termEl.scrollHeight;
+                setTimeout(addTermLine, 300 + Math.random() * 400);
+            }
+            setTimeout(addTermLine, 1000);
+
+            // ---- Statistical Cleaning ----
+            const cleanCanvas = document.getElementById('clean-canvas');
+            const cleanCtx = cleanCanvas.getContext('2d');
+            let rawData = [], cleanedData = [], isCleaned = false;
+            // Generate raw data with errors
+            (function () {
+                for (let i = 0; i < 100; i++) {
+                    const h = i % 24;
+                    const base = h < 6 || h > 18 ? 0 : Math.max(0, 800 * Math.sin(Math.PI * (h - 6) / 12));
+                    const noise = (Math.random() - 0.5) * 50;
+                    let val = base + noise;
+                    // Inject errors
+                    if (i === 15) val = -999; // error code
+                    if (i === 32) val = -45; // negative
+                    if (i === 55) val = null; // gap
+                    if (i === 71) val = -999;
+                    if (i === 88) val = -20;
+                    rawData.push(val);
+                }
+            })();
+
+            function resizeClean() { cleanCanvas.width = cleanCanvas.offsetWidth; cleanCanvas.height = cleanCanvas.offsetHeight; drawCleanChart(); }
+            window.addEventListener('resize', resizeClean); setTimeout(resizeClean, 100);
+
+            function drawCleanChart() {
+                const W = cleanCanvas.width, H = cleanCanvas.height, pad = 40, gW = W - 2 * pad, gH = H - 2 * pad;
+                cleanCtx.clearRect(0, 0, W, H);
+                // Grid
+                cleanCtx.strokeStyle = 'rgba(255,255,255,0.04)'; cleanCtx.lineWidth = 1;
+                for (let i = 0; i <= 5; i++) { const y = pad + gH * i / 5; cleanCtx.beginPath(); cleanCtx.moveTo(pad, y); cleanCtx.lineTo(pad + gW, y); cleanCtx.stroke(); }
+                // Data
+                const data = isCleaned ? cleanedData : rawData;
+                const mx = x => pad + (x / data.length) * gW, my = v => {
+                    const clamped = Math.max(-200, Math.min(900, v || 0));
+                    return pad + gH - (clamped + 200) / (900 + 200) * gH;
+                };
+                // Draw line
+                cleanCtx.strokeStyle = isCleaned ? 'var(--green)' : 'var(--cyan)'; cleanCtx.lineWidth = 2; cleanCtx.beginPath();
+                let started = false;
+                data.forEach((v, i) => {
+                    if (v === null || v === -999) return;
+                    const px = mx(i), py = my(v);
+                    if (!started) { cleanCtx.moveTo(px, py); started = true; } else cleanCtx.lineTo(px, py);
                 });
-            }
-            // Labels
-            cleanCtx.fillStyle = 'rgba(255,255,255,0.3)'; cleanCtx.font = '10px Space Mono';
-            cleanCtx.fillText('GHI (W/m²)', 5, pad - 8); cleanCtx.fillText('Hour', pad + gW / 2 - 10, H - 5);
-        }
-
-        function runCleaning() {
-            if (isCleaned) return;
-            isCleaned = true;
-            cleanedData = rawData.map((v, i) => {
-                if (v === null || v === -999) {
-                    const prev = rawData[i - 1] || 0, next = rawData[i + 1] || 0;
-                    return (prev + next) / 2;
+                cleanCtx.stroke();
+                // Highlight errors
+                if (!isCleaned) {
+                    rawData.forEach((v, i) => {
+                        if (v === null || v === -999 || v < 0) {
+                            const px = mx(i), py = v === null ? my(0) : my(v);
+                            cleanCtx.beginPath(); cleanCtx.arc(px, py, 6, 0, Math.PI * 2);
+                            cleanCtx.fillStyle = 'rgba(239,68,68,0.8)'; cleanCtx.fill();
+                            cleanCtx.beginPath(); cleanCtx.arc(px, py, 12, 0, Math.PI * 2);
+                            cleanCtx.strokeStyle = 'rgba(239,68,68,0.3)'; cleanCtx.lineWidth = 2; cleanCtx.stroke();
+                        }
+                    });
                 }
-                if (v < 0) return 0;
-                return v;
-            });
-            document.getElementById('btn-clean').classList.add('done');
-            document.getElementById('btn-clean').textContent = '✓ CLEANED';
-            document.getElementById('clean-status').textContent = 'Data cleaned successfully!';
-            document.getElementById('clean-status').style.color = 'var(--green)';
-            document.getElementById('stat-errors').textContent = '5';
-            document.getElementById('stat-fixed').textContent = '5';
-            document.getElementById('stat-neg').textContent = '2';
-            document.getElementById('stat-quality').textContent = '99.8%';
-            drawCleanChart();
-        }
+                // Labels
+                cleanCtx.fillStyle = 'rgba(255,255,255,0.3)'; cleanCtx.font = '10px Space Mono';
+                cleanCtx.fillText('GHI (W/m²)', 5, pad - 8); cleanCtx.fillText('Hour', pad + gW / 2 - 10, H - 5);
+            }
 
-        // ---- Night Masking (Sun Arc) ----
-        const sunCanvas = document.getElementById('sun-arc-canvas');
-        const sunCtx = sunCanvas.getContext('2d');
-        function resizeSun() { sunCanvas.width = sunCanvas.offsetWidth; sunCanvas.height = sunCanvas.offsetHeight; updateSunArc(); }
-        window.addEventListener('resize', resizeSun); setTimeout(resizeSun, 100);
+            function runCleaning() {
+                if (isCleaned) return;
+                isCleaned = true;
+                cleanedData = rawData.map((v, i) => {
+                    if (v === null || v === -999) {
+                        const prev = rawData[i - 1] || 0, next = rawData[i + 1] || 0;
+                        return (prev + next) / 2;
+                    }
+                    if (v < 0) return 0;
+                    return v;
+                });
+                document.getElementById('btn-clean').classList.add('done');
+                document.getElementById('btn-clean').textContent = '✓ CLEANED';
+                document.getElementById('clean-status').textContent = 'Data cleaned successfully!';
+                document.getElementById('clean-status').style.color = 'var(--green)';
+                document.getElementById('stat-errors').textContent = '5';
+                document.getElementById('stat-fixed').textContent = '5';
+                document.getElementById('stat-neg').textContent = '2';
+                document.getElementById('stat-quality').textContent = '99.8%';
+                drawCleanChart();
+            }
 
-        function updateSunArc() {
-            const val = parseInt(document.getElementById('hour-slider').value);
-            const hour = val / 10;
-            const W = sunCanvas.width, H = sunCanvas.height, pad = 40;
-            sunCtx.clearRect(0, 0, W, H);
-            const horizon = H * 0.65;
-            // Horizon line
-            sunCtx.strokeStyle = 'rgba(255,255,255,0.15)'; sunCtx.lineWidth = 1; sunCtx.setLineDash([4, 4]);
-            sunCtx.beginPath(); sunCtx.moveTo(pad, horizon); sunCtx.lineTo(W - pad, horizon); sunCtx.stroke(); sunCtx.setLineDash([]);
-            sunCtx.fillStyle = 'rgba(255,255,255,0.2)'; sunCtx.font = '10px Space Mono'; sunCtx.fillText('HORIZON', W - pad - 50, horizon - 8);
-            // Sun arc
-            const arcW = W - 2 * pad, arcH = horizon - pad - 20;
-            sunCtx.strokeStyle = 'rgba(245,158,11,0.2)'; sunCtx.lineWidth = 1; sunCtx.beginPath();
-            for (let i = 0; i <= 100; i++) {
-                const t = (i / 100); const x = pad + t * arcW;
-                const y = horizon - Math.sin(Math.PI * t) * arcH;
-                i === 0 ? sunCtx.moveTo(x, y) : sunCtx.lineTo(x, y);
-            }
-            sunCtx.stroke();
-            // Sun position
-            const sunT = Math.max(0, Math.min(1, (hour - 5) / 14));  // sunrise ~5, sunset ~19
-            const sunX = pad + sunT * arcW;
-            const sunY = horizon - Math.sin(Math.PI * sunT) * arcH;
-            const isDay = hour >= 5.5 && hour <= 18.5;
-            const ghiCs = isDay ? Math.max(0, Math.round(1000 * Math.sin(Math.PI * sunT))) : 0;
-            const zenith = isDay ? Math.round(90 - 90 * Math.sin(Math.PI * sunT)) : 90;
-            // Night zone
-            if (!isDay) {
-                sunCtx.fillStyle = 'rgba(139,92,246,0.05)';
-                sunCtx.fillRect(pad, pad, arcW, H - 2 * pad);
-            }
-            // Sun glow
-            if (isDay) {
-                const grad = sunCtx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 40);
-                grad.addColorStop(0, 'rgba(245,158,11,0.6)'); grad.addColorStop(1, 'rgba(245,158,11,0)');
-                sunCtx.fillStyle = grad; sunCtx.fillRect(sunX - 40, sunY - 40, 80, 80);
-            }
-            // Sun circle
-            sunCtx.beginPath(); sunCtx.arc(sunX, sunY, isDay ? 12 : 8, 0, Math.PI * 2);
-            sunCtx.fillStyle = isDay ? 'var(--gold)' : 'rgba(139,92,246,0.5)'; sunCtx.fill();
-            // Masked zone indicator
-            if (!isDay) {
-                sunCtx.fillStyle = 'rgba(139,92,246,0.15)'; sunCtx.font = 'bold 14px Inter';
-                sunCtx.fillText('MASKED ZONE', W / 2 - 50, horizon + 40);
-                sunCtx.font = '11px Space Mono'; sunCtx.fillStyle = 'rgba(239,68,68,0.6)';
-                sunCtx.fillText('GHI_cs < 5 W/m² → All solar vars = 0', W / 2 - 120, horizon + 60);
-            }
-            // Threshold line at 5 W/m²
-            const thY = horizon - 5 / 1000 * arcH;
-            sunCtx.strokeStyle = 'rgba(239,68,68,0.4)'; sunCtx.lineWidth = 1; sunCtx.setLineDash([2, 2]);
-            sunCtx.beginPath(); sunCtx.moveTo(pad, thY); sunCtx.lineTo(W - pad, thY); sunCtx.stroke(); sunCtx.setLineDash([]);
-            sunCtx.fillStyle = 'rgba(239,68,68,0.4)'; sunCtx.font = '9px Space Mono'; sunCtx.fillText('5 W/m² threshold', pad + 5, thY - 5);
-            // Update info
-            document.getElementById('mask-time').textContent = String(Math.floor(hour)).padStart(2, '0') + ':' + String(Math.round((hour % 1) * 60)).padStart(2, '0');
-            document.getElementById('mask-ghi').textContent = ghiCs;
-            document.getElementById('mask-zen').textContent = zenith + '°';
-            const statusEl = document.getElementById('mask-status');
-            const ruleEl = document.getElementById('mask-rule');
-            if (isDay) {
-                statusEl.innerHTML = '☀️ DAYTIME'; statusEl.style.borderColor = 'var(--gold)'; statusEl.style.color = 'var(--gold)'; statusEl.style.background = 'rgba(245,158,11,0.15)';
-                ruleEl.innerHTML = '✓ GHI_cs ≥ 5 W/m² → Data passes through'; ruleEl.style.borderColor = 'rgba(16,185,129,0.2)'; ruleEl.style.color = 'var(--green)'; ruleEl.style.background = 'rgba(16,185,129,0.1)';
-            } else {
-                statusEl.innerHTML = '🌙 NIGHTTIME'; statusEl.style.borderColor = 'var(--purple)'; statusEl.style.color = 'var(--purple)'; statusEl.style.background = 'rgba(139,92,246,0.15)';
-                ruleEl.innerHTML = '✗ GHI_cs < 5 W/m² → MASKED (All solar → 0)'; ruleEl.style.borderColor = 'rgba(239,68,68,0.2)'; ruleEl.style.color = 'var(--red)'; ruleEl.style.background = 'rgba(239,68,68,0.1)';
-            }
-        }
+            // ---- Log Transformation Interactive ----
+            const logCanvas = document.getElementById('log-canvas');
+            const logCtx = logCanvas.getContext('2d');
+            let isLogApplied = false;
 
-        // ---- Normalization Canvases ----
-        const zsCanvas = document.getElementById('zscore-canvas');
-        const zsCtx = zsCanvas.getContext('2d');
-        const mmCanvas = document.getElementById('minmax-canvas');
-        const mmCtx = mmCanvas.getContext('2d');
-        function resizeNorm() { zsCanvas.width = zsCanvas.offsetWidth; zsCanvas.height = zsCanvas.offsetHeight; mmCanvas.width = mmCanvas.offsetWidth; mmCanvas.height = mmCanvas.offsetHeight; drawNorm(); }
-        window.addEventListener('resize', resizeNorm); setTimeout(resizeNorm, 200);
-
-        function drawNorm() {
-            // Z-Score: bell curve
-            const W = zsCanvas.width, H = zsCanvas.height, pad = 20;
-            zsCtx.clearRect(0, 0, W, H);
-            zsCtx.strokeStyle = 'var(--cyan)'; zsCtx.lineWidth = 2; zsCtx.fillStyle = 'rgba(6,182,212,0.1)';
-            zsCtx.beginPath();
-            for (let i = 0; i <= 100; i++) {
-                const x = pad + (i / 100) * (W - 2 * pad);
-                const t = (i - 50) / 15;
-                const y = H - pad - Math.exp(-t * t / 2) * ((H - 2 * pad) * 0.85);
-                i === 0 ? zsCtx.moveTo(x, y) : zsCtx.lineTo(x, y);
+            // Generate realistic right-skewed GHI distribution (mixture of night zeros + day peaks)
+            const ghiSamples = [];
+            for (let i = 0; i < 500; i++) {
+                const h = (i / 500) * 24;
+                if (h < 5.5 || h > 18.5) {
+                    ghiSamples.push(0 + Math.random() * 5); // nighttime near zero
+                } else {
+                    const peak = 900 * Math.sin(Math.PI * (h - 5.5) / 13);
+                    ghiSamples.push(Math.max(0, peak + (Math.random() - 0.5) * 200));
+                }
             }
-            zsCtx.stroke(); zsCtx.lineTo(W - pad, H - pad); zsCtx.lineTo(pad, H - pad); zsCtx.closePath(); zsCtx.fill();
-            // Labels
-            zsCtx.fillStyle = 'rgba(255,255,255,0.3)'; zsCtx.font = '10px Space Mono';
-            zsCtx.fillText('-3σ', pad + 5, H - 5); zsCtx.fillText('μ=0', W / 2 - 10, H - 5); zsCtx.fillText('+3σ', W - pad - 25, H - 5);
-            // Zero line
-            zsCtx.strokeStyle = 'rgba(255,255,255,0.1)'; zsCtx.setLineDash([3, 3]); zsCtx.beginPath(); zsCtx.moveTo(W / 2, pad); zsCtx.lineTo(W / 2, H - pad); zsCtx.stroke(); zsCtx.setLineDash([]);
 
-            // Min-Max: uniform-ish
-            const W2 = mmCanvas.width, H2 = mmCanvas.height;
-            mmCtx.clearRect(0, 0, W2, H2);
-            mmCtx.fillStyle = 'rgba(245,158,11,0.15)'; mmCtx.strokeStyle = 'var(--gold)'; mmCtx.lineWidth = 2;
-            mmCtx.beginPath();
-            for (let i = 0; i <= 100; i++) {
-                const x = pad + (i / 100) * (W2 - 2 * pad);
-                const base = 0.3 + 0.4 * Math.sin(Math.PI * i / 100);
-                const y = H2 - pad - base * (H2 - 2 * pad) * 0.8;
-                i === 0 ? mmCtx.moveTo(x, y) : mmCtx.lineTo(x, y);
-            }
-            mmCtx.stroke(); mmCtx.lineTo(W2 - pad, H2 - pad); mmCtx.lineTo(pad, H2 - pad); mmCtx.closePath(); mmCtx.fill();
-            mmCtx.fillStyle = 'rgba(255,255,255,0.3)'; mmCtx.font = '10px Space Mono';
-            mmCtx.fillText('0', pad + 5, H2 - 5); mmCtx.fillText('1.0', W2 - pad - 20, H2 - 5);
-        }
+            function resizeLog() { logCanvas.width = logCanvas.offsetWidth; logCanvas.height = logCanvas.offsetHeight; drawLogChart(); }
+            window.addEventListener('resize', resizeLog); setTimeout(resizeLog, 150);
 
-        // ---- Sliding Window ----
-        const winCanvas = document.getElementById('window-canvas');
-        const winCtx = winCanvas.getContext('2d');
-        let winPos = 0, winAuto = false, winTimer = null;
-        const featureNames = ['GHI', 'GHI_cs', 'KT', 'KT_sat', 'Vol', 'DNI', 'DHI', 'RH', 'T_dew', 'T_amb', 'T_wet', 'H_sin', 'H_cos', 'D_sin', 'D_cos'];
-        function resizeWin() { winCanvas.width = winCanvas.offsetWidth; winCanvas.height = winCanvas.offsetHeight; drawWindow(); }
-        window.addEventListener('resize', resizeWin); setTimeout(resizeWin, 200);
+            function drawLogChart() {
+                const W = logCanvas.width, H = logCanvas.height, pad = 40;
+                logCtx.clearRect(0, 0, W, H);
 
-        function drawWindow() {
-            const W = winCanvas.width, H = winCanvas.height, pad = 50;
-            winCtx.clearRect(0, 0, W, H);
-            const cols = 48, rows = 15, cellW = (W - 2 * pad) / cols, cellH = (H - 2 * pad - 30) / rows;
-            // Feature labels
-            winCtx.fillStyle = 'rgba(255,255,255,0.3)'; winCtx.font = '9px Space Mono';
-            for (let r = 0; r < rows; r++) {
-                winCtx.fillText(featureNames[r], 2, pad + 30 + r * cellH + cellH / 2 + 3);
+                // Choose data
+                const data = isLogApplied ? ghiSamples.map(v => Math.log10(1 + v)) : ghiSamples;
+
+                // Create histogram bins
+                const maxVal = Math.max(...data);
+                const numBins = 40;
+                const bins = new Array(numBins).fill(0);
+                data.forEach(v => {
+                    const bin = Math.min(numBins - 1, Math.floor((v / (maxVal + 0.001)) * numBins));
+                    bins[bin]++;
+                });
+                const maxBin = Math.max(...bins);
+
+                const gW = W - 2 * pad, gH = H - 2 * pad;
+                const barW = gW / numBins;
+
+                // Grid lines
+                logCtx.strokeStyle = 'rgba(255,255,255,0.04)'; logCtx.lineWidth = 1;
+                for (let i = 0; i <= 4; i++) {
+                    const y = pad + (gH * i / 4);
+                    logCtx.beginPath(); logCtx.moveTo(pad, y); logCtx.lineTo(pad + gW, y); logCtx.stroke();
+                }
+
+                // Draw bars
+                const color = isLogApplied ? '#10b981' : '#fb923c';
+                const colorAlpha = isLogApplied ? 'rgba(16,185,129,' : 'rgba(251,146,60,';
+                bins.forEach((count, i) => {
+                    const bH = (count / maxBin) * gH * 0.9;
+                    const x = pad + i * barW;
+                    const y = pad + gH - bH;
+
+                    // Bar fill gradient
+                    const grad = logCtx.createLinearGradient(x, y, x, pad + gH);
+                    grad.addColorStop(0, colorAlpha + '0.8)');
+                    grad.addColorStop(1, colorAlpha + '0.15)');
+                    logCtx.fillStyle = grad;
+                    logCtx.fillRect(x + 1, y, barW - 2, bH);
+
+                    // Bar border
+                    logCtx.strokeStyle = colorAlpha + '0.5)';
+                    logCtx.lineWidth = 1;
+                    logCtx.strokeRect(x + 1, y, barW - 2, bH);
+                });
+
+                // Overlay curve (KDE approximation)
+                logCtx.strokeStyle = color; logCtx.lineWidth = 2.5; logCtx.beginPath();
+                let firstPoint = true;
+                for (let px = 0; px < gW; px += 2) {
+                    const binIdx = Math.floor((px / gW) * numBins);
+                    const nextBin = Math.min(numBins - 1, binIdx + 1);
+                    const frac = (px / gW) * numBins - binIdx;
+                    const interpolated = bins[binIdx] * (1 - frac) + bins[nextBin] * frac;
+                    const y = pad + gH - (interpolated / maxBin) * gH * 0.9;
+                    if (firstPoint) { logCtx.moveTo(pad + px, y); firstPoint = false; }
+                    else logCtx.lineTo(pad + px, y);
+                }
+                logCtx.stroke();
+
+                // Skewness indicator arrow
+                if (!isLogApplied) {
+                    logCtx.fillStyle = 'rgba(239,68,68,0.6)'; logCtx.font = 'bold 12px Inter';
+                    logCtx.fillText('← Heavy right skew', pad + gW * 0.55, pad + 20);
+                } else {
+                    logCtx.fillStyle = 'rgba(16,185,129,0.6)'; logCtx.font = 'bold 12px Inter';
+                    logCtx.fillText('≈ Symmetric', pad + gW * 0.35, pad + 20);
+                }
+
+                // Axis labels
+                logCtx.fillStyle = 'rgba(255,255,255,0.3)'; logCtx.font = '10px Space Mono';
+                logCtx.fillText('Frequency', 5, pad - 5);
+                if (isLogApplied) {
+                    logCtx.fillText('0', pad, pad + gH + 15);
+                    logCtx.fillText(maxVal.toFixed(1), pad + gW - 25, pad + gH + 15);
+                } else {
+                    logCtx.fillText('0', pad, pad + gH + 15);
+                    logCtx.fillText(Math.round(maxVal) + ' W/m²', pad + gW - 60, pad + gH + 15);
+                }
             }
-            // Time labels
-            for (let c = 0; c < cols; c += 4) {
-                winCtx.fillText('t' + (c - 24 + winPos), pad + c * cellW, pad + 15);
+
+            window.toggleLogTransform = function() {
+                isLogApplied = !isLogApplied;
+                const btn = document.getElementById('btn-log-toggle');
+                if (isLogApplied) {
+                    btn.textContent = '⟲ SHOW ORIGINAL';
+                    btn.style.background = 'rgba(16,185,129,0.15)';
+                    btn.style.borderColor = '#10b981';
+                    btn.style.color = '#10b981';
+                    document.getElementById('log-state-label').textContent = 'Log₁₀(1+x) Transformed';
+                    document.getElementById('log-state-label').style.color = '#10b981';
+                    document.getElementById('log-x-label').textContent = 'log₁₀(1 + GHI) →';
+                    document.getElementById('log-skew-after').textContent = '0.41';
+                    document.getElementById('log-range').textContent = '3.2×';
+                } else {
+                    btn.textContent = '▶ APPLY LOG₁₀(1+x)';
+                    btn.style.background = 'rgba(251,146,60,0.15)';
+                    btn.style.borderColor = '#fb923c';
+                    btn.style.color = '#fb923c';
+                    document.getElementById('log-state-label').textContent = 'Original Distribution';
+                    document.getElementById('log-state-label').style.color = '#fb923c';
+                    document.getElementById('log-x-label').textContent = 'GHI (W/m²) →';
+                    document.getElementById('log-skew-after').textContent = '—';
+                    document.getElementById('log-range').textContent = '—';
+                }
+                drawLogChart();
+            };
+
+            // ---- Night Masking (Sun Arc) ----
+            const sunCanvas = document.getElementById('sun-arc-canvas');
+            const sunCtx = sunCanvas.getContext('2d');
+            function resizeSun() { sunCanvas.width = sunCanvas.offsetWidth; sunCanvas.height = sunCanvas.offsetHeight; updateSunArc(); }
+            window.addEventListener('resize', resizeSun); setTimeout(resizeSun, 100);
+
+            function updateSunArc() {
+                const val = parseInt(document.getElementById('hour-slider').value);
+                const hour = val / 10;
+                const W = sunCanvas.width, H = sunCanvas.height, pad = 40;
+                sunCtx.clearRect(0, 0, W, H);
+                const horizon = H * 0.65;
+                // Horizon line
+                sunCtx.strokeStyle = 'rgba(255,255,255,0.15)'; sunCtx.lineWidth = 1; sunCtx.setLineDash([4, 4]);
+                sunCtx.beginPath(); sunCtx.moveTo(pad, horizon); sunCtx.lineTo(W - pad, horizon); sunCtx.stroke(); sunCtx.setLineDash([]);
+                sunCtx.fillStyle = 'rgba(255,255,255,0.2)'; sunCtx.font = '10px Space Mono'; sunCtx.fillText('HORIZON', W - pad - 50, horizon - 8);
+                // Sun arc
+                const arcW = W - 2 * pad, arcH = horizon - pad - 20;
+                sunCtx.strokeStyle = 'rgba(245,158,11,0.2)'; sunCtx.lineWidth = 1; sunCtx.beginPath();
+                for (let i = 0; i <= 100; i++) {
+                    const t = (i / 100); const x = pad + t * arcW;
+                    const y = horizon - Math.sin(Math.PI * t) * arcH;
+                    i === 0 ? sunCtx.moveTo(x, y) : sunCtx.lineTo(x, y);
+                }
+                sunCtx.stroke();
+                // Sun position
+                const sunT = Math.max(0, Math.min(1, (hour - 5) / 14));  // sunrise ~5, sunset ~19
+                const sunX = pad + sunT * arcW;
+                const sunY = horizon - Math.sin(Math.PI * sunT) * arcH;
+                const isDay = hour >= 5.5 && hour <= 18.5;
+                const ghiCs = isDay ? Math.max(0, Math.round(1000 * Math.sin(Math.PI * sunT))) : 0;
+                const zenith = isDay ? Math.round(90 - 90 * Math.sin(Math.PI * sunT)) : 90;
+                // Night zone
+                if (!isDay) {
+                    sunCtx.fillStyle = 'rgba(139,92,246,0.05)';
+                    sunCtx.fillRect(pad, pad, arcW, H - 2 * pad);
+                }
+                // Sun glow
+                if (isDay) {
+                    const grad = sunCtx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 40);
+                    grad.addColorStop(0, 'rgba(245,158,11,0.6)'); grad.addColorStop(1, 'rgba(245,158,11,0)');
+                    sunCtx.fillStyle = grad; sunCtx.fillRect(sunX - 40, sunY - 40, 80, 80);
+                }
+                // Sun circle
+                sunCtx.beginPath(); sunCtx.arc(sunX, sunY, isDay ? 12 : 8, 0, Math.PI * 2);
+                sunCtx.fillStyle = isDay ? 'var(--gold)' : 'rgba(139,92,246,0.5)'; sunCtx.fill();
+                // Masked zone indicator
+                if (!isDay) {
+                    sunCtx.fillStyle = 'rgba(139,92,246,0.15)'; sunCtx.font = 'bold 14px Inter';
+                    sunCtx.fillText('MASKED ZONE', W / 2 - 50, horizon + 40);
+                    sunCtx.font = '11px Space Mono'; sunCtx.fillStyle = 'rgba(239,68,68,0.6)';
+                    sunCtx.fillText('GHI_cs < 5 W/m² → All solar vars = 0', W / 2 - 120, horizon + 60);
+                }
+                // Threshold line at 5 W/m²
+                const thY = horizon - 5 / 1000 * arcH;
+                sunCtx.strokeStyle = 'rgba(239,68,68,0.4)'; sunCtx.lineWidth = 1; sunCtx.setLineDash([2, 2]);
+                sunCtx.beginPath(); sunCtx.moveTo(pad, thY); sunCtx.lineTo(W - pad, thY); sunCtx.stroke(); sunCtx.setLineDash([]);
+                sunCtx.fillStyle = 'rgba(239,68,68,0.4)'; sunCtx.font = '9px Space Mono'; sunCtx.fillText('5 W/m² threshold', pad + 5, thY - 5);
+                // Update info
+                document.getElementById('mask-time').textContent = String(Math.floor(hour)).padStart(2, '0') + ':' + String(Math.round((hour % 1) * 60)).padStart(2, '0');
+                document.getElementById('mask-ghi').textContent = ghiCs;
+                document.getElementById('mask-zen').textContent = zenith + '°';
+                const statusEl = document.getElementById('mask-status');
+                const ruleEl = document.getElementById('mask-rule');
+                if (isDay) {
+                    statusEl.innerHTML = '☀️ DAYTIME'; statusEl.style.borderColor = 'var(--gold)'; statusEl.style.color = 'var(--gold)'; statusEl.style.background = 'rgba(245,158,11,0.15)';
+                    ruleEl.innerHTML = '✓ GHI_cs ≥ 5 W/m² → Data passes through'; ruleEl.style.borderColor = 'rgba(16,185,129,0.2)'; ruleEl.style.color = 'var(--green)'; ruleEl.style.background = 'rgba(16,185,129,0.1)';
+                } else {
+                    statusEl.innerHTML = '🌙 NIGHTTIME'; statusEl.style.borderColor = 'var(--purple)'; statusEl.style.color = 'var(--purple)'; statusEl.style.background = 'rgba(139,92,246,0.15)';
+                    ruleEl.innerHTML = '✗ GHI_cs < 5 W/m² → MASKED (All solar → 0)'; ruleEl.style.borderColor = 'rgba(239,68,68,0.2)'; ruleEl.style.color = 'var(--red)'; ruleEl.style.background = 'rgba(239,68,68,0.1)';
+                }
             }
-            // Cells
-            for (let c = 0; c < cols; c++) {
+
+            // ---- Normalization Canvases ----
+            const zsCanvas = document.getElementById('zscore-canvas');
+            const zsCtx = zsCanvas.getContext('2d');
+            const mmCanvas = document.getElementById('minmax-canvas');
+            const mmCtx = mmCanvas.getContext('2d');
+            function resizeNorm() { zsCanvas.width = zsCanvas.offsetWidth; zsCanvas.height = zsCanvas.offsetHeight; mmCanvas.width = mmCanvas.offsetWidth; mmCanvas.height = mmCanvas.offsetHeight; drawNorm(); }
+            window.addEventListener('resize', resizeNorm); setTimeout(resizeNorm, 200);
+
+            function drawNorm() {
+                // Z-Score: bell curve
+                const W = zsCanvas.width, H = zsCanvas.height, pad = 20;
+                zsCtx.clearRect(0, 0, W, H);
+                zsCtx.strokeStyle = 'var(--cyan)'; zsCtx.lineWidth = 2; zsCtx.fillStyle = 'rgba(6,182,212,0.1)';
+                zsCtx.beginPath();
+                for (let i = 0; i <= 100; i++) {
+                    const x = pad + (i / 100) * (W - 2 * pad);
+                    const t = (i - 50) / 15;
+                    const y = H - pad - Math.exp(-t * t / 2) * ((H - 2 * pad) * 0.85);
+                    i === 0 ? zsCtx.moveTo(x, y) : zsCtx.lineTo(x, y);
+                }
+                zsCtx.stroke(); zsCtx.lineTo(W - pad, H - pad); zsCtx.lineTo(pad, H - pad); zsCtx.closePath(); zsCtx.fill();
+                // Labels
+                zsCtx.fillStyle = 'rgba(255,255,255,0.3)'; zsCtx.font = '10px Space Mono';
+                zsCtx.fillText('-3σ', pad + 5, H - 5); zsCtx.fillText('μ=0', W / 2 - 10, H - 5); zsCtx.fillText('+3σ', W - pad - 25, H - 5);
+                // Zero line
+                zsCtx.strokeStyle = 'rgba(255,255,255,0.1)'; zsCtx.setLineDash([3, 3]); zsCtx.beginPath(); zsCtx.moveTo(W / 2, pad); zsCtx.lineTo(W / 2, H - pad); zsCtx.stroke(); zsCtx.setLineDash([]);
+
+                // Min-Max: uniform-ish
+                const W2 = mmCanvas.width, H2 = mmCanvas.height;
+                mmCtx.clearRect(0, 0, W2, H2);
+                mmCtx.fillStyle = 'rgba(245,158,11,0.15)'; mmCtx.strokeStyle = 'var(--gold)'; mmCtx.lineWidth = 2;
+                mmCtx.beginPath();
+                for (let i = 0; i <= 100; i++) {
+                    const x = pad + (i / 100) * (W2 - 2 * pad);
+                    const base = 0.3 + 0.4 * Math.sin(Math.PI * i / 100);
+                    const y = H2 - pad - base * (H2 - 2 * pad) * 0.8;
+                    i === 0 ? mmCtx.moveTo(x, y) : mmCtx.lineTo(x, y);
+                }
+                mmCtx.stroke(); mmCtx.lineTo(W2 - pad, H2 - pad); mmCtx.lineTo(pad, H2 - pad); mmCtx.closePath(); mmCtx.fill();
+                mmCtx.fillStyle = 'rgba(255,255,255,0.3)'; mmCtx.font = '10px Space Mono';
+                mmCtx.fillText('0', pad + 5, H2 - 5); mmCtx.fillText('1.0', W2 - pad - 20, H2 - 5);
+            }
+
+            // ---- Sliding Window ----
+            const winCanvas = document.getElementById('window-canvas');
+            const winCtx = winCanvas.getContext('2d');
+            let winPos = 0, winAuto = false, winTimer = null;
+            const featureNames = ['GHI', 'GHI_cs', 'KT', 'KT_sat', 'Vol', 'DNI', 'DHI', 'RH', 'T_dew', 'T_amb', 'T_wet', 'H_sin', 'H_cos', 'D_sin', 'D_cos'];
+            function resizeWin() { winCanvas.width = winCanvas.offsetWidth; winCanvas.height = winCanvas.offsetHeight; drawWindow(); }
+            window.addEventListener('resize', resizeWin); setTimeout(resizeWin, 200);
+
+            function drawWindow() {
+                const W = winCanvas.width, H = winCanvas.height, pad = 50;
+                winCtx.clearRect(0, 0, W, H);
+                const cols = 48, rows = 15, cellW = (W - 2 * pad) / cols, cellH = (H - 2 * pad - 30) / rows;
+                // Feature labels
+                winCtx.fillStyle = 'rgba(255,255,255,0.3)'; winCtx.font = '9px Space Mono';
                 for (let r = 0; r < rows; r++) {
-                    const x = pad + c * cellW, y = pad + 30 + r * cellH;
-                    const inWindow = c >= 12 && c < 36;
-                    const isTarget = c === 36;
-                    // Generate pseudo data
-                    const seed = (c + winPos) * 17 + r * 31;
-                    const val = Math.abs(Math.sin(seed)) * 0.8 + 0.1;
-                    if (inWindow) {
-                        const hue = val > 0.6 ? 'var(--cyan)' : val > 0.3 ? 'var(--purple)' : 'rgba(255,255,255,0.2)';
-                        winCtx.fillStyle = `rgba(6,182,212,${val * 0.3})`;
-                        winCtx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
-                        winCtx.strokeStyle = 'rgba(6,182,212,0.3)'; winCtx.lineWidth = 1;
-                        winCtx.strokeRect(x + 1, y + 1, cellW - 2, cellH - 2);
-                    } else if (c === 36 && r === 0) {
-                        winCtx.fillStyle = 'rgba(245,158,11,0.3)';
-                        winCtx.fillRect(x + 1, y + 1, cellW - 2, cellH * rows - 2);
-                        winCtx.strokeStyle = 'var(--gold)'; winCtx.lineWidth = 2;
-                        winCtx.strokeRect(x + 1, y + 1, cellW - 2, cellH * rows - 2);
-                        winCtx.fillStyle = 'var(--gold)'; winCtx.font = 'bold 10px Inter';
-                        winCtx.save(); winCtx.translate(x + cellW / 2, y + cellH * rows / 2); winCtx.rotate(-Math.PI / 2);
-                        winCtx.fillText('TARGET', 0, 0); winCtx.restore();
-                        break;
-                    } else {
-                        winCtx.fillStyle = 'rgba(255,255,255,0.02)';
-                        winCtx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+                    winCtx.fillText(featureNames[r], 2, pad + 30 + r * cellH + cellH / 2 + 3);
+                }
+                // Time labels
+                for (let c = 0; c < cols; c += 4) {
+                    winCtx.fillText('t' + (c - 24 + winPos), pad + c * cellW, pad + 15);
+                }
+                // Cells
+                for (let c = 0; c < cols; c++) {
+                    for (let r = 0; r < rows; r++) {
+                        const x = pad + c * cellW, y = pad + 30 + r * cellH;
+                        const inWindow = c >= 12 && c < 36;
+                        const isTarget = c === 36;
+                        // Generate pseudo data
+                        const seed = (c + winPos) * 17 + r * 31;
+                        const val = Math.abs(Math.sin(seed)) * 0.8 + 0.1;
+                        if (inWindow) {
+                            const hue = val > 0.6 ? 'var(--cyan)' : val > 0.3 ? 'var(--purple)' : 'rgba(255,255,255,0.2)';
+                            winCtx.fillStyle = `rgba(6,182,212,${val * 0.3})`;
+                            winCtx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+                            winCtx.strokeStyle = 'rgba(6,182,212,0.3)'; winCtx.lineWidth = 1;
+                            winCtx.strokeRect(x + 1, y + 1, cellW - 2, cellH - 2);
+                        } else if (c === 36 && r === 0) {
+                            winCtx.fillStyle = 'rgba(245,158,11,0.3)';
+                            winCtx.fillRect(x + 1, y + 1, cellW - 2, cellH * rows - 2);
+                            winCtx.strokeStyle = 'var(--gold)'; winCtx.lineWidth = 2;
+                            winCtx.strokeRect(x + 1, y + 1, cellW - 2, cellH * rows - 2);
+                            winCtx.fillStyle = 'var(--gold)'; winCtx.font = 'bold 10px Inter';
+                            winCtx.save(); winCtx.translate(x + cellW / 2, y + cellH * rows / 2); winCtx.rotate(-Math.PI / 2);
+                            winCtx.fillText('TARGET', 0, 0); winCtx.restore();
+                            break;
+                        } else {
+                            winCtx.fillStyle = 'rgba(255,255,255,0.02)';
+                            winCtx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+                        }
                     }
                 }
+                // Window bracket
+                const wx = pad + 12 * cellW, wy = pad + 25, ww = 24 * cellW, wh = rows * cellH + 10;
+                winCtx.strokeStyle = 'var(--cyan)'; winCtx.lineWidth = 2;
+                winCtx.strokeRect(wx, wy, ww, wh);
+                winCtx.fillStyle = 'rgba(6,182,212,0.8)'; winCtx.font = 'bold 11px Inter';
+                winCtx.fillText('INPUT WINDOW (24×15)', wx + ww / 2 - 70, wy - 5);
+                // Arrow
+                const ax = pad + 36 * cellW - 5, ay = pad + 25 + rows * cellH / 2;
+                winCtx.fillStyle = 'var(--gold)'; winCtx.font = '20px Inter'; winCtx.fillText('→', wx + ww + 5, ay + 5);
+                // Update labels
+                document.getElementById('win-pos').textContent = 't=' + winPos;
             }
-            // Window bracket
-            const wx = pad + 12 * cellW, wy = pad + 25, ww = 24 * cellW, wh = rows * cellH + 10;
-            winCtx.strokeStyle = 'var(--cyan)'; winCtx.lineWidth = 2;
-            winCtx.strokeRect(wx, wy, ww, wh);
-            winCtx.fillStyle = 'rgba(6,182,212,0.8)'; winCtx.font = 'bold 11px Inter';
-            winCtx.fillText('INPUT WINDOW (24×15)', wx + ww / 2 - 70, wy - 5);
-            // Arrow
-            const ax = pad + 36 * cellW - 5, ay = pad + 25 + rows * cellH / 2;
-            winCtx.fillStyle = 'var(--gold)'; winCtx.font = '20px Inter'; winCtx.fillText('→', wx + ww + 5, ay + 5);
-            // Update labels
-            document.getElementById('win-pos').textContent = 't=' + winPos;
+
+            function stepWindow() {
+                winPos++; if (winPos > 20) winPos = 0;
+                drawWindow();
+            }
+            function autoWindow() {
+                winAuto = !winAuto;
+                document.getElementById('btn-auto').textContent = winAuto ? '⏸ PAUSE' : '▶ AUTO PLAY';
+                if (winAuto) { winTimer = setInterval(stepWindow, 500); } else { clearInterval(winTimer); }
+            }
+        </script>
+
+        <!-- Three.js Starry Background -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script>
+            let scene, camera, renderer, bgParticles;
+            function initPortal() {
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
+                camera.position.z = 1000;
+                renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
+                renderer.setSize(innerWidth, innerHeight);
+                renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+                const geo = new THREE.BufferGeometry();
+                const pos = new Float32Array(2500 * 3);
+                for (let i = 0; i < 2500 * 3; i++) pos[i] = (Math.random() - 0.5) * 2000;
+                geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+                const mat = new THREE.PointsMaterial({ color: 0x06B6D4, size: 2, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+                bgParticles = new THREE.Points(geo, mat);
+                scene.add(bgParticles);
+                animateBg();
+            }
+            function animateBg() { requestAnimationFrame(animateBg); bgParticles.rotation.y += 0.0005; bgParticles.rotation.x += 0.0002; renderer.render(scene, camera); }
+            window.addEventListener('load', initPortal);
+            window.addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+            document.addEventListener('mousemove', e => { if (bgParticles) { bgParticles.rotation.y += (e.clientX - innerWidth / 2) * 0.000001; bgParticles.rotation.x += (e.clientY - innerHeight / 2) * 0.000001; } });
+        </script>
+
+        <!-- ARABIC MODAL POPUP SYSTEM -->
+        <style>
+            #equation-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(12px);
+                z-index: 2147483647;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity .3s
+            }
+
+            #equation-modal.active {
+                opacity: 1
+            }
+
+            #equation-modal .modal-card {
+                background: rgba(18, 18, 28, 0.90);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.02);
+                width: 90%;
+                max-width: 480px;
+                padding: 35px;
+                border-radius: 24px;
+                position: relative;
+                transform: scale(0.92) translateY(10px);
+                transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                overflow: hidden
+            }
+
+            #equation-modal.active .modal-card {
+                transform: scale(1) translateY(0)
+            }
+
+            .modal-close-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 30px;
+                height: 30px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: rgba(255, 255, 255, 0.6);
+                transition: all .2s
+            }
+
+            .modal-close-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                color: #fff;
+                transform: rotate(90deg)
+            }
+
+            #modal-title {
+                font-family: 'Courier New', monospace;
+                font-size: 11px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 20px;
+                opacity: 0.9
+            }
+
+            #modal-eq {
+                font-family: 'Times New Roman', serif;
+                font-style: italic;
+                font-size: 26px;
+                margin-bottom: 25px;
+                text-align: center;
+                padding: 15px;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.07));
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3)
+            }
+
+            #modal-desc {
+                font-family: 'Dubai', 'Segoe UI', Tahoma, sans-serif;
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 15px;
+                line-height: 1.8;
+                text-align: right;
+                direction: rtl;
+                font-weight: 300
+            }
+
+            #modal-desc strong {
+                color: #fff;
+                font-weight: 600
+            }
+        </style>
+
+        <div id="equation-modal">
+            <div class="modal-card">
+                <div class="modal-close-btn" onclick="closeModal()">&times;</div>
+                <div id="modal-title"></div>
+                <div id="modal-eq"></div>
+                <div id="modal-desc"></div>
+            </div>
+        </div>
+
+        <script>
+            const equations = {
+                'NASA_POWER': { color: 'var(--cyan)', title: 'NASA POWER API', eq: 'Prediction Of Worldwide Energy Resources', desc: '<strong>مصدر البيانات:</strong><br>واجهة برمجية تابعة لوكالة ناسا توفر بيانات الأرصاد الجوية الشمسية بدقة عالية، تم استخدامها لاستخراج 15 متغيراً فيزيائياً لكل ساعة.' },
+                'OMDURMAN': { color: 'var(--purple)', title: 'OMDURMAN, SUDAN', eq: '<span style="font-family:\'Outfit\', sans-serif; font-style:normal; font-weight:700;">Lat: 14.7°N, Lon: 33.2°E</span>', desc: '<strong>موقع الدراسة:</strong><br>مدينة أم درمان في السودان، تتميز بمناخ صحراوي حار وتحديات بيئية فريدة مثل العواصف الغبارية والسحب المفاجئة، مما يجعلها بيئة اختبار مثالية للنموذج.' },
+                'TIMESPAN': { color: 'var(--gold)', title: '15-YEAR DATASET', eq: '2010 — 2024', desc: '<strong>الفترة الزمنية:</strong><br>تمتد البيانات على مدى 15 عاماً لضمان تغطية شاملة لجميع الفصول والدورات المناخية، مما يعزز قدرة النموذج على التعميم والتنبؤ طويل الأمد.' },
+                'RESOLUTION': { color: 'var(--green)', title: 'HOURLY RESOLUTION', eq: 'dt = 1 Hour', desc: '<strong>الدقة الزمنية:</strong><br>تم استخدام دقة ساعة واحدة لتلبية متطلبات إدارة الشبكات الكهربائية الذكية، حيث تتغير الأحمال والإنتاج الشمسي بشكل ديناميكي سريع.' },
+                'PROFILE': { color: '#fff', title: 'DATASET PROFILE', eq: 'Results & Metrics', desc: '<strong>ملخص مجموعة البيانات:</strong><br>تحتوي على 131,400 سجل (ساعة)، و15 ميزة فيزيائية مدخلة، وتغطي فترة زمنية طويلة لضمان موثوقية النموذج في مختلف الظروف.' },
+                'GHI_CS': { color: 'var(--gold)', title: 'CLEAR-SKY GHI', eq: 'GHI_cs = I_sc × cos(θz)', desc: '<strong>الإشعاع الشمسي للنقاء النظري:</strong><br>هو كمية الإشعاع المتوقعة في حالة عدم وجود غيوم أو غبار. يُستخدم كخط أساس (Baseline) لاكتشاف الشذوذ الجوي وتدريب النموذج على فهم الفيزياء أولاً.' },
+                'ZENITH': { color: 'var(--cyan)', title: 'ZENITH ANGLE', eq: 'θz = arccos(sinφ sinδ + ...)', desc: '<strong>زاوية السمت الشمسية:</strong><br>الزاوية بين أشعة الشمس والخط العمودي. تحدد هذه الزاوية مسار الشمس في السماء وتؤثر بشكل مباشر على شدة الإشعاع الواصل للألواح.' },
+                'ZSCORE': { color: 'var(--cyan)', title: 'Z-SCORE NORMALIZATION', eq: 'z = (x − μ) / σ', desc: '<strong>التقييس المعياري (Z-Score):</strong><br>تحويل البيانات لتكون بمتوسط 0 وانحراف معياري 1. هذا ضروري للشبكات العصبية لضمان تقارب سريع ومنع سيطرة القيم الكبيرة على النموذج.' },
+                'MINMAX': { color: 'var(--gold)', title: 'MIN-MAX SCALING', eq: 'x_norm = (x - min) / (max - min)', desc: '<strong>التقييس الأدنى-الأقصى:</strong><br>تحويل البيانات إلى نطاق [0, 1]. يُستخدم عادةً مع المخرج النهائي (GHI) لأنه قيمة موجبة ومحدودة، مما يسهل تفسير النتائج.' },
+                'TENSOR_SHAPE': { color: 'var(--cyan)', title: 'INPUT TENSOR SHAPE', eq: '(Batch, 24, 15)', desc: '<strong>شكل المصفوفة المدخلة:</strong><br>كل عينة تدريبية عبارة عن نافذة زمنية بطول 24 ساعة، وكل ساعة تحتوي على 15 ميزة فيزيائية. هذا الهيكل الثنائي الأبعاد يسمح للنموذج بفهم السياق الزمني والخصائص معاً.' },
+                'TARGET_SHAPE': { color: 'var(--gold)', title: 'OUTPUT TARGET', eq: 'GHI at t+1', desc: '<strong>الهدف المتوقع:</strong><br>قيمة الإشعاع الشمسي (GHI) للساعة القادمة مباشرة. هذه تنبؤات "خطوة واحدة للأمام" (One-Step Ahead) وهي الأكثر أهمية لتشغيل الشبكات.' },
+                'nasa_power': { color: 'var(--cyan)', title: 'NASA POWER API', eq: 'Prediction Of Worldwide Energy Resources', desc: '<strong>مصدر البيانات:</strong><br>واجهة برمجية تابعة لوكالة ناسا توفر بيانات الأرصاد الجوية الشمسية بدقة عالية، تم استخدامها لاستخراج 15 متغيراً فيزيائياً لكل ساعة.' },
+                'omdurman': { color: 'var(--purple)', title: 'OMDURMAN, SUDAN', eq: '<span style="font-family:\'Outfit\', sans-serif; font-style:normal; font-weight:700;">Lat: 14.7°N, Lon: 33.2°E</span>', desc: '<strong>موقع الدراسة:</strong><br>مدينة أم درمان في السودان، تتميز بمناخ صحراوي حار وتحديات بيئية فريدة مثل العواصف الغبارية والسحب المفاجئة، مما يجعلها بيئة اختبار مثالية للنموذج.' },
+                'timespan': { color: 'var(--gold)', title: '15-YEAR DATASET', eq: '2010 — 2024', desc: '<strong>الفترة الزمنية:</strong><br>تمتد البيانات على مدى 15 عاماً لضمان تغطية شاملة لجميع الفصول والدورات المناخية، مما يعزز قدرة النموذج على التعميم والتنبؤ طويل الأمد.' },
+                'resolution': { color: 'var(--green)', title: 'HOURLY RESOLUTION', eq: 'dt = 1 Hour', desc: '<strong>الدقة الزمنية:</strong><br>تم استخدام دقة ساعة واحدة لتلبية متطلبات إدارة الشبكات الكهربائية الذكية، حيث تتغير الأحمال والإنتاج الشمسي بشكل ديناميكي سريع.' },
+                'profile': { color: '#fff', title: 'DATASET PROFILE', eq: 'Results & Metrics', desc: '<strong>ملخص مجموعة البيانات:</strong><br>تحتوي على 131,400 سجل (ساعة)، و15 ميزة فيزيائية مدخلة، وتغطي فترة زمنية طويلة لضمان موثوقية النموذج في مختلف الظروف.' },
+                'ghi_cs': { color: 'var(--gold)', title: 'CLEAR-SKY GHI', eq: 'GHI_cs = I_sc × cos(θz)', desc: '<strong>الإشعاع الشمسي للنقاء النظري:</strong><br>هو كمية الإشعاع المتوقعة في حالة عدم وجود غيوم أو غبار. يُستخدم كخط أساس (Baseline) لاكتشاف الشذوذ الجوي وتدريب النموذج على فهم الفيزياء أولاً.' },
+                'zenith': { color: 'var(--cyan)', title: 'ZENITH ANGLE', eq: 'θz = arccos(sinφ sinδ + ...)', desc: '<strong>زاوية السمت الشمسية:</strong><br>الزاوية بين أشعة الشمس والخط العمودي. تحدد هذه الزاوية مسار الشمس في السماء وتؤثر بشكل مباشر على شدة الإشعاع الواصل للألواح.' },
+                'zscore': { color: 'var(--cyan)', title: 'Z-SCORE NORMALIZATION', eq: 'z = (x − μ) / σ', desc: '<strong>التقييس المعياري (Z-Score):</strong><br>تحويل البيانات لتكون بمتوسط 0 وانحراف معياري 1. هذا ضروري للشبكات العصبية لضمان تقارب سريع ومنع سيطرة القيم الكبيرة على النموذج.' },
+                'minmax': { color: 'var(--gold)', title: 'MIN-MAX SCALING', eq: 'x_norm = (x - min) / (max - min)', desc: '<strong>التقييس الأدنى-الأقصى:</strong><br>تحويل البيانات إلى نطاق [0, 1]. يُستخدم عادةً مع المخرج النهائي (GHI) لأنه قيمة موجبة ومحدودة، مما يسهل تفسير النتائج.' },
+                'tensor_shape': { color: 'var(--cyan)', title: 'INPUT TENSOR SHAPE', eq: '(Batch, 24, 15)', desc: '<strong>شكل المصفوفة المدخلة:</strong><br>كل عينة تدريبية عبارة عن نافذة زمنية بطول 24 ساعة، وكل ساعة تحتوي على 15 ميزة فيزيائية. هذا الهيكل الثنائي الأبعاد يسمح للنموذج بفهم السياق الزمني والخصائص معاً.' },
+                'target_shape': { color: 'var(--gold)', title: 'OUTPUT TARGET', eq: 'GHI at t+1', desc: '<strong>الهدف المتوقع:</strong><br>قيمة الإشعاع الشمسي (GHI) للساعة القادمة مباشرة. هذه تنبؤات "خطوة واحدة للأمام" (One-Step Ahead) وهي الأكثر أهمية لتشغيل الشبكات.' },
+                'cleanup': { color: '#fff', title: 'STATISTICAL CLEANING', eq: 'x = max(0, x)', desc: '<strong>التنظيف الإحصائي:</strong><br>إزالة القيم السالبة الناتجة عن أخطاء المستشعرات، واستكمال البيانات المفقودة خطياً لضمان استمرارية السلاسل الزمنية.<br><br><strong>القواعد:</strong><br>① إزالة GHI < 0 (غير فيزيائي)<br>② استبدال رمز -999 بـ NaN<br>③ الاستكمال الخطي للفجوات<br>④ محاذاة زمنية Δt = 3600 ثانية' },
+                'masking': { color: 'var(--cyan)', title: 'NIGHT MASKING', eq: 'if (Elevation < 0) → x = 0', desc: '<strong>القناع الليلي الفيزيائي:</strong><br>إجبار جميع قيم الإشعاع على الصفر عندما تكون الشمس تحت الأفق.<br><br><strong>الفائدة:</strong> يمنع النموذج من محاولة "تعلم" الضجيج الليلي، مما يحسّن دقة شروق/غروب الشمس بنسبة 23%.<br><br><strong>الشرط:</strong> GHI_cs < 5 W/m² → كل المتغيرات الشمسية = 0' },
+                'norm': { color: 'var(--purple)', title: 'HYBRID NORMALIZATION', eq: 'z = (x − μ) / σ', desc: '<strong>التطبيع الهجين:</strong><br>استخدام Z-Score لتوحيد المقاييس للمدخلات (14 خاصية)، و Min-Max لتطبيع المخرجات (GHI) في النطاق [0,1].<br><br><strong>تحذير مهم:</strong> يتم حساب μ و σ من بيانات التدريب فقط ويتم تجميدها — لمنع تسرب المعلومات من المستقبل.' },
+                'window': { color: 'var(--gold)', title: 'SLIDING WINDOW', eq: 'Input ∈ ℝ²⁴ˣ¹⁵', desc: '<strong>نافذة الانزلاق:</strong><br>تقسيم البيانات النظيفة إلى نوافذ متراكبة بطول 24 ساعة. كل نافذة تشكل مصفوفة بأبعاد 24×15 — وهو الشكل الذي تتوقعه الشبكة العصبية كمدخل.<br><br><strong>المخرج:</strong> قيمة GHI للساعة التالية (Sequence-to-One)' },
+                'split': { color: 'var(--green)', title: 'CHRONOLOGICAL SPLIT', eq: 'Train → Val → Test (temporal)', desc: '<strong>التقسيم الزمني:</strong><br>لا يوجد خلط عشوائي. يتم تقسيم البيانات حسب الزمن بشكل صارم.<br><br><strong>التطوير:</strong> 2010-2015 (تدريب 70% / تحقق 15% / اختبار 15%)<br><strong>اختبار الإجهاد:</strong> 2020-2024 (فجوة 5 سنوات للتأكد من تعلم القوانين الفيزيائية الحقيقية)<br><br><strong>النتيجة:</strong> R² > 0.995 عبر جميع سنوات الاختبار' }
+            };
+            function openModal(type) {
+                if (!equations[type]) return;
+                const d = equations[type];
+                document.getElementById('modal-title').innerHTML = d.title;
+                document.getElementById('modal-title').style.color = d.color;
+                document.getElementById('modal-eq').innerHTML = d.eq;
+                document.getElementById('modal-eq').style.color = d.color;
+                document.getElementById('modal-desc').innerHTML = d.desc;
+                const m = document.getElementById('equation-modal');
+                m.style.display = 'flex';
+                setTimeout(() => m.classList.add('active'), 10);
+            }
+            function closeModal() {
+                const m = document.getElementById('equation-modal');
+                m.classList.remove('active');
+                setTimeout(() => m.style.display = 'none', 300);
+            }
+            document.getElementById('equation-modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+        </script>
+    </div> <!-- END classic-view -->
+
+    <!-- Interactive Mode React App -->
+    <div id="react-toggle-root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { Sparkles, MonitorPlay } = lucideReact;
+
+        function ViewToggle() {
+            const [isInteractive, setIsInteractive] = useState(false);
+            const [isPremium, setIsPremium] = useState(false);
+
+            useEffect(() => {
+                const htmlClasses = document.documentElement.classList;
+                if (isPremium) {
+                    htmlClasses.add('premium-view-active');
+                    if (window.lucide) setTimeout(() => window.lucide.createIcons(), 100);
+                } else {
+                    htmlClasses.remove('premium-view-active');
+                }
+            }, [isPremium]);
+
+            useEffect(() => {
+                const bodyClasses = document.body.classList;
+                if (isInteractive) {
+                    bodyClasses.add('interactive-mode');
+                    if (window.ScrollTrigger) setTimeout(() => window.ScrollTrigger.refresh(), 100);
+                } else {
+                    bodyClasses.remove('interactive-mode');
+                }
+            }, [isInteractive]);
+
+            return (
+                <div className="fixed bottom-8 right-8 z-[2147483647] flex flex-col gap-3 items-end">
+                    <div className="flex items-center bg-black/60 backdrop-blur-2xl p-1.5 rounded-full border border-purple-500/30 shadow-[0_0_30px_rgba(139,92,246,0.3)] transition-all duration-500">
+                        <button
+                            onClick={() => { setIsPremium(false); setIsInteractive(false); }}
+                            className={`px-5 py-2.5 rounded-full flex items-center gap-2 transition-all duration-500 ${!isInteractive && !isPremium ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white shadow-lg scale-100" : "text-gray-400 hover:text-white scale-95"}`}
+                        >
+                            <MonitorPlay size={18} className={!isInteractive && !isPremium ? "animate-pulse" : ""} />
+                            <span className="font-semibold text-sm font-['Outfit'] tracking-wider">CLASSIC</span>
+                        </button>
+                        <button
+                            onClick={() => { setIsPremium(false); setIsInteractive(true); }}
+                            className={`px-5 py-2.5 rounded-full flex items-center gap-2 transition-all duration-500 ${isInteractive && !isPremium ? "bg-gradient-to-r from-cyan-500 to-emerald-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.6)] scale-100" : "text-gray-400 hover:text-white scale-95"}`}
+                        >
+                            <Sparkles size={18} className={isInteractive && !isPremium ? "animate-[spin_4s_linear_infinite]" : ""} />
+                            <span className="font-semibold text-sm font-['Outfit'] tracking-wider">INTERACTIVE</span>
+                        </button>
+                    </div>
+
+                    <button
+                        onClick={() => setIsPremium(!isPremium)}
+                        className={`px-6 py-3 rounded-full flex items-center gap-2 transition-all duration-500 shadow-xl border ${isPremium ? "bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.8)] scale-105" : "bg-black text-white border-white/20 hover:bg-white/10 hover:border-white/40"}`}
+                    >
+                        <i data-lucide="presentation" className="w-4 h-4"></i>
+                        <span className="font-bold text-sm font-['Outfit'] tracking-widest uppercase">Premium Cinematic</span>
+                    </button>
+                </div>
+            );
         }
 
-        function stepWindow() {
-            winPos++; if (winPos > 20) winPos = 0;
-            drawWindow();
-        }
-        function autoWindow() {
-            winAuto = !winAuto;
-            document.getElementById('btn-auto').textContent = winAuto ? '⏸ PAUSE' : '▶ AUTO PLAY';
-            if (winAuto) { winTimer = setInterval(stepWindow, 500); } else { clearInterval(winTimer); }
-        }
+        const root = createRoot(document.getElementById('react-toggle-root'));
+        root.render(<ViewToggle />);
     </script>
 
-    <!-- Three.js Starry Background -->
+    <!-- PREMIUM VIEW -->
+    <div id="premium-view">
+        <!-- Section 1: Navbar -->
+        <nav
+            class="fixed top-0 w-full z-50 transition-all duration-300 px-7 py-4 md:px-12 lg:px-20 bg-black/80 backdrop-blur-xl border-b border-white/10">
+            <div
+                class="max-w-7xl mx-auto flex justify-between items-center bg-black/40 backdrop-blur-md rounded-full px-6 py-3 border border-white/5">
+                <div class="text-primary font-bold text-2xl tracking-tighter">
+                    PI-HYBRID<span class="text-accent-warm">.</span>
+                </div>
+                <div class="hidden md:flex gap-8 text-sm font-medium">
+                    <a href="#premium-hero" class="text-primary/70 hover:text-primary transition-colors">Overview</a>
+                    <a href="#premium-features"
+                        class="text-primary/70 hover:text-primary transition-colors">Features</a>
+                    <a href="#premium-results" class="text-primary/70 hover:text-primary transition-colors">Results</a>
+                </div>
+                <a href="index.html"
+                    class="bg-primary text-primary-foreground rounded-full px-6 py-2.5 font-semibold flex items-center gap-2 hover:scale-105 transition-transform">
+                    Back to Hub
+                    <span class="bg-primary-foreground rounded-full p-1 text-primary">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Section 2: Hero -->
+        <section id="premium-hero"
+            class="relative w-full h-screen flex flex-col justify-center px-7 md:px-12 lg:px-20 overflow-hidden bg-black">
+            <div
+                class="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-900/20 via-black to-black opacity-80">
+            </div>
+
+            <div class="relative z-10 max-w-7xl mx-auto w-full">
+                <h1
+                    class="text-primary text-5xl md:text-7xl lg:text-[78px] font-bold leading-[1.1] tracking-tight mb-8 drop-shadow-2xl">
+                    Data Pipeline.<br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Structured
+                        Intelligence.</span>
+                </h1>
+                <p class="text-primary/70 text-lg max-w-2xl mb-12">
+                    A rigorous, physics-guided preprocessing pipeline that transforms noisy observations from raw NASA
+                    satellite data into clean, model-ready tensors.
+                </p>
+                <a href="#premium-features"
+                    class="inline-flex items-center gap-3 border border-primary/20 rounded-full px-8 py-4 font-medium hover:bg-white/5 transition-colors">
+                    Explore Pipeline <i data-lucide="arrow-down" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 3: Features -->
+        <section id="premium-features" class="w-full bg-black py-24">
+            <div class="px-7 md:px-12 lg:px-20 max-w-7xl mx-auto">
+                <div
+                    class="inline-block border border-primary/30 rounded-full px-4 py-1 text-xs uppercase tracking-[0.2em] mb-8 font-semibold">
+                    Core Stages
+                </div>
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-16">
+                    Meticulous Engineering<br />
+                    <span class="text-primary/50">For Perfect Data</span>
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-20">
+                    <div
+                        class="group border border-white/5 bg-white/[0.02] p-8 rounded-3xl hover:bg-white/[0.04] transition-colors">
+                        <div
+                            class="w-14 h-14 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-6">
+                            <i data-lucide="filter" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Statistical Cleaning</h3>
+                        <p class="text-primary/60 leading-relaxed">
+                            Removing non-physical negative irradiance values, replacing sensor dropout codes, and using
+                            linear interpolation for gaps ensures robust baseline data.
+                        </p>
+                    </div>
+
+                    <div
+                        class="group border border-white/5 bg-white/[0.02] p-8 rounded-3xl hover:bg-white/[0.04] transition-colors relative overflow-hidden">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-accent-warm/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
+                        <div class="relative z-10">
+                            <div
+                                class="w-14 h-14 rounded-full bg-accent-warm/10 flex items-center justify-center text-accent-warm mb-6">
+                                <i data-lucide="moon" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">Physics-Guided Night Masking</h3>
+                            <p class="text-primary/60 leading-relaxed">
+                                Identifying nighttime and forcing all radiative variables to zero using the Clear-Sky
+                                GHI model prevents the network from learning nighttime noise.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="group border border-white/5 bg-white/[0.02] p-8 rounded-3xl hover:bg-white/[0.04] transition-colors">
+                        <div
+                            class="w-14 h-14 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6">
+                            <i data-lucide="minimize-2" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Hybrid Normalization</h3>
+                        <p class="text-primary/60 leading-relaxed">
+                            Utilizes Z-score for standardizing input features, while min-max scaling constraints target
+                            indices to a strict [0, 1] interval.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="premium-results" class="w-full bg-black py-24 pb-48">
+            <div class="px-7 md:px-12 lg:px-20 max-w-7xl mx-auto">
+                <div
+                    class="grid lg:grid-cols-2 gap-16 items-center border border-white/10 rounded-3xl p-10 md:p-16 bg-white/[0.01]">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-bold mb-6">The Final Transformation</h2>
+                        <p class="text-primary/60 text-lg mb-8 leading-relaxed">
+                            The sliding window slices the data into overlapping 24-hour sets, forming exactly the 24×15
+                            tensor dimensionality our neural network demands, seamlessly bridged to chronological
+                            train-test isolation.
+                        </p>
+                        <div class="flex gap-4">
+                            <div class="bg-black/50 border border-white/5 p-4 rounded-xl flex-1">
+                                <div class="text-3xl font-bold text-cyan-400 mb-1">131K+</div>
+                                <div class="text-xs text-primary/40 uppercase tracking-wider">Total Records</div>
+                            </div>
+                            <div class="bg-black/50 border border-white/5 p-4 rounded-xl flex-1">
+                                <div class="text-3xl font-bold text-accent-warm mb-1">24x15</div>
+                                <div class="text-xs text-primary/40 uppercase tracking-wider">Tensor Shape</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="relative w-full aspect-square md:aspect-video lg:aspect-square bg-gradient-to-br from-cyan-900/20 to-purple-900/20 rounded-2xl border border-white/5 flex items-center justify-center">
+                        <i data-lucide="box" class="w-32 h-32 text-white/20"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 3D Sudan Globe Script (Chapter 01) - MASTERPIECE EDITION -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        let scene, camera, renderer, bgParticles;
-        function initPortal() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
-            camera.position.z = 1000;
-            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
-            renderer.setSize(innerWidth, innerHeight);
-            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-            const geo = new THREE.BufferGeometry();
-            const pos = new Float32Array(2500 * 3);
-            for (let i = 0; i < 2500 * 3; i++) pos[i] = (Math.random() - 0.5) * 2000;
-            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            const mat = new THREE.PointsMaterial({ color: 0x06B6D4, size: 2, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
-            bgParticles = new THREE.Points(geo, mat);
-            scene.add(bgParticles);
-            animateBg();
-        }
-        function animateBg() { requestAnimationFrame(animateBg); bgParticles.rotation.y += 0.0005; bgParticles.rotation.x += 0.0002; renderer.render(scene, camera); }
-        window.addEventListener('load', initPortal);
-        window.addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
-        document.addEventListener('mousemove', e => { if (bgParticles) { bgParticles.rotation.y += (e.clientX - innerWidth / 2) * 0.000001; bgParticles.rotation.x += (e.clientY - innerHeight / 2) * 0.000001; } });
-    </script>
+        // SUDAN 3D NEURAL COMMAND CENTER - MASTERPIECE EDITION
+        (function initSudanFinal() {
+            const container = document.getElementById('sudan-globe-container');
+            const canvas = document.getElementById('globe-canvas');
+            if (!container || !canvas) return;
 
-    <!-- ARABIC MODAL POPUP SYSTEM -->
-    <style>
-        #equation-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(12px);
-            z-index: 2147483647;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity .3s
-        }
+            // 1. SCENE SETUP
+            const scene = new THREE.Scene();
 
-        #equation-modal.active {
-            opacity: 1
-        }
+            // Realistic Sunlight
+            scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+            const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
+            sunLight.position.set(25, 10, 20);
+            scene.add(sunLight);
 
-        #equation-modal .modal-card {
-            background: rgba(18, 18, 28, 0.90);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(255, 255, 255, 0.02);
-            width: 90%;
-            max-width: 480px;
-            padding: 35px;
-            border-radius: 24px;
-            position: relative;
-            transform: scale(0.92) translateY(10px);
-            transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden
-        }
+            const camera = new THREE.PerspectiveCamera(35, container.offsetWidth / container.offsetHeight, 1, 1000);
+            camera.position.z = 28;
 
-        #equation-modal.active .modal-card {
-            transform: scale(1) translateY(0)
-        }
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        .modal-close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 30px;
-            height: 30px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: rgba(255, 255, 255, 0.6);
-            transition: all .2s
-        }
+            const mainGroup = new THREE.Group();
+            scene.add(mainGroup);
 
-        .modal-close-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            transform: rotate(90deg)
-        }
+            // 2. REALISTIC EARTH GLOBE (Blue Marble)
+            const radius = 8;
+            const tl = new THREE.TextureLoader();
+            const earthMap = tl.load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg');
+            const earthBump = tl.load('https://unpkg.com/three-globe/example/img/earth-topology.png');
+            const earthWater = tl.load('https://unpkg.com/three-globe/example/img/earth-water.png');
 
-        #modal-title {
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            opacity: 0.9
-        }
+            const globeMat = new THREE.MeshPhongMaterial({
+                map: earthMap,
+                bumpMap: earthBump,
+                bumpScale: 0.25,
+                specularMap: earthWater,
+                specular: new THREE.Color(0x999999),
+                shininess: 35
+            });
+            const globe = new THREE.Mesh(new THREE.SphereGeometry(radius, 128, 128), globeMat);
+            mainGroup.add(globe);
 
-        #modal-eq {
-            font-family: 'Times New Roman', serif;
-            font-style: italic;
-            font-size: 26px;
-            margin-bottom: 25px;
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.07));
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3)
-        }
+            // Tech Grid
+            const gridMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4, wireframe: true, transparent: true, opacity: 0.05 });
+            mainGroup.add(new THREE.Mesh(new THREE.SphereGeometry(radius + 0.05, 48, 48), gridMat));
 
-        #modal-desc {
-            font-family: 'Dubai', 'Segoe UI', Tahoma, sans-serif;
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 15px;
-            line-height: 1.8;
-            text-align: right;
-            direction: rtl;
-            font-weight: 300
-        }
+            // Cloud Layer
+            const earthClouds = tl.load('https://unpkg.com/three-globe/example/img/earth-clouds10k.png');
+            const cloudsMat = new THREE.MeshLambertMaterial({
+                map: earthClouds, transparent: true, opacity: 0.6,
+                blending: THREE.AdditiveBlending, side: THREE.DoubleSide
+            });
+            const cloudMesh = new THREE.Mesh(new THREE.SphereGeometry(radius + 0.08, 64, 64), cloudsMat);
+            mainGroup.add(cloudMesh);
 
-        #modal-desc strong {
-            color: #fff;
-            font-weight: 600
-        }
-    </style>
+            // High-Resolution Atmospheric Scattering Glow (Shader)
+            const atmVertex = `
+                varying vec3 vNormal;
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `;
+            const atmFragment = `
+                varying vec3 vNormal;
+                void main() {
+                    float intensity = pow(0.65 - dot(vNormal, vec3(0, 0, 1.0)), 4.0);
+                    gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity * 1.5;
+                }
+            `;
+            const atmosphereMat = new THREE.ShaderMaterial({
+                vertexShader: atmVertex,
+                fragmentShader: atmFragment,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide,
+                transparent: true,
+                depthWrite: false
+            });
+            scene.add(new THREE.Mesh(new THREE.SphereGeometry(radius * 1.15, 64, 64), atmosphereMat));
 
-    <div id="equation-modal">
-        <div class="modal-card">
-            <div class="modal-close-btn" onclick="closeModal()">&times;</div>
-            <div id="modal-title"></div>
-            <div id="modal-eq"></div>
-            <div id="modal-desc"></div>
-        </div>
-    </div>
+            // Starfield Background
+            const starGeo = new THREE.BufferGeometry();
+            const starPos = new Float32Array(1500 * 3);
+            for (let i = 0; i < 1500 * 3; i++) starPos[i] = (Math.random() - 0.5) * 150;
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+            const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.8 }));
+            scene.add(stars);
 
-    <script>
-        const equations = {
-            'NASA_POWER': { color: 'var(--cyan)', title: 'NASA POWER API', eq: 'Prediction Of Worldwide Energy Resources', desc: '<strong>مصدر البيانات:</strong><br>واجهة برمجية تابعة لوكالة ناسا توفر بيانات الأرصاد الجوية الشمسية بدقة عالية، تم استخدامها لاستخراج 15 متغيراً فيزيائياً لكل ساعة.' },
-            'OMDURMAN': { color: 'var(--purple)', title: 'OMDURMAN, SUDAN', eq: '<span style="font-family:\'Outfit\', sans-serif; font-style:normal; font-weight:700;">Lat: 14.7°N, Lon: 33.2°E</span>', desc: '<strong>موقع الدراسة:</strong><br>مدينة أم درمان في السودان، تتميز بمناخ صحراوي حار وتحديات بيئية فريدة مثل العواصف الغبارية والسحب المفاجئة، مما يجعلها بيئة اختبار مثالية للنموذج.' },
-            'TIMESPAN': { color: 'var(--gold)', title: '15-YEAR DATASET', eq: '2010 — 2024', desc: '<strong>الفترة الزمنية:</strong><br>تمتد البيانات على مدى 15 عاماً لضمان تغطية شاملة لجميع الفصول والدورات المناخية، مما يعزز قدرة النموذج على التعميم والتنبؤ طويل الأمد.' },
-            'RESOLUTION': { color: 'var(--green)', title: 'HOURLY RESOLUTION', eq: 'dt = 1 Hour', desc: '<strong>الدقة الزمنية:</strong><br>تم استخدام دقة ساعة واحدة لتلبية متطلبات إدارة الشبكات الكهربائية الذكية، حيث تتغير الأحمال والإنتاج الشمسي بشكل ديناميكي سريع.' },
-            'PROFILE': { color: '#fff', title: 'DATASET PROFILE', eq: 'Results & Metrics', desc: '<strong>ملخص مجموعة البيانات:</strong><br>تحتوي على 131,400 سجل (ساعة)، و15 ميزة فيزيائية مدخلة، وتغطي فترة زمنية طويلة لضمان موثوقية النموذج في مختلف الظروف.' },
-            'GHI_CS': { color: 'var(--gold)', title: 'CLEAR-SKY GHI', eq: 'GHI_cs = I_sc × cos(θz)', desc: '<strong>الإشعاع الشمسي للنقاء النظري:</strong><br>هو كمية الإشعاع المتوقعة في حالة عدم وجود غيوم أو غبار. يُستخدم كخط أساس (Baseline) لاكتشاف الشذوذ الجوي وتدريب النموذج على فهم الفيزياء أولاً.' },
-            'ZENITH': { color: 'var(--cyan)', title: 'ZENITH ANGLE', eq: 'θz = arccos(sinφ sinδ + ...)', desc: '<strong>زاوية السمت الشمسية:</strong><br>الزاوية بين أشعة الشمس والخط العمودي. تحدد هذه الزاوية مسار الشمس في السماء وتؤثر بشكل مباشر على شدة الإشعاع الواصل للألواح.' },
-            'ZSCORE': { color: 'var(--cyan)', title: 'Z-SCORE NORMALIZATION', eq: 'z = (x − μ) / σ', desc: '<strong>التقييس المعياري (Z-Score):</strong><br>تحويل البيانات لتكون بمتوسط 0 وانحراف معياري 1. هذا ضروري للشبكات العصبية لضمان تقارب سريع ومنع سيطرة القيم الكبيرة على النموذج.' },
-            'MINMAX': { color: 'var(--gold)', title: 'MIN-MAX SCALING', eq: 'x_norm = (x - min) / (max - min)', desc: '<strong>التقييس الأدنى-الأقصى:</strong><br>تحويل البيانات إلى نطاق [0, 1]. يُستخدم عادةً مع المخرج النهائي (GHI) لأنه قيمة موجبة ومحدودة، مما يسهل تفسير النتائج.' },
-            'TENSOR_SHAPE': { color: 'var(--cyan)', title: 'INPUT TENSOR SHAPE', eq: '(Batch, 24, 15)', desc: '<strong>شكل المصفوفة المدخلة:</strong><br>كل عينة تدريبية عبارة عن نافذة زمنية بطول 24 ساعة، وكل ساعة تحتوي على 15 ميزة فيزيائية. هذا الهيكل الثنائي الأبعاد يسمح للنموذج بفهم السياق الزمني والخصائص معاً.' },
-            'TARGET_SHAPE': { color: 'var(--gold)', title: 'OUTPUT TARGET', eq: 'GHI at t+1', desc: '<strong>الهدف المتوقع:</strong><br>قيمة الإشعاع الشمسي (GHI) للساعة القادمة مباشرة. هذه تنبؤات "خطوة واحدة للأمام" (One-Step Ahead) وهي الأكثر أهمية لتشغيل الشبكات.' },
-            'nasa_power': { color: 'var(--cyan)', title: 'NASA POWER API', eq: 'Prediction Of Worldwide Energy Resources', desc: '<strong>مصدر البيانات:</strong><br>واجهة برمجية تابعة لوكالة ناسا توفر بيانات الأرصاد الجوية الشمسية بدقة عالية، تم استخدامها لاستخراج 15 متغيراً فيزيائياً لكل ساعة.' },
-            'omdurman': { color: 'var(--purple)', title: 'OMDURMAN, SUDAN', eq: '<span style="font-family:\'Outfit\', sans-serif; font-style:normal; font-weight:700;">Lat: 14.7°N, Lon: 33.2°E</span>', desc: '<strong>موقع الدراسة:</strong><br>مدينة أم درمان في السودان، تتميز بمناخ صحراوي حار وتحديات بيئية فريدة مثل العواصف الغبارية والسحب المفاجئة، مما يجعلها بيئة اختبار مثالية للنموذج.' },
-            'timespan': { color: 'var(--gold)', title: '15-YEAR DATASET', eq: '2010 — 2024', desc: '<strong>الفترة الزمنية:</strong><br>تمتد البيانات على مدى 15 عاماً لضمان تغطية شاملة لجميع الفصول والدورات المناخية، مما يعزز قدرة النموذج على التعميم والتنبؤ طويل الأمد.' },
-            'resolution': { color: 'var(--green)', title: 'HOURLY RESOLUTION', eq: 'dt = 1 Hour', desc: '<strong>الدقة الزمنية:</strong><br>تم استخدام دقة ساعة واحدة لتلبية متطلبات إدارة الشبكات الكهربائية الذكية، حيث تتغير الأحمال والإنتاج الشمسي بشكل ديناميكي سريع.' },
-            'profile': { color: '#fff', title: 'DATASET PROFILE', eq: 'Results & Metrics', desc: '<strong>ملخص مجموعة البيانات:</strong><br>تحتوي على 131,400 سجل (ساعة)، و15 ميزة فيزيائية مدخلة، وتغطي فترة زمنية طويلة لضمان موثوقية النموذج في مختلف الظروف.' },
-            'ghi_cs': { color: 'var(--gold)', title: 'CLEAR-SKY GHI', eq: 'GHI_cs = I_sc × cos(θz)', desc: '<strong>الإشعاع الشمسي للنقاء النظري:</strong><br>هو كمية الإشعاع المتوقعة في حالة عدم وجود غيوم أو غبار. يُستخدم كخط أساس (Baseline) لاكتشاف الشذوذ الجوي وتدريب النموذج على فهم الفيزياء أولاً.' },
-            'zenith': { color: 'var(--cyan)', title: 'ZENITH ANGLE', eq: 'θz = arccos(sinφ sinδ + ...)', desc: '<strong>زاوية السمت الشمسية:</strong><br>الزاوية بين أشعة الشمس والخط العمودي. تحدد هذه الزاوية مسار الشمس في السماء وتؤثر بشكل مباشر على شدة الإشعاع الواصل للألواح.' },
-            'zscore': { color: 'var(--cyan)', title: 'Z-SCORE NORMALIZATION', eq: 'z = (x − μ) / σ', desc: '<strong>التقييس المعياري (Z-Score):</strong><br>تحويل البيانات لتكون بمتوسط 0 وانحراف معياري 1. هذا ضروري للشبكات العصبية لضمان تقارب سريع ومنع سيطرة القيم الكبيرة على النموذج.' },
-            'minmax': { color: 'var(--gold)', title: 'MIN-MAX SCALING', eq: 'x_norm = (x - min) / (max - min)', desc: '<strong>التقييس الأدنى-الأقصى:</strong><br>تحويل البيانات إلى نطاق [0, 1]. يُستخدم عادةً مع المخرج النهائي (GHI) لأنه قيمة موجبة ومحدودة، مما يسهل تفسير النتائج.' },
-            'tensor_shape': { color: 'var(--cyan)', title: 'INPUT TENSOR SHAPE', eq: '(Batch, 24, 15)', desc: '<strong>شكل المصفوفة المدخلة:</strong><br>كل عينة تدريبية عبارة عن نافذة زمنية بطول 24 ساعة، وكل ساعة تحتوي على 15 ميزة فيزيائية. هذا الهيكل الثنائي الأبعاد يسمح للنموذج بفهم السياق الزمني والخصائص معاً.' },
-            'target_shape': { color: 'var(--gold)', title: 'OUTPUT TARGET', eq: 'GHI at t+1', desc: '<strong>الهدف المتوقع:</strong><br>قيمة الإشعاع الشمسي (GHI) للساعة القادمة مباشرة. هذه تنبؤات "خطوة واحدة للأمام" (One-Step Ahead) وهي الأكثر أهمية لتشغيل الشبكات.' },
-            'cleanup': { color: '#fff', title: 'STATISTICAL CLEANING', eq: 'x = max(0, x)', desc: '<strong>التنظيف الإحصائي:</strong><br>إزالة القيم السالبة الناتجة عن أخطاء المستشعرات، واستكمال البيانات المفقودة خطياً لضمان استمرارية السلاسل الزمنية.<br><br><strong>القواعد:</strong><br>① إزالة GHI < 0 (غير فيزيائي)<br>② استبدال رمز -999 بـ NaN<br>③ الاستكمال الخطي للفجوات<br>④ محاذاة زمنية Δt = 3600 ثانية' },
-            'masking': { color: 'var(--cyan)', title: 'NIGHT MASKING', eq: 'if (Elevation < 0) → x = 0', desc: '<strong>القناع الليلي الفيزيائي:</strong><br>إجبار جميع قيم الإشعاع على الصفر عندما تكون الشمس تحت الأفق.<br><br><strong>الفائدة:</strong> يمنع النموذج من محاولة "تعلم" الضجيج الليلي، مما يحسّن دقة شروق/غروب الشمس بنسبة 23%.<br><br><strong>الشرط:</strong> GHI_cs < 5 W/m² → كل المتغيرات الشمسية = 0' },
-            'norm': { color: 'var(--purple)', title: 'HYBRID NORMALIZATION', eq: 'z = (x − μ) / σ', desc: '<strong>التطبيع الهجين:</strong><br>استخدام Z-Score لتوحيد المقاييس للمدخلات (14 خاصية)، و Min-Max لتطبيع المخرجات (GHI) في النطاق [0,1].<br><br><strong>تحذير مهم:</strong> يتم حساب μ و σ من بيانات التدريب فقط ويتم تجميدها — لمنع تسرب المعلومات من المستقبل.' },
-            'window': { color: 'var(--gold)', title: 'SLIDING WINDOW', eq: 'Input ∈ ℝ²⁴ˣ¹⁵', desc: '<strong>نافذة الانزلاق:</strong><br>تقسيم البيانات النظيفة إلى نوافذ متراكبة بطول 24 ساعة. كل نافذة تشكل مصفوفة بأبعاد 24×15 — وهو الشكل الذي تتوقعه الشبكة العصبية كمدخل.<br><br><strong>المخرج:</strong> قيمة GHI للساعة التالية (Sequence-to-One)' },
-            'split': { color: 'var(--green)', title: 'CHRONOLOGICAL SPLIT', eq: 'Train → Val → Test (temporal)', desc: '<strong>التقسيم الزمني:</strong><br>لا يوجد خلط عشوائي. يتم تقسيم البيانات حسب الزمن بشكل صارم.<br><br><strong>التطوير:</strong> 2010-2015 (تدريب 70% / تحقق 15% / اختبار 15%)<br><strong>اختبار الإجهاد:</strong> 2020-2024 (فجوة 5 سنوات للتأكد من تعلم القوانين الفيزيائية الحقيقية)<br><br><strong>النتيجة:</strong> R² > 0.995 عبر جميع سنوات الاختبار' }
-        };
-        function openModal(type) {
-            if (!equations[type]) return;
-            const d = equations[type];
-            document.getElementById('modal-title').innerHTML = d.title;
-            document.getElementById('modal-title').style.color = d.color;
-            document.getElementById('modal-eq').innerHTML = d.eq;
-            document.getElementById('modal-eq').style.color = d.color;
-            document.getElementById('modal-desc').innerHTML = d.desc;
-            const m = document.getElementById('equation-modal');
-            m.style.display = 'flex';
-            setTimeout(() => m.classList.add('active'), 10);
-        }
-        function closeModal() {
-            const m = document.getElementById('equation-modal');
-            m.classList.remove('active');
-            setTimeout(() => m.style.display = 'none', 300);
-        }
-        document.getElementById('equation-modal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+            // Deep Space Background (Milky Way)
+            const bgMat = new THREE.MeshBasicMaterial({
+                map: tl.load('https://unpkg.com/three-globe/example/img/night-sky.png'),
+                side: THREE.BackSide, color: 0x555555, transparent: true, opacity: 0.5
+            });
+            scene.add(new THREE.Mesh(new THREE.SphereGeometry(600, 64, 64), bgMat));
+
+            // ---- INTERACTIVE SOLAR SYSTEM (SUN, MOON, MARS) ----
+            let isSolarSystemView = false;
+            let targetCamPos = new THREE.Vector3(0, 0, 28);
+
+            // 1. SUN (Hyper-Realistic Multi-layered Corona)
+            const sunGroup = new THREE.Group();
+            sunGroup.position.copy(sunLight.position);
+            sunGroup.position.multiplyScalar(4);
+            scene.add(sunGroup);
+
+            // Sun Core
+            sunGroup.add(new THREE.Mesh(new THREE.SphereGeometry(12, 64, 64), new THREE.MeshBasicMaterial({ color: 0xffffff })));
+
+            // Corona Layer 1 (Bright Yellow)
+            sunGroup.add(new THREE.Mesh(new THREE.SphereGeometry(14, 64, 64),
+                new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, side: THREE.BackSide })));
+
+            // Corona Layer 2 (Soft Orange/Red)
+            sunGroup.add(new THREE.Mesh(new THREE.SphereGeometry(18, 64, 64),
+                new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, side: THREE.BackSide })));
+
+            // 2. MOON
+            const moonOrbit = new THREE.Group();
+            scene.add(moonOrbit);
+            const moonMat = new THREE.MeshStandardMaterial({
+                color: 0xc0c0c0, bumpMap: earthBump, bumpScale: 0.25, roughness: 0.8, metalness: 0.1
+            });
+            const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), moonMat);
+            moonMesh.position.set(18, 0, 0);
+            moonOrbit.add(moonMesh);
+
+            // 3. MARS (Red Planet)
+            const marsOrbit = new THREE.Group();
+            scene.add(marsOrbit);
+            const marsMat = new THREE.MeshStandardMaterial({
+                color: 0xc1440e, bumpMap: earthBump, bumpScale: 0.5, roughness: 0.9, metalness: 0.0
+            });
+            const marsMesh = new THREE.Mesh(new THREE.SphereGeometry(2.5, 32, 32), marsMat);
+            marsMesh.position.set(40, -5, 15);
+            marsOrbit.add(marsMesh);
+
+            // Sudan Boundary
+            const latLonToVec3 = (lat, lon, r) => {
+                const phi = (90 - lat) * (Math.PI / 180);
+                const theta = (lon + 180) * (Math.PI / 180);
+                return new THREE.Vector3(-(r * Math.sin(phi) * Math.cos(theta)), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
+            };
+
+            const sudanPath = [
+                [9.46,33.96],[9.48,33.82],[9.98,33.84],[10.32,33.72],[10.72,33.21],[11.44,33.09],[12.18,33.21],
+                [12.25,32.74],[12.02,32.67],[11.97,32.07],[11.68,32.31],[11.08,32.40],[10.53,31.85],[9.81,31.35],
+                [9.71,30.84],[10.29,30.00],[10.08,29.62],[9.79,29.52],[9.60,29.00],[9.40,28.97],[9.40,27.97],
+                [9.60,27.83],[9.64,27.11],[9.47,26.75],[9.55,26.48],[10.14,25.96],[10.41,25.79],[10.27,25.07],
+                [9.81,24.79],[8.92,24.54],[8.73,24.19],[8.62,23.89],[8.67,23.81],[8.95,23.46],[9.27,23.39],
+                [9.68,23.56],[10.09,23.55],[10.71,22.98],[11.14,22.86],[11.38,22.88],[11.68,22.51],[12.26,22.50],
+                [12.65,22.29],[12.59,21.94],[12.96,22.04],[13.37,22.30],[13.79,22.18],[14.09,22.51],[14.33,22.30],
+                [14.94,22.57],[15.68,23.02],[15.61,23.89],[19.58,23.84],[20.00,23.85],[20.00,25.00],[22.00,25.00],
+                [22.00,29.02],[22.00,32.90],[22.00,36.87],[21.02,37.19],[20.84,36.97],[19.81,37.11],[18.61,37.48],
+                [18.37,37.86],[18.00,38.41],[17.43,37.90],[17.26,37.17],[16.96,36.85],[16.29,36.75],[14.82,36.32],
+                [14.42,36.43],[13.56,36.27],[12.58,35.86],[12.08,35.26],[11.32,34.83],[10.91,34.73],[10.63,34.26],
+                [9.58,33.96],[9.46,33.96]
+            ];
+
+            const points = sudanPath.map(c => latLonToVec3(c[0], c[1], radius + 0.15));
+            mainGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: 0x10b981, linewidth: 3 })));
+
+            // Omdurman Hub
+            const targetLat = 14.7, targetLon = 33.2;
+            const hubPos = latLonToVec3(targetLat, targetLon, radius + 0.2);
+            const hubGroup = new THREE.Group();
+            hubGroup.position.copy(hubPos);
+            hubGroup.lookAt(new THREE.Vector3(0, 0, 0));
+            mainGroup.add(hubGroup);
+
+            const core = new THREE.Mesh(new THREE.SphereGeometry(0.18, 32, 32), new THREE.MeshBasicMaterial({ color: 0x10b981 }));
+            hubGroup.add(core);
+
+            // Pulse Rings
+            const ringGroup = new THREE.Group();
+            for (let i = 0; i < 3; i++) {
+                const r = new THREE.Mesh(
+                    new THREE.RingGeometry(0.25 + i * 0.15, 0.3 + i * 0.15, 64),
+                    new THREE.MeshBasicMaterial({ color: 0x10b981, side: THREE.DoubleSide, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending })
+                );
+                r.userData = { offset: i * 2, speed: 3 };
+                ringGroup.add(r);
+            }
+            hubGroup.add(ringGroup);
+
+            // Data Beam
+            const beamGeo = new THREE.CylinderGeometry(0.02, 0.08, 3, 16);
+            beamGeo.translate(0, -1.5, 0);
+            beamGeo.rotateX(Math.PI / 2);
+            const beam = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending }));
+            hubGroup.add(beam);
+
+            // Neural Particles
+            const pGeo = new THREE.BufferGeometry();
+            const pPos = new Float32Array(30 * 3);
+            for (let i = 0; i < 30 * 3; i += 3) {
+                const pVec = latLonToVec3(targetLat + (Math.random() - 0.5) * 8, targetLon + (Math.random() - 0.5) * 8, radius + 0.3 + Math.random() * 2);
+                pPos[i] = pVec.x; pPos[i + 1] = pVec.y; pPos[i + 2] = pVec.z;
+            }
+            pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+            mainGroup.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0x22d3ee, size: 0.08, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending })));
+
+            // 5. INTERACTIVITY (DAMPED ROTATION + CLICK TO ZOOM)
+            let isDragging = false;
+            let rotY = -(targetLon + 180) * (Math.PI / 180) + Math.PI / 2;
+            let rotX = targetLat * (Math.PI / 180);
+            let prevM = { x: 0, y: 0 };
+            let velocityY = 0.001, velocityX = 0;
+            let dragStartTime = 0, dragDist = 0;
+
+            container.addEventListener('mousedown', e => {
+                isDragging = true; prevM = { x: e.clientX, y: e.clientY };
+                velocityX = 0; velocityY = 0; dragStartTime = Date.now(); dragDist = 0;
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+                if (Date.now() - dragStartTime < 300 && dragDist < 10) {
+                    isSolarSystemView = !isSolarSystemView;
+                    targetCamPos.set(isSolarSystemView ? 30 : 0, isSolarSystemView ? 40 : 0, isSolarSystemView ? 120 : 28);
+                }
+            });
+
+            window.addEventListener('mousemove', e => {
+                if (!isDragging) return;
+                const dxR = e.clientX - prevM.x, dyR = e.clientY - prevM.y;
+                dragDist += Math.abs(dxR) + Math.abs(dyR);
+                const dx = dxR * 0.005, dy = dyR * 0.005;
+                velocityY = dx; velocityX = dy; rotY += dx; rotX += dy;
+                prevM = { x: e.clientX, y: e.clientY };
+            });
+
+            // Touch support
+            container.addEventListener('touchstart', e => { isDragging = true; prevM = { x: e.touches[0].clientX, y: e.touches[0].clientY }; velocityX = 0; velocityY = 0; });
+            window.addEventListener('touchend', () => isDragging = false);
+            window.addEventListener('touchmove', e => {
+                if (!isDragging) return;
+                const dx = (e.touches[0].clientX - prevM.x) * 0.005, dy = (e.touches[0].clientY - prevM.y) * 0.005;
+                velocityY = dx; velocityX = dy; rotY += dx; rotX += dy;
+                prevM = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }, { passive: false });
+
+            // 6. ANIMATION ENGINE
+            let time = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.02;
+
+                if (!isDragging) {
+                    velocityY = velocityY * 0.95 + 0.00005;
+                    velocityX *= 0.95;
+                    rotY += velocityY;
+                    rotX += velocityX;
+                }
+                rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
+                mainGroup.rotation.y = rotY;
+                mainGroup.rotation.x = rotX;
+
+                // Solar System Animations
+                moonOrbit.rotation.y += 0.005;
+                moonOrbit.rotation.x = 0.1;
+                moonMesh.rotation.y += 0.01;
+                marsOrbit.rotation.y += 0.002;
+                marsOrbit.rotation.x = -0.05;
+                marsMesh.rotation.y += 0.006;
+
+                // Camera Lerp for smooth transition
+                camera.position.lerp(targetCamPos, 0.03);
+                camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+                stars.rotation.y += 0.0005;
+                cloudMesh.rotation.y += 0.0003;
+                cloudMesh.rotation.x -= 0.0001;
+
+                // Animate Rings
+                ringGroup.children.forEach(r => {
+                    const scale = 1 + Math.sin(time * r.userData.speed + r.userData.offset) * 0.4;
+                    r.scale.setScalar(scale);
+                    r.material.opacity = 0.3 + Math.sin(time * r.userData.speed + r.userData.offset) * 0.5;
+                });
+
+                beam.material.opacity = 0.2 + Math.abs(Math.sin(time * 3)) * 0.5;
+                core.scale.setScalar(1 + Math.sin(time * 6) * 0.15);
+
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // RESIZE
+            const resize = () => {
+                const w = container.offsetWidth, h = container.offsetHeight;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            };
+            window.addEventListener('resize', resize);
+            resize();
+        })();
     </script>
 </body>
 

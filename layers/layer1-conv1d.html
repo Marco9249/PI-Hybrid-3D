@@ -43,16 +43,23 @@
         /* Header - Cinematic Style */
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 90px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.6) 70%, transparent 100%);
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 64px;
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
             z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 28px;
+            box-shadow: 
+                0 16px 40px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
         .layer-badge {
@@ -62,15 +69,15 @@
         }
 
         .layer-icon {
-            width: 70px;
-            height: 70px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--cyan), var(--purple));
-            border-radius: 18px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 0 50px rgba(6, 182, 212, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.1);
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
             animation: iconGlow 3s ease-in-out infinite;
         }
 
@@ -87,10 +94,11 @@
         }
 
         .layer-title h1 {
-            font-size: 32px;
-            font-weight: 300;
-            letter-spacing: 4px;
-            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, var(--cyan), #fff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -111,9 +119,9 @@
         }
 
         .layer-title p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 6px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
@@ -125,17 +133,18 @@
         .metric-box {
             background: rgba(6, 182, 212, 0.1);
             border: 1px solid var(--glass-border);
-            padding: 12px 24px;
+            padding: 8px 16px;
             border-radius: 12px;
             text-align: center;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .metric-label {
-            font-size: 9px;
+            font-size: 8px;
             color: var(--cyan);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
         }
 
         .metric-value {
@@ -152,40 +161,42 @@
         }
 
         .nav-btn {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            border-radius: 10px;
-            color: #fff;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-btn:hover {
-            background: var(--cyan);
-            color: #000;
-            box-shadow: 0 0 20px var(--cyan);
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--cyan);
+            border-color: var(--cyan);
+            transform: translateY(-1px);
         }
 
         /* Crystalline Panels */
         .left-panel {
             position: fixed;
-            left: 30px;
-            top: 110px;
-            width: 340px;
-            max-height: calc(100vh - 130px);
-            background: rgba(10, 10, 25, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            left: 24px;
+            top: 112px;
+            width: 300px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
             transition: all 0.3s;
         }
 
@@ -196,18 +207,19 @@
 
         .right-panel {
             position: fixed;
-            right: 30px;
-            top: 110px;
-            width: 360px;
-            max-height: calc(100vh - 130px);
-            background: rgba(10, 10, 25, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            right: 24px;
+            top: 112px;
+            width: 320px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
             transition: all 0.3s;
         }
 
@@ -549,7 +561,6 @@
             box-shadow: 0 0 10px var(--cyan);
         }
 
-        /* Background Canvas */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -559,6 +570,85 @@
             z-index: 0;
             opacity: 0.5;
             pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════════════
+           INFO MODAL (Detailed Explanation)
+           ═══════════════════════════════════════════════════ */
+        #info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #info-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 25, 0.95);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(6, 182, 212, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: #fff;
+            direction: rtl;
+        }
+
+        #info-modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.1);
+        }
+
+        .modal-body h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--cyan);
+            font-weight: 500;
+        }
+
+        .modal-body p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #d0d0e0;
+            margin-bottom: 24px;
         }
     </style>
 </head>
@@ -589,9 +679,15 @@
         </div>
 
         <div class="nav-group">
-            <a href="layer0-input.html" class="nav-btn">← PREV</a>
-            <a href="../index.html" class="nav-btn">HOME</a>
-            <a href="layer2-batchnorm.html" class="nav-btn">NEXT →</a>
+            <a href="layer0-input.html" class="nav-btn">
+                <span style="font-size: 1.2em; line-height: 0;">←</span> Prev
+            </a>
+            <a href="../index.html" class="nav-btn">
+                <span style="font-size: 1.1em; line-height: 0;">⬡</span> HUB
+            </a>
+            <a href="layer2-batchnorm.html" class="nav-btn">
+                Next <span style="font-size: 1.2em; line-height: 0;">→</span>
+            </a>
         </div>
 
         <div class="header-metrics">
@@ -618,15 +714,20 @@
 
     <!-- Left Panel -->
     <div class="left-panel">
-        <div class="section-title">📊 Input Features</div>
+        <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>📊 Input Features</div>
+            <button id="btn-info"
+                style="pointer-events: auto; width:22px; height:22px; border-radius:50%; background:rgba(6,182,212,0.2); border:1px solid rgba(6,182,212,0.5); color:#fff; cursor:pointer; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; transition:0.2s;"
+                title="Detailed Explanation">i</button>
+        </div>
 
         <div class="feature-grid">
             <div class="feature-chip">
-                <div class="feature-name">GHI</div>
+                <div class="feature-name">Log-GHI</div>
                 <div class="feature-desc">W/m²</div>
             </div>
             <div class="feature-chip">
-                <div class="feature-name">GHI_cs</div>
+                <div class="feature-name">Log-GHI_cs</div>
                 <div class="feature-desc">W/m²</div>
             </div>
             <div class="feature-chip">
@@ -634,7 +735,7 @@
                 <div class="feature-desc">Index</div>
             </div>
             <div class="feature-chip">
-                <div class="feature-name">KT_sat</div>
+                <div class="feature-name">Log-KTsat</div>
                 <div class="feature-desc">Index</div>
             </div>
             <div class="feature-chip">
@@ -642,11 +743,11 @@
                 <div class="feature-desc">Index</div>
             </div>
             <div class="feature-chip">
-                <div class="feature-name">DNI</div>
+                <div class="feature-name">Log-DNI</div>
                 <div class="feature-desc">W/m²</div>
             </div>
             <div class="feature-chip">
-                <div class="feature-name">DHI</div>
+                <div class="feature-name">Log-DHI</div>
                 <div class="feature-desc">W/m²</div>
             </div>
             <div class="feature-chip">
@@ -663,11 +764,11 @@
 
         <div class="feature-grid">
             <div class="feature-chip">
-                <div class="feature-name">T_amb</div>
+                <div class="feature-name">Log-T_amb</div>
                 <div class="feature-desc">°C</div>
             </div>
             <div class="feature-chip">
-                <div class="feature-name">T_wet</div>
+                <div class="feature-name">Log-T_wet</div>
                 <div class="feature-desc">°C</div>
             </div>
         </div>
@@ -1486,9 +1587,76 @@
         // ============================================
         init();
     </script>
-    <div
-        style="position:fixed; bottom:14px; right:24px; z-index:9999; font-family:'Outfit','Segoe UI',sans-serif; font-weight:600; font-size:13px; color:rgba(6,182,212,0.7); letter-spacing:3px; text-transform:uppercase; pointer-events:none; text-shadow:0 0 8px rgba(6,182,212,0.3);">
-        IZZELDEENM@GMAIL.COM</div>
+
+    <!-- Info Modal -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- KaTeX for Professional Equations -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <link rel="stylesheet" href="../ar-panel.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    </style>
+    <div id="info-modal">
+        <div class="modal-content"
+            style="border-color: var(--gold); font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; direction: rtl; text-align: right;">
+            <button class="modal-close" id="btn-close-modal">✕</button>
+            <div class="modal-body">
+                <h2 style="color: var(--cyan); font-weight: 700; margin-bottom: 20px; font-size: 26px;">
+                    نظرة عميقة: الاستخلاص الزمني (Conv1D)
+                </h2>
+
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid var(--gold); margin-bottom: 20px;">
+                    <h3 style="color: var(--gold); font-size: 18px; margin-bottom: 10px;">ما الذي تفعله هذه الطبقة
+                        فعلياً؟</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        تعمل طبقة الالتفاف أحادي البعد (Conv1D) كعدسة مكبرة متحركة أو "مؤشر زمني". بدلاً من النظر إلى كل
+                        ساعة على حدة، تنزلق هذه العدسة عبر نافذة الـ 24 ساعة لتبحث عن ارتباطات وأنماط مخفية.
+                    </p>
+                </div>
+
+                <div
+                    style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid var(--cyan); margin-bottom: 20px;">
+                    <h3 style="color: var(--cyan); font-size: 18px; margin-bottom: 10px;">اكتشاف الأنماط الدقيقة</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        إنها تدمج الميزات الـ 15 لتكتشف التغيرات السريعة، مثل حركة السحب المفاجئة والتقلبات في درجات
+                        الحرارة. تقوم بإنشاء 64 "خريطة ميزات" (Feature Maps) جديدة، كل منها تركز على نمط محدد لا يمكن
+                        للبشر ملاحظته بالعين المجردة، وتجهزه للطبقات التالية.
+                    </p>
+                </div>
+
+                <div
+                    style="margin-top:25px; text-align:center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+                        للتواصل: <span
+                            style="color: var(--cyan); font-weight: bold; letter-spacing: 2px;">IZZELDEENM@GMAIL.COM</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ARABIC PANEL HTML -->
+    <div id="ar-panel-overlay" onclick="closeArPanel()"></div>
+    <div id="ar-panel">
+        <div class="ar-close">
+            <div style="font-family:'Courier New'; font-size:11px; letter-spacing:3px; color:var(--cyan);">المعمارية الهجينة</div>
+            <div class="ar-close-btn" onclick="closeArPanel()">✕</div>
+        </div>
+        <div class="ar-panel-content" id="ar-panel-inner"></div>
+    </div>
+    <script src="../ar-panel.js"></script>
+
+    <script>
+        // Info Modal logic replaced by AR Panel
+        document.getElementById('btn-info').addEventListener('click', () => {
+            if (typeof openArPanel === 'function') {
+                openArPanel('arch_cnn');
+            }
+        });
+    </script>
 </body>
 
 </html>

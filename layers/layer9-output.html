@@ -7,14 +7,15 @@
     <title>Layer 7: Output | Solar Reactor Core</title>
     <style>
         :root {
-            --gold: #F59E0B;
-            --orange: #F97316;
-            --red: #EF4444;
+            /* Unifying to Blue/Cyan Theme */
+            --gold: #06B6D4;
+            --orange: #3B82F6;
+            --red: #8B5CF6;
             --cyan: #06B6D4;
             --green: #10B981;
-            --bg-dark: #0a0505;
-            --panel-bg: rgba(10, 5, 5, 0.95);
-            --glass-border: rgba(245, 158, 11, 0.4);
+            --bg-dark: #050510;
+            --panel-bg: rgba(5, 5, 20, 0.95);
+            --glass-border: rgba(6, 182, 212, 0.3);
         }
 
         * {
@@ -29,7 +30,10 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Outfit', sans-serif;
-            background: #030308;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.6;
+            background: #050510;
             color: #fff;
         }
 
@@ -40,18 +44,24 @@
         }
 
         /* Header - Solar Theme */
+        /* Header - Cinematic Glass */
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 90px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.6) 70%, transparent 100%);
-            z-index: 100;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 64px;
+            background: rgba(10, 10, 20, 0.7);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 28px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
         }
 
         .layer-badge {
@@ -88,20 +98,21 @@
         }
 
         .layer-title h1 {
-            font-size: 32px;
-            font-weight: 300;
-            letter-spacing: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--orange));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            margin: 0;
         }
 
         .layer-title p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 6px;
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 2px;
             text-transform: uppercase;
+            font-weight: 600;
+            opacity: 0.8;
+            margin: 0;
         }
 
         .header-metrics {
@@ -126,10 +137,10 @@
         }
 
         .metric-value {
-            font-size: 22px;
-            font-weight: 200;
+            font-size: 20px;
+            font-weight: 600;
             color: #fff;
-            font-family: 'Courier New', monospace;
+            font-family: 'Outfit', sans-serif;
         }
 
         .nav-group {
@@ -140,23 +151,23 @@
         }
 
         .nav-btn {
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 10px;
-            color: #fff;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 600;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.3s;
-            backdrop-filter: blur(10px);
         }
 
         .nav-btn:hover:not(.disabled) {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 20px var(--gold);
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--gold);
+            border-color: var(--gold);
         }
 
         .nav-btn.disabled {
@@ -200,18 +211,19 @@
 
         .left-panel {
             position: fixed;
-            left: 30px;
-            top: 110px;
-            width: 360px;
-            max-height: calc(100vh - 130px);
-            background: rgba(10, 5, 5, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            left: 24px;
+            top: 112px;
+            width: 320px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
         }
 
         .ghi-display {
@@ -320,18 +332,19 @@
         /* Right Panel */
         .right-panel {
             position: fixed;
-            right: 30px;
-            top: 110px;
-            width: 380px;
-            max-height: calc(100vh - 130px);
-            background: rgba(10, 5, 5, 0.75);
-            backdrop-filter: blur(30px) saturate(140%);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 30px;
-            padding: 30px;
+            right: 24px;
+            top: 112px;
+            width: 320px;
+            max-height: calc(100vh - 140px);
+            background: rgba(10, 10, 20, 0.8);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 24px;
             z-index: 50;
             overflow-y: auto;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
         }
 
         /* Time Control */
@@ -612,8 +625,65 @@
 
         .left-panel:hover,
         .right-panel:hover {
-            box-shadow: 0 0 40px rgba(245, 158, 11, 0.15);
             border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        /* INFO MODAL */
+        #info-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        #info-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(10, 5, 5, 0.95);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.15);
+            transform: translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            color: #fff;
+            direction: rtl;
+        }
+
+        #info-modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
     </style>
 </head>
@@ -629,17 +699,11 @@
 
     <header class="header">
         <div class="layer-badge">
-            <div class="layer-icon">☀️</div>
-            <div class="layer-title">
-                <h1>Solar Reactor Core</h1>
-                <p>Output Intensity Projection</p>
+            <div class="layer-icon" style="background: linear-gradient(135deg, var(--cyan), var(--blue)); border-radius: 12px; font-size: 24px;">☀️</div>
+            <div class="layer-title-text">
+                <h1 style="font-size: 18px; margin: 0;">Solar Prediction</h1>
+                <p style="font-size: 10px; color: var(--cyan); margin: 0; text-transform: uppercase;">Direct Irradiance Output</p>
             </div>
-        </div>
-
-        <div class="nav-group">
-            <a href="layer8-relu2.html" class="nav-btn">← PREV</a>
-            <a href="../index.html" class="nav-btn">HOME</a>
-            <a href="layer10-regression.html" class="nav-btn">NEXT →</a>
         </div>
 
         <div class="header-metrics">
@@ -653,12 +717,24 @@
             </div>
             <div class="metric-box">
                 <div class="metric-label">RMSE</div>
-                <div class="metric-value">42.3</div>
+                <div class="metric-value" style="color: var(--cyan);">42.3</div>
             </div>
-            <div class="metric-box">
+            <div class="metric-box" style="border-right: none;">
                 <div class="metric-label">R²</div>
                 <div class="metric-value">0.967</div>
             </div>
+        </div>
+
+        <div class="nav-group">
+            <a href="layer8-relu2.html" class="nav-btn">
+                <span style="font-size: 1.2em; line-height: 0;">←</span> Prev
+            </a>
+            <a href="../index.html" class="nav-btn">
+                <span style="font-size: 1.1em; line-height: 0;">⬡</span> HUB
+            </a>
+            <a href="layer10-regression.html" class="nav-btn">
+                Next <span style="font-size: 1.2em; line-height: 0;">→</span>
+            </a>
         </div>
     </header>
 
@@ -666,8 +742,10 @@
 
     <!-- Left Panel -->
     <div class="left-panel">
-        <div class="section-title">☀️ GHI Prediction</div>
-
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid rgba(245, 158, 11, 0.2); padding-bottom:12px;">
+            <div class="section-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0;">☀️ GHI Prediction</div>
+            <button id="btn-info" style="pointer-events: auto; width:22px; height:22px; border-radius:50%; background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.5); color:#fff; cursor:pointer; font-size:12px; font-weight:bold; display:flex; align-items:center; justify-content:center; transition:0.2s;" title="Detailed Explanation">i</button>
+        </div>
         <div class="ghi-display">
             <div class="ghi-value" id="ghiValue">542</div>
             <div class="ghi-unit">W/m²</div>
@@ -1418,6 +1496,66 @@
 
         init();
         updateSunPosition();
+    </script>
+
+    <!-- Info Modal -->
+    <div id="info-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="btn-close-modal">✕</button>
+            <div class="modal-body">
+                <style>@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');</style>
+                <h2 style="color: #4CC9F0; font-weight: 700; margin-bottom: 20px; font-size: 26px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">المحرك التحليلي: طبقة التوقعات النهائية (Output Layer)</h2>
+                <div style="display:none;">
+                    <h2 style="direction:ltr; text-align:right;">Final Stage: Physics-Constrained Output</h2>
+                    <h2 style="margin-top:-10px;">المحرك التحليلي: طبقة التوقعات النهائية (Output Layer)</h2>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid #4CC9F0; margin-bottom: 20px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <h3 style="color: #4CC9F0; font-size: 18px; margin-bottom: 10px;">ما الذي يحدث في هذه المرحلة الحاسمة؟</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        هذه الطبقة هي "المتحدث الرسمي" باسم النموذج. بعد آلاف العمليات الحسابية والتحليلات الزمنية، تقوم هذه الطبقة بتجميع كل تلك المعرفة في رقم واحد: كمية الإشعاع الشمسي (GHI) المتوقعة.
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <p>
+                        <strong>ما الذي يحدث في هذه المرحلة الحاسمة؟</strong><br>
+                        هذه الطبقة هي "المتحدث الرسمي" باسم النموذج. بعد آلاف العمليات الحسابية والتحليلات الزمنية عبر BiLSTM،
+                        تقوم هذه الطبقة بتجميع كل تلك المعرفة في رقم واحد: كمية الإشعاع الشمسي (GHI) المتوقعة للساعة القادمة.
+                    </p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border-right: 4px solid #F59E0B; margin-bottom: 20px; font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <h3 style="color: #F59E0B; font-size: 18px; margin-bottom: 10px;">الميزة التنافسية (القيود الفيزيائية)</h3>
+                    <p style="font-size: 15px; line-height: 1.8; color: #e0e0e0; margin: 0;">
+                        ما يميز هذا النموذج هو أنه ليس مجرد نموذج تعلم آلي اعتيادي، بل هو مدعوم بقوانين الفيزياء (Physics-Informed). طبقة الإخراج مقيدة بحدود طبيعية صارمة فلا يمكن أن تكون التوقعات سالبة، ولا يمكن أن تتجاوز الثابت الشمسي (Solar Constant). تضمن هذه القيود توافق التنبؤات مع الواقع الفعلي مما يرفع الدقة لمستويات قياسية.
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <p>
+                        <strong>الميزة التنافسية (Physics Constraints):</strong><br>
+                        ما يميز هذا النموذج هو أنه ليس مجرد ذكاء اصطناعي "أعمى"، بل هو مدعوم بقوانين الفيزياء. طبقة الإخراج هنا
+                        مقيدة بحدود فيزيائية وجغرافية صارمة؛ فهي تضمن أن التوقعات لا يمكن أن تكون سالبة أبداً، ولا يمكن أن تتجاوز
+                        "الثابت الشمسي" (Solar Constant). كما أنها "تتأكد" برمجياً من موقع الشمس الافتراضي لضمان عدم وجود طاقة
+                        ليلاً، مما يجعل الدقة تصل لمستويات قياسية.
+                    </p>
+                </div>
+                <div style="margin-top:25px; text-align:center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Cairo', sans-serif; direction: rtl; text-align: right;">
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 1px;">
+                        للتواصل: <span style="color: var(--cyan); font-weight: bold; letter-spacing: 2px;">IZZELDEENM@GMAIL.COM</span>
+                    </p>
+                </div>
+                <div style="display:none;">
+                    <div style="margin-top:20px; text-align:center; font-size:10px; opacity:0.3;">
+                        للتواصل: IZZELDEENM@GMAIL.COM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const infoModal = document.getElementById('info-modal');
+        document.getElementById('btn-info').addEventListener('click', () => infoModal.classList.add('show'));
+        document.getElementById('btn-close-modal').addEventListener('click', () => infoModal.classList.remove('show'));
+        infoModal.addEventListener('click', (e) => { if (e.target === infoModal) infoModal.classList.remove('show'); });
     </script>
 </body>
 

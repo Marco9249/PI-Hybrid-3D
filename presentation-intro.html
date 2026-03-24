@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>PI-HYBRID — Chapter 01: The Foundation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="ar-panel.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@200;300;400;600;800&family=Outfit:wght@200;400;600;900&family=Space+Mono&display=swap');
+
+        :root {
+            --cyan: #06B6D4;
+            --purple: #8B5CF6;
+            --gold: #F59E0B;
+            --green: #10B981;
+            --red: #EF4444;
+            --bg: #030308;
+            --card-bg: rgba(10, 10, 25, 0.4);
+            --border: rgba(139, 92, 246, 0.2);
+            --glow: rgba(139, 92, 246, 0.15)
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: auto !important
+        }
+
+        @media(min-width:1024px) {
+            * {
+                cursor: none !important
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: none
+        }
+
+        ::-webkit-scrollbar {
+            display: none
+        }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none
+        }
+
+        .overlay-v {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(ellipse, transparent 55%, rgba(0, 0, 0, .7))
+        }
+
+        .overlay-s {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: .03;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, .03) 2px, rgba(255, 255, 255, .03) 4px)
+        }
+
+        .cursor {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .3s, height .3s;
+            mix-blend-mode: difference
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%)
+        }
+
+        @media(max-width:1023px) {
+
+            .cursor,
+            .cursor-dot {
+                display: none
+            }
+        }
+
+        #progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple), var(--gold));
+            z-index: 10000;
+            width: 0%
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+            padding: 22px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: .5s
+        }
+
+        nav.scrolled {
+            background: rgba(3, 3, 8, .92);
+            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            padding: 16px 50px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .logo {
+            font-family: 'Outfit';
+            font-weight: 900;
+            font-size: 22px;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .nav-tag {
+            font-family: 'Space Mono';
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 3px;
+            opacity: 0;
+            transition: .5s
+        }
+
+        nav.scrolled .nav-tag {
+            opacity: 1
+        }
+
+        .nav-btn {
+            color: rgba(255, 255, 255, .6);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 18px;
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 20px;
+            transition: .3s
+        }
+
+        .nav-btn:hover {
+            color: #fff;
+            border-color: var(--cyan);
+            box-shadow: 0 0 15px rgba(6, 182, 212, .2)
+        }
+
+        .sec {
+            padding: 140px 60px;
+            position: relative;
+            z-index: 2
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px)
+        }
+
+        .stag {
+            font-family: 'Space Mono';
+            font-size: 10px;
+            letter-spacing: 5px;
+            margin-bottom: 12px
+        }
+
+        .sh2 {
+            font-family: 'Outfit';
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px
+        }
+
+        .sp {
+            font-size: 15px;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.9;
+            margin-bottom: 15px
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center
+        }
+
+        .bcard {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 35px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transition: .5s;
+            position: relative;
+            overflow: hidden
+        }
+
+        .bcard:hover {
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, .4);
+            box-shadow: 0 5px 40px var(--glow)
+        }
+
+        .ititle {
+            cursor: pointer !important;
+            position: relative;
+            display: inline-block;
+            transition: .3s
+        }
+
+        .ititle:hover {
+            opacity: .85
+        }
+
+        .ititle:hover::after {
+            opacity: 1
+        }
+
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2
+        }
+
+        @keyframes premiumShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            background: linear-gradient(
+                to right,
+                #ffffff 0%,
+                #06b6d4 25%,
+                #ffffff 50%,
+                #8b5cf6 75%,
+                #ffffff 100%
+            );
+            background-size: 200% auto;
+            color: #fff;
+            background-clip: text;
+            text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: premiumShine 6s linear infinite;
+            filter: drop-shadow(0 0 25px rgba(6, 182, 212, 0.4));
+            margin-bottom: 20px;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, .4);
+            max-width: 650px;
+            margin: 0 auto 15px;
+            line-height: 1.8
+        }
+
+        .uni-tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: var(--gold);
+            margin-bottom: 25px;
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            text-align: center
+        }
+
+        .scroll-cue span {
+            font-family: 'Space Mono';
+            font-size: 9px;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 45px;
+            background: linear-gradient(180deg, var(--cyan), transparent);
+            margin: 10px auto 0;
+            animation: sp 2s ease-in-out infinite
+        }
+
+        @keyframes sp {
+
+            0%,
+            100% {
+                opacity: .3;
+                transform: scaleY(.6)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1)
+            }
+        }
+
+        .p-card,
+        .s-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            transition: .5s;
+            cursor: pointer !important
+        }
+
+        .p-card:hover {
+            border-color: rgba(239, 68, 68, .4);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(239, 68, 68, .1)
+        }
+
+        .s-card:hover {
+            border-color: rgba(16, 185, 129, .4);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 30px rgba(16, 185, 129, .1)
+        }
+
+        .p-card .icon,
+        .s-card .icon {
+            font-size: 28px;
+            margin-bottom: 12px
+        }
+
+        .p-card h3,
+        .s-card h3 {
+            font-family: 'Outfit';
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .p-card p,
+        .s-card p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .5);
+            line-height: 1.8
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto
+        }
+
+        .toggle-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 35px 0
+        }
+
+        .toggle-sw {
+            display: flex;
+            background: rgba(10, 10, 25, .5);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            position: relative;
+            padding: 4px
+        }
+
+        .toggle-sw .slider {
+            position: absolute;
+            height: calc(100% - 8px);
+            width: 50%;
+            border-radius: 36px;
+            transition: .5s cubic-bezier(.68, -.55, .27, 1.55);
+            top: 4px;
+            left: 4px
+        }
+
+        .toggle-sw .slider.reactive {
+            background: rgba(239, 68, 68, .2);
+            border: 1px solid rgba(239, 68, 68, .4)
+        }
+
+        .toggle-sw .slider.proactive {
+            left: calc(50% - 4px);
+            background: rgba(16, 185, 129, .2);
+            border: 1px solid rgba(16, 185, 129, .4)
+        }
+
+        .toggle-btn {
+            padding: 12px 30px;
+            border: none;
+            background: none;
+            color: rgba(255, 255, 255, .5);
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 1px;
+            cursor: pointer !important;
+            position: relative;
+            z-index: 2;
+            transition: .3s
+        }
+
+        .toggle-btn.active {
+            color: #fff
+        }
+
+        .panel {
+            display: none;
+            animation: fadeUp .4s ease
+        }
+
+        .panel.active {
+            display: block
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .chaos-wrap {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .chaos-text {
+            flex: 1
+        }
+
+        .chaos-text h2 {
+            font-family: 'Outfit';
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px
+        }
+
+        .chaos-box {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3
+        }
+
+        #chaosCanvas {
+            width: 100%;
+            height: 100%;
+            display: block
+        }
+
+        .acc {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            background: rgba(10, 10, 25, .3);
+            transition: .4s;
+            cursor: pointer !important
+        }
+
+        .acc.open {
+            border-color: var(--cyan)
+        }
+
+        .acc-h {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer !important
+        }
+
+        .acc-h h3 {
+            font-family: 'Outfit';
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .acc-arr {
+            transition: .4s transform;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .acc.open .acc-arr {
+            transform: rotate(180deg);
+            color: var(--cyan)
+        }
+
+        .acc-b {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .5s cubic-bezier(.19, 1, .22, 1)
+        }
+
+        .acc.open .acc-b {
+            max-height: 500px
+        }
+
+        .acc-in {
+            padding: 0 25px 22px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.9
+        }
+
+        .stat-bar {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+            padding: 80px 40px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 2
+        }
+
+        .stat-item {
+            text-align: center
+        }
+
+        .stat-num {
+            font-family: 'Outfit';
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(180deg, #fff, var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .stat-label {
+            font-family: 'Space Mono';
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: var(--purple);
+            margin-top: 5px
+        }
+
+        .uni-glass {
+            max-width: 700px;
+            width: 100%;
+            background: var(--card-bg);
+            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto
+        }
+
+        .uni-glass .div {
+            height: 1px;
+            margin: 20px 0;
+            background: linear-gradient(90deg, transparent, var(--border), transparent)
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 16px 45px;
+            text-decoration: none;
+            font-family: 'Outfit';
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 3px;
+            border-radius: 50px;
+            transition: .4s;
+            margin: 8px
+        }
+
+        .cta-btn.fill {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            color: #fff
+        }
+
+        .cta-btn.fill:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(6, 182, 212, .4)
+        }
+
+        .cta-btn.out {
+            background: none;
+            border: 1px solid rgba(245, 158, 11, .5);
+            color: #fff
+        }
+
+        .cta-btn.out:hover {
+            border-color: var(--gold);
+            color: var(--gold)
+        }
+
+        footer {
+            padding: 50px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            position: relative;
+            z-index: 2
+        }
+
+        @media(max-width:900px) {
+
+            .grid2,
+            .card-grid {
+                grid-template-columns: 1fr
+            }
+
+            #hero h1 {
+                font-size: 2.5rem
+            }
+
+            .sec {
+                padding: 80px 25px
+            }
+
+            .sh2 {
+                font-size: 2rem
+            }
+
+            .chaos-wrap {
+                flex-direction: column
+            }
+
+            nav {
+                padding: 16px 20px
+            }
+
+            .stat-bar {
+                gap: 40px
+            }
+
+            .stat-num {
+                font-size: 2.5rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="overlay-v"></div>
+    <div class="overlay-s"></div>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div id="progress"></div>
+
+    <nav id="nav">
+        <div class="logo">PI-HYBRID</div>
+        <div style="display:flex;gap:12px;align-items:center">
+            <span class="nav-tag">CHAPTER 01 — INTRODUCTION</span>
+            <a href="presentation-control.html" class="nav-btn">Control →</a>
+            <a href="index.html" class="nav-btn">Main</a>
+        </div>
+    </nav>
+
+    <div id="ar-panel-overlay" class="ar-panel-overlay" onclick="closeArPanel()"></div>
+    <div id="ar-panel" class="ar-panel">
+        <button class="ar-close-btn" onclick="closeArPanel()">×</button>
+        <div id="ar-panel-inner" class="ar-panel-content"></div>
+    </div>
+
+    <!-- ═══ HERO ═══ -->
+    <section id="hero">
+        <div class="stag" style="color:var(--gold);position:relative;z-index:2">CHAPTER 01 — THE FOUNDATION</div>
+        <div class="uni-tag"
+            style="direction:ltr;font-family:'Inter',sans-serif;font-size:12px;color:var(--gold);letter-spacing:2px">
+            Omdurman Islamic University — Faculty of Engineering Sciences</div>
+        <h1>Confronting<br>Chaos</h1>
+        <p class="hero-sub">Improving Photovoltaic Energy Systems using Physics-Guided Hybrid Forecasting Model</p>
+        <div class="scroll-cue"><span>SCROLL TO BEGIN</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ═══ OPENING SPEECH ═══ -->
+    <section class="sec">
+        <div class="grid2 reveal">
+            <div>
+                <div class="stag" style="color:var(--cyan)">THE OPENING STATEMENT</div>
+                <h2 class="sh2 ititle" onclick="openArPanel('intro_speech')">The Challenge We Face</h2>
+                <p class="sp">In control engineering, we search for stability and accuracy. But we chose to confront the
+                    most complex non-linear system: <strong style="color:#fff">the Earth's atmosphere</strong>.</p>
+                <p class="sp">The atmosphere is a <strong style="color:var(--cyan)">chaotic dynamical system</strong> —
+                    a suspended speck of dust in Sudan's skies can overturn the energy balance in seconds.</p>
+                <p class="sp">We prove that merging <strong style="color:var(--purple)">atmospheric physics with deep
+                        AI</strong> can decode this chaos and transform reactive systems into proactive ones.</p>
+            </div>
+            <div class="bcard" onclick="openArPanel('intro_speech')" style="cursor:pointer">
+                <div
+                    style="font-family:'Space Mono';font-size:9px;color:var(--cyan);letter-spacing:2px;margin-bottom:15px">
+                    KEY MISSION ℹ️</div>
+                <div style="font-size:40px;margin-bottom:15px">🎯</div>
+                <p style="font-size:14px;color:rgba(255,255,255,.7);line-height:1.9;margin:0">Design a system that
+                    <strong style="color:#fff">anticipates</strong> atmospheric volatility instead of merely reacting to
+                    it — using physics-guided AI and hierarchical control.</p>
+                <div
+                    style="margin-top:20px;padding:12px;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:12px;font-size:11px;color:var(--cyan)">
+                    72 hours × 3 scenarios × 15 features × 5hr prediction horizon</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PARADIGM SHIFT ═══ -->
+    <section class="sec" id="paradigm">
+        <div class="reveal" style="text-align:center;margin-bottom:40px">
+            <div class="stag" style="color:var(--gold)">THE CORE INSIGHT</div>
+            <h2 class="sh2">Paradigm Shift</h2>
+            <p class="sp" style="max-width:600px;margin:0 auto">Toggle between the old reactive approach and our
+                proactive solution.</p>
+        </div>
+        <div class="toggle-wrap reveal">
+            <div class="toggle-sw">
+                <div class="slider reactive" id="slider"></div>
+                <button class="toggle-btn active" id="btnR" onclick="showPanel('reactive')">⚠ THE PROBLEM</button>
+                <button class="toggle-btn" id="btnP" onclick="showPanel('proactive')">✦ THE SOLUTION</button>
+            </div>
+        </div>
+        <div class="panel active" id="panel-reactive">
+            <div class="card-grid reveal">
+                <div class="p-card" onclick="openArPanel('intro_problem')">
+                    <div class="icon">🌪️</div>
+                    <h3>Atmospheric Volatility ℹ️</h3>
+                    <p>Dust storms (Haboob) cause GHI drops exceeding <strong style="color:#fff">60%</strong> in
+                        minutes, destroying grid stability.</p>
+                </div>
+                <div class="p-card" onclick="openArPanel('intro_phaselag')">
+                    <div class="icon">⏱️</div>
+                    <h3>Phase Lag Failure ℹ️</h3>
+                    <p>Standard AI predicts <strong style="color:#fff">yesterday's weather</strong> instead of
+                        tomorrow's — useless for control.</p>
+                </div>
+                <div class="p-card" onclick="openArPanel('intro_reactive')">
+                    <div class="icon">🔋</div>
+                    <h3>Reactive Control ℹ️</h3>
+                    <p>Systems respond <em>after</em> changes occur. Always one step behind — energy waste and
+                        degradation.</p>
+                </div>
+                <div class="p-card" onclick="openArPanel('intro_computational')">
+                    <div class="icon">🧮</div>
+                    <h3>Computational Burden ℹ️</h3>
+                    <p>Transformer models (>2M params) are too heavy for real-time edge deployment.</p>
+                </div>
+            </div>
+        </div>
+        <div class="panel" id="panel-proactive">
+            <div class="card-grid reveal">
+                <div class="s-card" onclick="openArPanel('intro_solution')">
+                    <div class="icon">🧠</div>
+                    <h3>Physics-Guided AI ℹ️</h3>
+                    <p>CNN-BiLSTM with 15 physics features. <strong style="color:#fff">7 are zero-cost</strong> from
+                        solar geometry.</p>
+                </div>
+                <div class="s-card" onclick="openArPanel('intro_duallevel')">
+                    <div class="icon">⚡</div>
+                    <h3>Dual-Level Architecture ℹ️</h3>
+                    <p><strong style="color:var(--green)">Level 1:</strong> Reference model. <strong
+                            style="color:var(--cyan)">Level 2:</strong> Lightweight surrogate.</p>
+                </div>
+                <div class="s-card" onclick="openArPanel('intro_proactive')">
+                    <div class="icon">🎯</div>
+                    <h3>Proactive MPC Control ℹ️</h3>
+                    <p>MPC uses future predictions to act <em>before</em> weather events impact the system.</p>
+                </div>
+                <div class="s-card" onclick="openArPanel('intro_fopid_card')">
+                    <div class="icon">🔧</div>
+                    <h3>FOPID Precision ℹ️</h3>
+                    <p>Fractional-Order PID with (λ, μ) provides superior flexibility over integer PID.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CHAOS ↔ ORDER ═══ -->
+    <section class="sec">
+        <div class="chaos-wrap reveal">
+            <div class="chaos-text">
+                <div class="stag" style="color:var(--cyan)">LIVE VISUALIZATION</div>
+                <h2 class="sh2 ititle" onclick="openArPanel('intro_chaos_viz')">Chaos ↔ Order</h2>
+                <p class="sp"><strong style="color:var(--red)">Left:</strong> Chaotic atmospheric data — unpredictable
+                    motion.</p>
+                <p class="sp"><strong style="color:var(--green)">Right:</strong> Physics-guided flow — our hybrid model
+                    imposing constraints.</p>
+            </div>
+            <div class="chaos-box">
+                <canvas id="chaosCanvas"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ NEURAL ARCHITECTURE FLOW ═══ -->
+    <section class="sec">
+        <div class="chaos-wrap reveal" style="flex-direction:row-reverse">
+            <div class="chaos-text">
+                <div class="stag" style="color:var(--purple)">LIVE VISUALIZATION</div>
+                <h2 class="sh2 ititle" onclick="openArPanel('intro_solution')">Neural Data Flow</h2>
+                <p class="sp"><strong style="color:var(--cyan)">CNN:</strong> Extracts spatial patterns from atmospheric
+                    data with high precision.</p>
+                <p class="sp"><strong style="color:var(--gold)">BiLSTM:</strong> Comprehends temporal sequencing over
+                    time and uncovers complex dependencies.</p>
+            </div>
+            <div class="chaos-box">
+                <canvas id="networkCanvas"></canvas>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══ OBJECTIVES ═══ -->
+    <section class="sec">
+        <div class="reveal" style="text-align:center;margin-bottom:40px">
+            <div class="stag" style="color:var(--gold)">RESEARCH FOUNDATION</div>
+            <h2 class="sh2 ititle" onclick="openArPanel('intro_objectives')">Objectives & Scope</h2>
+        </div>
+        <div style="max-width:800px;margin:0 auto" class="reveal">
+            <div class="acc open" onclick="openArPanel('intro_obj1')">
+                <div class="acc-h" onclick="toggleAcc(this,event)">
+                    <h3>01 — Hybrid Prediction Architecture ℹ️</h3><span class="acc-arr">▼</span>
+                </div>
+                <div class="acc-b">
+                    <div class="acc-in">CNN for spatial feature extraction + BiLSTM for temporal sequence — guided by 15
+                        physics-informed features, optimized via Bayesian hyperparameter tuning.</div>
+                </div>
+            </div>
+            <div class="acc" onclick="openArPanel('intro_obj2')">
+                <div class="acc-h" onclick="toggleAcc(this,event)">
+                    <h3>02 — Advanced Hierarchical Control ℹ️</h3><span class="acc-arr">▼</span>
+                </div>
+                <div class="acc-b">
+                    <div class="acc-in">FOPID + MPC strategy for intelligent proactive energy and water management —
+                        shifting from reactive to anticipatory decision-making.</div>
+                </div>
+            </div>
+            <div class="acc" onclick="openArPanel('intro_obj3')">
+                <div class="acc-h" onclick="toggleAcc(this,event)">
+                    <h3>03 — Integrated Simulation Platform ℹ️</h3><span class="acc-arr">▼</span>
+                </div>
+                <div class="acc-b">
+                    <div class="acc-in">MATLAB/Simulink simulation combining forecasting + PV pumping under
+                        hyper-realistic scenarios — benchmarking against LSTM, GRU, Transformer baselines.</div>
+                </div>
+            </div>
+            <div class="acc" onclick="openArPanel('intro_obj4')">
+                <div class="acc-h" onclick="toggleAcc(this,event)">
+                    <h3>04 — Economic & Practical Impact ℹ️</h3><span class="acc-arr">▼</span>
+                </div>
+                <div class="acc-b">
+                    <div class="acc-in">Eliminating expensive sensors through zero-cost solar geometry features and
+                        extending mechanical equipment lifespan via proactive, wear-reducing control.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ STATS ═══ -->
+    <div class="stat-bar reveal">
+        <div class="stat-item">
+            <div class="stat-num" data-t="15">0</div>
+            <div class="stat-label">FEATURES</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num" data-t="47" data-s="%">0</div>
+            <div class="stat-label">ZERO-COST</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num" data-t="492" data-s="K">0</div>
+            <div class="stat-label">PARAMETERS</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num" data-t="7">0</div>
+            <div class="stat-label">CHAPTERS</div>
+        </div>
+    </div>
+
+
+    <!-- ═══ CTA ═══ -->
+    <section class="sec" style="text-align:center">
+        <div class="reveal">
+            <h2 class="sh2"
+                style="background:linear-gradient(90deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">
+                Begin The Journey</h2>
+            <p class="sp" style="max-width:500px;margin:0 auto 30px">The introduction is complete. Explore the control
+                system or dive into the chapters.</p>
+            <div style="display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin-bottom:40px">
+                <a href="presentation-control.html" class="cta-btn fill">CONTROL SYSTEM →</a>
+                <a href="index.html" class="cta-btn out">EXPLORE CHAPTERS</a>
+                <a href="presentation-conclusion.html" class="cta-btn out"
+                    style="border-color:var(--purple); color:var(--purple)">CONCLUSION 🏁</a>
+            </div>
+            <div style="display:flex;justify-content:center;gap:15px;flex-wrap:wrap">
+                <button onclick="openArPanel('intro_full_speech')"
+                    style="padding:16px 35px;font-family:'Outfit','Inter',sans-serif;font-weight:700;font-size:14px;border-radius:50px;border:2px solid var(--gold);background:rgba(245,158,11,.08);color:var(--gold);cursor:pointer !important;transition:.4s;"
+                    onmouseover="this.style.background='rgba(245,158,11,.2)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 5px 20px rgba(245,158,11,.2)'"
+                    onmouseout="this.style.background='rgba(245,158,11,.08)';this.style.transform='translateY(0)';this.style.boxShadow='none'">🎙️
+                    FULL SPEECH & INTRO</button>
+
+                <button onclick="openArPanel('intro_team')"
+                    style="padding:16px 35px;font-family:'Outfit','Inter',sans-serif;font-weight:700;font-size:14px;border-radius:50px;border:2px solid var(--cyan);background:rgba(6,182,212,.08);color:var(--cyan);cursor:pointer !important;transition:.4s;"
+                    onmouseover="this.style.background='rgba(6,182,212,.2)';this.style.transform='translateY(-3px)';this.style.boxShadow='0 5px 20px rgba(6,182,212,.2)'"
+                    onmouseout="this.style.background='rgba(6,182,212,.08)';this.style.transform='translateY(0)';this.style.boxShadow='none'">🎓
+                    RESEARCH TEAM & SUPERVISION</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div style="font-family:'Outfit';font-weight:900;font-size:22px;margin-bottom:8px">PI-HYBRID VIZ</div>
+        <p style="color:rgba(255,255,255,.3);font-size:11px">© 2026 Advanced Neural Forecasting Laboratory</p>
+    </footer>
+
+    <script src="ar-panel.js"></script>
+    <script>
+        // ═══ THREE.JS STARFIELD ═══
+        let scene, camera, renderer, stars;
+        (function () {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 2000);
+            camera.position.z = 1000;
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
+            renderer.setSize(innerWidth, innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            const g = new THREE.BufferGeometry(), p = new Float32Array(3000 * 3);
+            for (let i = 0; i < p.length; i++)p[i] = (Math.random() - 0.5) * 2000;
+            g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+            stars = new THREE.Points(g, new THREE.PointsMaterial({ color: 0x06B6D4, size: 2, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending }));
+            scene.add(stars);
+            (function a() { requestAnimationFrame(a); stars.rotation.y += 0.0004; stars.rotation.x += 0.0002; renderer.render(scene, camera) })();
+        })();
+        addEventListener('resize', () => { if (camera && renderer) { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight) } });
+
+        // ═══ CURSOR ═══
+        const cur = document.getElementById('cursor'), dot = document.getElementById('cursor-dot');
+        addEventListener('mousemove', e => {
+            gsap.to(cur, { x: e.clientX, y: e.clientY, duration: 0.2 });
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0.05 });
+            if (stars) { stars.rotation.y += (e.clientX - innerWidth / 2) * 0.0000008; stars.rotation.x += (e.clientY - innerHeight / 2) * 0.0000008 }
+        });
+
+        // ═══ SCROLL + NAV ═══
+        addEventListener('scroll', () => {
+            const h = document.documentElement.scrollHeight - innerHeight;
+            document.getElementById('progress').style.width = (scrollY / h * 100) + '%';
+            document.getElementById('nav').classList.toggle('scrolled', scrollY > 80);
+        });
+
+        // ═══ GSAP ═══
+        gsap.registerPlugin(ScrollTrigger);
+        document.querySelectorAll('.reveal').forEach(el => { gsap.to(el, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } }) });
+
+        // ═══ PARADIGM TOGGLE ═══
+        function showPanel(m) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + m).classList.add('active');
+            const s = document.getElementById('slider'), bR = document.getElementById('btnR'), bP = document.getElementById('btnP');
+            if (m === 'reactive') { s.className = 'slider reactive'; bR.classList.add('active'); bP.classList.remove('active') }
+            else { s.className = 'slider proactive'; bP.classList.add('active'); bR.classList.remove('active') }
+        }
+
+        // ═══ ACCORDION ═══
+        function toggleAcc(h, e) { if (e) e.stopPropagation(); const it = h.parentElement; const o = it.classList.contains('open'); it.parentElement.querySelectorAll('.acc').forEach(i => i.classList.remove('open')); if (!o) it.classList.add('open') }
+
+        // ═══ COUNTER ═══
+        document.querySelectorAll('.stat-num[data-t]').forEach(el => {
+            new IntersectionObserver((entries, obs) => {
+                if (entries[0].isIntersecting) {
+                    const t = parseInt(el.dataset.t), s = el.dataset.s || '';
+                    let c = 0; const step = Math.ceil(t / 60);
+                    const tm = setInterval(() => { c += step; if (c >= t) { c = t; clearInterval(tm) } el.textContent = c + s }, 25);
+                    obs.unobserve(el);
+                }
+            }, { threshold: 0.5 }).observe(el);
+        });
+
+        // ═══ CHAOS CANVAS ═══
+        const cc = document.getElementById('chaosCanvas');
+        if (cc) {
+            const ctx = cc.getContext('2d'); let mx = 0, my = 0; const pts = []; const N = 200;
+            function rsz() { const r = cc.parentElement.getBoundingClientRect(); cc.width = r.width; cc.height = r.height } rsz(); addEventListener('resize', rsz);
+            cc.addEventListener('mousemove', e => { const r = cc.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top });
+            for (let i = 0; i < N; i++)pts.push({ x: Math.random() * 600, y: Math.random() * 400, vx: (Math.random() - .5) * 3, vy: (Math.random() - .5) * 3, sz: Math.random() * 2.5 + 1, s: i < N / 2 ? 'c' : 'o' });
+            function drawC() {
+                ctx.clearRect(0, 0, cc.width, cc.height); const mid = cc.width / 2;
+                ctx.strokeStyle = 'rgba(255,255,255,.06)'; ctx.setLineDash([5, 8]); ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(mid, 0); ctx.lineTo(mid, cc.height); ctx.stroke(); ctx.setLineDash([]);
+                ctx.font = '9px "Space Mono"'; ctx.fillStyle = 'rgba(239,68,68,.4)'; ctx.fillText('CHAOTIC', 15, 25);
+                ctx.fillStyle = 'rgba(16,185,129,.4)'; ctx.fillText('PHYSICS-GUIDED', mid + 15, 25);
+                pts.forEach(p => {
+                    if (p.s === 'c') {
+                        p.vx += (Math.random() - .5) * .8; p.vy += (Math.random() - .5) * .8; p.vx *= .95; p.vy *= .95; p.x += p.vx; p.y += p.vy;
+                        if (p.x < 5) { p.x = 5; p.vx *= -1 } if (p.x > mid - 5) { p.x = mid - 5; p.vx *= -1 }
+                        if (p.y < 5) { p.y = 5; p.vy *= -1 } if (p.y > cc.height - 5) { p.y = cc.height - 5; p.vy *= -1 }
+                        const dx = p.x - mx, dy = p.y - my, d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < 80) { p.vx += dx / d * 2; p.vy += dy / d * 2 }
+                        ctx.fillStyle = `rgba(239,68,68,${.3 + Math.random() * .4})`;
+                    } else {
+                        const ty = cc.height / 2 + Math.sin(Date.now() / 1500 + p.sz * 50) * (cc.height * .35);
+                        p.x += (mid + 20 + ((p.x - mid) % (mid - 40)) - p.x) * .003 + Math.sin(Date.now() / 2000 + p.sz * 10) * .3;
+                        p.y += (ty - p.y) * .015;
+                        if (p.x > cc.width - 5) p.x = mid + 5; if (p.x < mid + 5) p.x = mid + 5;
+                        if (p.y < 5) p.y = 5; if (p.y > cc.height - 5) p.y = cc.height - 5;
+                        ctx.fillStyle = `rgba(16,185,129,${.4 + Math.sin(Date.now() / 800 + p.sz) * .3})`;
+                    }
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2); ctx.fill();
+                });
+                const ord = pts.filter(p => p.s === 'o'); ctx.strokeStyle = 'rgba(16,185,129,.06)'; ctx.lineWidth = 1;
+                for (let i = 0; i < ord.length; i++)for (let j = i + 1; j < ord.length; j++) {
+                    const dx = ord[i].x - ord[j].x, dy = ord[i].y - ord[j].y;
+                    if (Math.sqrt(dx * dx + dy * dy) < 60) { ctx.beginPath(); ctx.moveTo(ord[i].x, ord[i].y); ctx.lineTo(ord[j].x, ord[j].y); ctx.stroke() }
+                }
+                requestAnimationFrame(drawC)
+            }
+            new IntersectionObserver(e => { if (e[0].isIntersecting) { drawC() } }).observe(cc);
+        }
+
+        // ═══ NEURAL NETWORK CANVAS ═══
+        const nc = document.getElementById('networkCanvas');
+        if (nc) {
+            const nctx = nc.getContext('2d'); let nx = 0, ny = 0; const nodes = []; const links = [];
+            function rszN() { const r = nc.parentElement.getBoundingClientRect(); nc.width = r.width; nc.height = r.height } rszN(); addEventListener('resize', rszN);
+            nc.addEventListener('mousemove', e => { const r = nc.getBoundingClientRect(); nx = e.clientX - r.left; ny = e.clientY - r.top });
+            const layers = [{ x: 0.1, count: 4, c: '#EF4444' }, { x: 0.3, count: 6, c: '#06B6D4' }, { x: 0.6, count: 8, c: '#8B5CF6' }, { x: 0.9, count: 3, c: '#10B981' }];
+            let nid = 0;
+            layers.forEach(l => {
+                for (let i = 0; i < l.count; i++) {
+                    nodes.push({ id: nid++, x: nc.width * l.x, y: nc.height * (i + 1) / (l.count + 1), bx: nc.width * l.x, by: nc.height * (i + 1) / (l.count + 1), color: l.c, pulse: 0 });
+                }
+            });
+            nodes.forEach(n1 => {
+                nodes.forEach(n2 => {
+                    if (n2.bx > n1.bx && n2.bx - n1.bx < (nc.width * 0.4)) {
+                        links.push({ s: n1, t: n2, active: 0 });
+                    }
+                });
+            });
+            function drawN() {
+                nctx.clearRect(0, 0, nc.width, nc.height);
+                nctx.lineWidth = 1.5;
+                links.forEach(l => {
+                    l.active = Math.max(0, l.active - 0.02);
+                    const distToMouse = Math.sqrt((l.s.x - nx) ** 2 + (l.s.y - ny) ** 2);
+                    if (distToMouse < 60) { l.active = 1; l.s.pulse = 1; l.t.pulse = 1; }
+                    nctx.beginPath(); nctx.moveTo(l.s.x, l.s.y); nctx.lineTo(l.t.x, l.t.y);
+                    const grad = nctx.createLinearGradient(l.s.x, l.s.y, l.t.x, l.t.y);
+                    grad.addColorStop(0, l.active > 0 ? l.s.color : 'rgba(255,255,255,0.05)');
+                    grad.addColorStop(1, l.active > 0 ? l.t.color : 'rgba(255,255,255,0.05)');
+                    nctx.strokeStyle = grad;
+                    nctx.stroke();
+                });
+                nodes.forEach(n => {
+                    n.pulse = Math.max(0, n.pulse - 0.03);
+                    n.x = n.bx + Math.sin(Date.now() / 1000 + n.id) * 5;
+                    n.y = n.by + Math.cos(Date.now() / 1500 + n.id) * 5;
+                    nctx.beginPath(); nctx.arc(n.x, n.y, 4 + n.pulse * 3, 0, Math.PI * 2);
+                    nctx.fillStyle = n.color;
+                    nctx.shadowColor = n.color;
+                    nctx.shadowBlur = n.pulse * 15;
+                    nctx.fill();
+                    nctx.shadowBlur = 0;
+                });
+                requestAnimationFrame(drawN);
+            }
+            new IntersectionObserver(e => { if (e[0].isIntersecting) { drawN() } }).observe(nc);
+        }
+    </script>
+</body>
+
+</html>
